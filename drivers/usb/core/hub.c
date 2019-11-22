@@ -4238,8 +4238,10 @@ static int hub_port_disable(struct usb_hub *hub, int port1, int set_state)
 	}
 	if (port_dev->child && set_state)
 		usb_set_device_state(port_dev->child, USB_STATE_NOTATTACHED);
+#ifndef CONFIG_AMLOGIC_USB
 	if (ret && ret != -ENODEV)
 		dev_err(&port_dev->dev, "cannot disable (err = %d)\n", ret);
+#endif
 	return ret;
 }
 
@@ -5025,6 +5027,9 @@ loop:
 
 done:
 	hub_port_disable(hub, port1, 1);
+#ifdef CONFIG_AMLOGIC_USB2PHY
+	set_usb_phy_host_tuning(port1 - 1, 1);
+#endif
 	if (hcd->driver->relinquish_port && !hub->hdev->parent) {
 		if (status != -ENOTCONN && status != -ENODEV)
 			hcd->driver->relinquish_port(hcd, port1);

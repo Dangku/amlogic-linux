@@ -32,6 +32,8 @@
 #include "deinterlace_hw.h"
 #include "register.h"
 #include "register_nr4.h"
+#include "nr_drv.h"
+
 #ifdef DET3D
 #include "detect3d.h"
 #endif
@@ -138,6 +140,8 @@ static void ma_di_init(void)
 	/* mtn setting */
 	if (cpu_after_eq(MESON_CPU_MAJOR_ID_G12B)) {
 		DI_Wr_reg_bits(DI_MTN_CTRL, 1, 0, 1);
+		DI_Wr_reg_bits(DI_MTN_CTRL, 1, 30, 1);
+		DI_Wr_reg_bits(DI_MTN_CTRL, 0xf, 24, 4);
 		DI_Wr(DI_MTN_1_CTRL1, 0x202015);
 	} else
 		DI_Wr(DI_MTN_1_CTRL1, 0xa0202015);
@@ -332,7 +336,7 @@ void calc_lmv_base_mcinfo(unsigned int vf_height, unsigned long mcinfo_adr,
 	if (!lmv_lock_win_en)
 		return;
 
-    if (!cpu_after_eq(MESON_CPU_MAJOR_ID_G12A)) {
+	if (!cpu_after_eq(MESON_CPU_MAJOR_ID_G12A)) {
 		pr_debug("%s: only support G12A and after chips.\n", __func__);
 		return;
 	}
@@ -756,9 +760,10 @@ void enable_di_pre_aml(
 	/*
 	 * enable&disable contwr txt
 	 */
-	if (cpu_after_eq(MESON_CPU_MAJOR_ID_G12B))
-		RDMA_WR_BITS(DI_MTN_CTRL, madi_en?5:0, 29, 3);
-	else
+	if (cpu_after_eq(MESON_CPU_MAJOR_ID_G12B)) {
+		RDMA_WR_BITS(DI_MTN_CTRL, madi_en, 29, 1);
+		RDMA_WR_BITS(DI_MTN_CTRL, madi_en, 31, 1);
+	} else
 		RDMA_WR_BITS(DI_MTN_1_CTRL1, madi_en?5:0, 29, 3);
 
 	if (cpu_after_eq(MESON_CPU_MAJOR_ID_G12A)) {
@@ -910,7 +915,7 @@ bool afbc_is_supported(void)
 	else if (is_meson_g12a_cpu())
 		ret = false;
 	else if (is_meson_tl1_cpu() || is_meson_tm2_cpu())
-		ret = true;
+		ret = false;
 
 	return ret;
 
@@ -1990,6 +1995,8 @@ static void set_di_if2_mif(struct DI_MIF_s *mif, int urgent,
 {
 	unsigned int bytes_per_pixel, demux_mode;
 	unsigned int pat, loop = 0, chro_rpt_lastl_ctrl = 0;
+	/*crop issue*/
+	unsigned int hz_ini_phase = 0;
 
 	if (mif->set_separate_en == 1) {
 		pat = vpat[(vskip_cnt<<1)+1];
@@ -2062,10 +2069,13 @@ static void set_di_if2_mif(struct DI_MIF_s *mif, int urgent,
 
 	/* Dummy pixel value */
 	DI_VSYNC_WR_MPEG_REG(DI_IF2_DUMMY_PIXEL, 0x00808000);
+	/*crop issue*/
+	if (mif->luma_x_start0 % 2)
+		hz_ini_phase = 8;
 	if (mif->set_separate_en != 0) { /* 4:2:0 block mode. */
 		set_di_if2_fmt_more(1, /* hfmt_en */
 		1,/* hz_yc_ratio */
-		0,/* hz_ini_phase */
+		hz_ini_phase,/* hz_ini_phase */
 		1,	/* vfmt_en */
 		1, /* vt_yc_ratio */
 		0, /* vt_ini_phase */
@@ -2075,7 +2085,7 @@ static void set_di_if2_mif(struct DI_MIF_s *mif, int urgent,
 	} else {
 		set_di_if2_fmt_more(1,	/* hfmt_en */
 		1, /* hz_yc_ratio */
-		0, /* hz_ini_phase */
+		hz_ini_phase, /* hz_ini_phase */
 		0,	/* vfmt_en */
 		0,	/* vt_yc_ratio */
 		0, /* vt_ini_phase */
@@ -2090,6 +2100,8 @@ static void set_di_if1_mif(struct DI_MIF_s *mif, int urgent,
 {
 	unsigned int bytes_per_pixel, demux_mode;
 	unsigned int pat, loop = 0, chro_rpt_lastl_ctrl = 0;
+	/*crop issue*/
+	unsigned int hz_ini_phase = 0;
 
 	if (mif->set_separate_en == 1) {
 		pat = vpat[(vskip_cnt<<1)+1];
@@ -2159,10 +2171,14 @@ static void set_di_if1_mif(struct DI_MIF_s *mif, int urgent,
 
 	/* Dummy pixel value */
 	DI_VSYNC_WR_MPEG_REG(DI_IF1_DUMMY_PIXEL, 0x00808000);
+	/*crop issue*/
+	if (mif->luma_x_start0 % 2)
+		hz_ini_phase = 8;
+
 	if (mif->set_separate_en != 0) { /* 4:2:0 block mode. */
 		set_di_if1_fmt_more(1, /* hfmt_en */
 		1,/* hz_yc_ratio */
-		0,/* hz_ini_phase */
+		hz_ini_phase,/* hz_ini_phase */
 		1,	/* vfmt_en */
 		1, /* vt_yc_ratio */
 		0, /* vt_ini_phase */
@@ -2172,7 +2188,7 @@ static void set_di_if1_mif(struct DI_MIF_s *mif, int urgent,
 	} else {
 		set_di_if1_fmt_more(1,	/* hfmt_en */
 		1, /* hz_yc_ratio */
-		0, /* hz_ini_phase */
+		hz_ini_phase, /* hz_ini_phase */
 		0,	/* vfmt_en */
 		0,	/* vt_yc_ratio */
 		0, /* vt_ini_phase */
@@ -2456,7 +2472,8 @@ static void set_di_if0_mif_g12(struct DI_MIF_s *mif, int urgent, int hold_line,
 {
 	unsigned int pat, loop = 0;
 	unsigned int bytes_per_pixel, demux_mode;
-
+	/*crop issue*/
+	unsigned int hz_ini_phase = 0;
 
 	if (mif->set_separate_en == 1) {
 		pat = vpat[(vskip_cnt<<1)+1];
@@ -2522,12 +2539,16 @@ static void set_di_if0_mif_g12(struct DI_MIF_s *mif, int urgent, int hold_line,
 	DI_VSYNC_WR_MPEG_REG(DI_IF0_LUMA0_RPT_PAT,   pat);
 	DI_VSYNC_WR_MPEG_REG(DI_IF0_CHROMA0_RPT_PAT, pat);
 
+	/*crop issue*/
+	if (mif->luma_x_start0 % 2)
+		hz_ini_phase = 8;
+
 	/* 4:2:0 block mode. */
 	if (mif->set_separate_en != 0) {
 		set_di_if0_fmt_more_g12(
 			1, /* hfmt_en */
 			1,	/* hz_yc_ratio */
-			0,	/* hz_ini_phase */
+			hz_ini_phase,	/* hz_ini_phase */
 			1,	/* vfmt_en */
 			1, /* vt_yc_ratio */
 			0, /* vt_ini_phase */
@@ -2538,7 +2559,7 @@ mif->chroma_x_end0 - mif->chroma_x_start0 + 1, /* c length */
 		set_di_if0_fmt_more_g12(
 		1,	/* hfmt_en */
 		1,	/* hz_yc_ratio */
-		0,  /* hz_ini_phase */
+		hz_ini_phase,  /* hz_ini_phase */
 		0,	/* vfmt_en */
 		0,	/* vt_yc_ratio */
 		0,  /* vt_ini_phase */
@@ -3324,6 +3345,15 @@ void diwr_set_power_control(unsigned char enable)
 		enable?VPU_MEM_POWER_ON:VPU_MEM_POWER_DOWN);
 }
 
+void di_hdr2_hist_init(void)
+{
+	if (cpu_after_eq(MESON_CPU_MAJOR_ID_TM2)) {
+		RDMA_WR(DI_HDR2_HIST_CTRL, 0x5510);
+		RDMA_WR(DI_HDR2_HIST_H_START_END, 0x10000);
+		RDMA_WR(DI_HDR2_HIST_V_START_END, 0x0);
+	}
+}
+
 void di_top_gate_control(bool top_en, bool mc_en)
 {
 	if (top_en) {
@@ -3767,30 +3797,35 @@ void pulldown_vof_win_config(struct pulldown_detected_s *wins)
 		wins->regs[3].win_vs, 17, 12);
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_REG3_Y,
 		wins->regs[3].win_ve, 1, 12);
-
+	/* revert the setting of top two lines do weave for */
+	/* interlace video, suggest by vlsi-feijun */
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
 		(wins->regs[0].win_ve > wins->regs[0].win_vs)
 		? 1 : 0, 16, 1);
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
-		wins->regs[0].blend_mode, 8, 2);
+		/*wins->regs[0].blend_mode*/
+				  0x03, 8, 2);
 
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
 		(wins->regs[1].win_ve > wins->regs[1].win_vs)
 		? 1 : 0, 17, 1);
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
-		wins->regs[1].blend_mode, 10, 2);
+		/*wins->regs[1].blend_mode*/
+				  0x03, 10, 2);
 
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
 		(wins->regs[2].win_ve > wins->regs[2].win_vs)
 		? 1 : 0, 18, 1);
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
-		wins->regs[2].blend_mode, 12, 2);
+		/*wins->regs[2].blend_mode*/
+				  0x03, 12, 2);
 
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
 		(wins->regs[3].win_ve > wins->regs[3].win_vs)
 		? 1 : 0, 19, 1);
 	DI_VSYNC_WR_MPEG_REG_BITS(DI_BLEND_CTRL,
-		wins->regs[3].blend_mode, 14, 2);
+		/*wins->regs[3].blend_mode*/
+					  0x03, 14, 2);
 }
 
 
@@ -3800,6 +3835,7 @@ void di_load_regs(struct di_pq_parm_s *di_pq_ptr)
 	unsigned int table_name = 0, nr_table = 0;
 	bool ctrl_reg_flag = false;
 	struct am_reg_s *regs_p = NULL;
+	bool mov_flg = false;
 
 	if (pq_load_dbg == 1)
 		return;
@@ -3820,6 +3856,11 @@ void di_load_regs(struct di_pq_parm_s *di_pq_ptr)
 		addr = regs_p->addr;
 		value = regs_p->val;
 		mask = regs_p->mask;
+		if (nr_demo_flag) {
+			if (addr == NR4_TOP_CTRL)
+				mask &= ~(0x7 << 6);
+		}
+
 		if (pq_load_dbg == 2)
 			pr_info("[%u][0x%x] = [0x%x]&[0x%x]\n",
 				i, addr, value, mask);
@@ -3842,7 +3883,9 @@ void di_load_regs(struct di_pq_parm_s *di_pq_ptr)
 		}
 		if (table_name & nr_table)
 			ctrl_reg_flag = set_nr_ctrl_reg_table(addr, value);
-		if (!ctrl_reg_flag)
+		if (table_name & TABLE_NAME_DI)
+			mov_flg = di_patch_mov_db(addr, value);
+		if (!ctrl_reg_flag && !mov_flg)
 			DI_Wr(addr, value);
 		if (pq_load_dbg == 2)
 			pr_info("[%u][0x%x] = [0x%x] %s\n", i, addr,

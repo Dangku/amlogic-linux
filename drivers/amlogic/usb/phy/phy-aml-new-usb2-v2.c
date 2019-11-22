@@ -290,7 +290,7 @@ static int amlogic_new_usb2_probe(struct platform_device *pdev)
 	struct resource *phy_cfg_mem[4];
 	void __iomem	*phy_base;
 	void __iomem	*reset_base = NULL;
-	void __iomem	*phy_cfg_base[4];
+	void __iomem	*phy_cfg_base[4] = {NULL, NULL, NULL, NULL};
 	const char *gpio_name = NULL;
 	struct gpio_desc *usb_gd = NULL;
 	int portnum = 0;

@@ -41,6 +41,8 @@
 #include <linux/mmc/emmc_partitions.h>
 #include <linux/amlogic/amlsd.h>
 #include <linux/amlogic/aml_sd_emmc_internal.h>
+#include <linux/time.h>
+#include <linux/random.h>
 
 int aml_fixdiv_calc(unsigned int *fixdiv, struct clock_lay_t *clk)
 {
@@ -154,6 +156,21 @@ int meson_mmc_clk_init_v3(struct amlsd_host *host)
 
 	return ret;
 }
+/**************************
+ *   select clock source
+ * ************************
+ * HS200 200M -> HS400 200M
+ *
+ * G12B: 800M -> 800M
+ *
+ * TL1 : 792M -> 792M
+ *
+ * SM1 :  1G  -> 800M
+ *
+ * TM2 :  1G  -> 800M
+ *
+ * TXLX:  1G  -> 400M
+ **************************/
 
 static int meson_mmc_clk_set_rate_v3(struct mmc_host *mmc,
 		unsigned long clk_ios)
@@ -228,6 +245,10 @@ static int meson_mmc_clk_set_rate_v3(struct mmc_host *mmc,
 		writel(vcfg, host->base + SD_EMMC_CFG);
 		pdata->stop_clk = 1;
 	}
+	if (!clk_ios) {
+		mmc->actual_clock = clk_ios;
+		return 0;
+	}
 
 	if (aml_card_type_mmc(pdata)) {
 		if ((clk_ios >= 200000000) && conf->ddr) {
@@ -241,9 +262,10 @@ static int meson_mmc_clk_set_rate_v3(struct mmc_host *mmc,
 					host->mux_parent[0]);
 			if (ret)
 				pr_warn("set comp0 as mux_clk parent error\n");
-/*		} else if (((host->data->chip_type >= MMC_CHIP_TL1)
+		} else if (((host->data->chip_type == MMC_CHIP_TL1)
 				|| (host->data->chip_type == MMC_CHIP_G12B))
-				&& (clk_ios >= 166000000)) {
+				&& (clk_ios >= 166000000)
+				&& (pdata->caps2 & MMC_CAP2_HS400)) {
 			src0_clk = devm_clk_get(host->dev, "clkin2");
 			if (ret)
 				pr_warn("not get clkin2\n");
@@ -263,7 +285,6 @@ static int meson_mmc_clk_set_rate_v3(struct mmc_host *mmc,
 					host->mux_parent[0]);
 			if (ret)
 				pr_warn("set comp0 as mux_clk parent error\n");
-*/
 		} else if (clk_get_rate(host->mux_parent[0]) > 200000000) {
 			pr_info("%s %d\n", __func__, __LINE__);
 			src0_clk = devm_clk_get(host->dev, "xtal");
@@ -385,6 +406,7 @@ static void aml_sd_emmc_set_timing_v3(struct amlsd_platform *pdata,
 		clkc->tx_phase = para->hs2.tx_phase;
 	} else if (timing == MMC_TIMING_SD_HS) {
 		if (aml_card_type_non_sdio(pdata)
+			|| (host->data->chip_type == MMC_CHIP_TXLX)
 			|| (host->data->chip_type == MMC_CHIP_G12A))
 			clkc->core_phase = para->sd_hs.core_phase;
 		if (pdata->calc_f) {
@@ -396,6 +418,11 @@ static void aml_sd_emmc_set_timing_v3(struct amlsd_platform *pdata,
 		clkc->tx_phase = para->sdr104.tx_phase;
 	} else {
 		ctrl->ddr = 0;
+		clkc->tx_delay = 0;
+		clkc->core_phase = para->init.core_phase;
+		clkc->tx_phase = para->init.tx_phase;
+		irq_en &= ~(1<<17);
+		writel(irq_en, host->base + SD_EMMC_IRQ_EN);
 		/* timing == MMC_TIMING_LEGACY */
 		if (pdata->calc_f) {
 			clkc->core_phase = para->calc.core_phase;
@@ -449,6 +476,10 @@ static void aml_sd_emmc_set_power_v3(struct amlsd_platform *pdata,
 			pdata->pwr_on(pdata);
 		break;
 	case MMC_POWER_UP:
+		if (aml_card_type_non_sdio(pdata)) {
+			of_amlsd_pwr_off(pdata);
+			of_amlsd_pwr_on(pdata);
+		}
 		break;
 	case MMC_POWER_OFF:
 		writel(0, host->base + SD_EMMC_DELAY1_V3);
@@ -606,7 +637,7 @@ irqreturn_t meson_mmc_irq_thread_v3(int irq, void *dev_id)
 			if (host->error_flag == 0)
 				host->is_tunning = 0;
 			delay2 = readl(host->base + SD_EMMC_DELAY2_V3);
-			tmp = (((delay2 >> 24) & 0x3f) + 3) % 0x3f;
+			tmp = (((delay2 >> 24) & 0x3f) - 3) % 0x3f;
 			delay2 = (delay2 & ~(0x3f << 24)) | (tmp << 24);
 			writel(delay2, host->base + SD_EMMC_DELAY2_V3);
 			pr_err("retune cmd-delay:0x%x\n", delay2);
@@ -703,6 +734,35 @@ static int aml_sd_emmc_cali_v3(struct mmc_host *mmc,
 
 	mrq.cmd = &cmd;
 	mrq.stop = &stop;
+	mrq.data = &data;
+	host->mrq = &mrq;
+	mmc_wait_for_req(mmc, &mrq);
+	return data.error | cmd.error;
+}
+
+static int single_read_cmd_for_scan(struct mmc_host *mmc,
+	u8 opcode, u8 *blk_test, u32 blksz, u32 blocks, u32 offset) {
+	struct amlsd_platform *pdata = mmc_priv(mmc);
+	struct amlsd_host *host = pdata->host;
+	struct mmc_request mrq = {NULL};
+	struct mmc_command cmd = {0};
+	struct mmc_data data = {0};
+	struct scatterlist sg;
+
+	cmd.opcode = opcode;
+	cmd.arg = offset;
+	cmd.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
+
+	data.blksz = blksz;
+	data.blocks = blocks;
+	data.flags = MMC_DATA_READ;
+	data.sg = &sg;
+	data.sg_len = 1;
+
+	memset(blk_test, 0, blksz * data.blocks);
+	sg_init_one(&sg, blk_test, blksz * data.blocks);
+
+	mrq.cmd = &cmd;
 	mrq.data = &data;
 	host->mrq = &mrq;
 	mmc_wait_for_req(mmc, &mrq);
@@ -821,7 +881,7 @@ RETRY:
 		pdata->intf3 = intf3;
 		retry--;
 		if (retry == 0) {
-			pr_warn("[%s][%d] retry eyetest failed-line:%d\n",
+			pr_debug("[%s][%d] retry eyetest failed-line:%d\n",
 					__func__, __LINE__, line_x);
 			return 1;
 		}
@@ -965,10 +1025,10 @@ static unsigned int tl1_emmc_line_timing(struct mmc_host *mmc)
 	struct amlsd_host *host = pdata->host;
 	u32 delay1 = 0, delay2 = 0, count = 12;
 
+	delay2 = readl(host->base + SD_EMMC_DELAY2_V3);
 	delay1 = (count<<0)|(count<<6)|(count<<12)
 		|(count<<18)|(count<<24);
-	delay2 = (count<<0)|(count<<6)|(count<<12)
-		|(pdata->cmd_c<<24);
+	delay2 |= (count<<0)|(count<<6)|(count<<12);
 	writel(delay1, host->base + SD_EMMC_DELAY1_V3);
 	writel(delay2, host->base + SD_EMMC_DELAY2_V3);
 	pr_info("[%s], delay1: 0x%x, delay2: 0x%x\n",
@@ -976,6 +1036,155 @@ static unsigned int tl1_emmc_line_timing(struct mmc_host *mmc)
 		readl(host->base + SD_EMMC_DELAY2_V3));
 	return 0;
 
+}
+
+static void emmc_show_cmd_window(char *str, int repeat_times)
+{
+	int pre_status = 0;
+	int status = 0;
+	int single = 0;
+	int start = 0;
+	int i;
+
+	pr_info(">>>>>>>>>>>>>>scan command window>>>>>>>>>>>>>>>\n");
+	for (i = 0; i < 64; i++) {
+		if (str[i] == repeat_times)
+			status = 1;
+		else
+			status = -1;
+
+		if (i != 0 && pre_status != status) {
+			if (pre_status == 1 && single == 1)
+				pr_info(">>cmd delay [ 0x%x ] is ok\n",
+						i - 1);
+			else if (pre_status == 1 && single != 1)
+				pr_info(">>cmd delay [ 0x%x -- 0x%x ] is ok\n",
+						start, i - 1);
+			else if (pre_status != 1 &&  single == 1)
+				pr_info(">>cmd delay [ 0x%x ] is nok\n",
+						i - 1);
+			else if (pre_status != 1 && single != 1)
+				pr_info(">>cmd delay [ 0x%x -- 0x%x ] is nok\n",
+						start, i - 1);
+			start = i;
+			single = 1;
+		} else
+			single++;
+
+		if (i == 63) {
+			if (status == 1 && pre_status == 1)
+				pr_info(">>cmd delay [ 0x%x -- 0x%x ] is ok\n",
+						start, i);
+			else if (status != 1 && pre_status == -1)
+				pr_info(">>cmd delay [ 0x%x -- 0x%x ] is nok\n",
+						start, i);
+			else if (status == 1 && pre_status != 1)
+				pr_info(">>cmd delay [ 0x%x ] is ok\n", i);
+			else if (status != 1 && pre_status == 1)
+				pr_info(">>cmd delay [ 0x%x ] is nok\n", i);
+		}
+		pre_status = status;
+	}
+	pr_info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+}
+
+static u32 emmc_search_cmd_delay(char *str, int repeat_times)
+{
+	int best_start = -1, best_size = -1;
+	int cur_start = -1, cur_size = 0;
+	u32 cmd_delay;
+	int i;
+
+	for (i = 0; i < 64; i++) {
+		if (str[i] == repeat_times) {
+			cur_size += 1;
+			if (cur_start == -1)
+				cur_start = i;
+		} else {
+			cur_size = 0;
+			cur_start = -1;
+		}
+
+		if (cur_size > best_size) {
+			best_size = cur_size;
+			best_start = cur_start;
+		}
+	}
+
+	cmd_delay =  (best_start + best_size / 2) << 24;
+	pr_info("best_start 0x%x, best_size %d, cmd_delay is 0x%x\n",
+			best_start, best_size, cmd_delay >> 24);
+	return cmd_delay;
+}
+
+static u32 scan_emmc_cmd_win(struct mmc_host *mmc, int send_status)
+{
+	struct amlsd_platform *pdata = mmc_priv(mmc);
+	struct amlsd_host *host = pdata->host;
+	u32 delay2 = readl(host->base + SD_EMMC_DELAY2_V3);
+	u32 cmd_delay = 0;
+	u32 delay2_bak = delay2;
+	u32 i, j, err;
+	int repeat_times = 100;
+	char str[64] = {0};
+	long long before_time;
+	long long after_time;
+	u32 capacity = 8 * SZ_1M;
+	u32 offset;
+
+	delay2 &= ~(0xff << 24);
+
+	host->cmd_retune = 0;
+	host->is_tunning = 1;
+	before_time = sched_clock();
+	for (i = 0; i < 64; i++) {
+		writel(delay2, host->base + SD_EMMC_DELAY2_V3);
+		offset = (u32)(get_random_long() % capacity);
+		for (j = 0; j < repeat_times; j++) {
+			if (send_status)
+				err = emmc_send_cmd(mmc,
+						MMC_SEND_STATUS,
+						1 << 16,
+						MMC_RSP_R1 | MMC_CMD_AC);
+			else
+				err = single_read_cmd_for_scan(mmc,
+					MMC_READ_SINGLE_BLOCK,
+					host->blk_test, 512, 1,
+					offset);
+			if (!err)
+				str[i]++;
+			else
+				break;
+		}
+		pr_debug("delay2: 0x%x, send cmd %d times success %d times, is ok\n",
+				delay2, repeat_times, str[i]);
+		delay2 += (1 << 24);
+	}
+	after_time = sched_clock();
+	host->is_tunning = 0;
+	host->cmd_retune = 1;
+
+	pr_info("scan time distance: %llu ns\n", after_time - before_time);
+
+	writel(delay2_bak, host->base + SD_EMMC_DELAY2_V3);
+	cmd_delay = emmc_search_cmd_delay(str, repeat_times);
+	if (!send_status)
+		emmc_show_cmd_window(str, repeat_times);
+
+	return cmd_delay;
+}
+
+static void set_emmc_cmd_delay(struct mmc_host *mmc, int send_status)
+{
+	struct amlsd_platform *pdata = mmc_priv(mmc);
+	struct amlsd_host *host = pdata->host;
+	u32 delay2 = readl(host->base + SD_EMMC_DELAY2_V3);
+	u32 cmd_delay = 0;
+
+	delay2 &= ~(0xff << 24);
+	cmd_delay = scan_emmc_cmd_win(mmc, send_status);
+	delay2 |= cmd_delay;
+	writel(delay2, host->base + SD_EMMC_DELAY2_V3);
 }
 
 static unsigned int get_emmc_cmd_win(struct mmc_host *mmc)
@@ -1180,9 +1389,10 @@ static void aml_emmc_hs400_general(struct mmc_host *mmc)
 
 static void aml_emmc_hs400_tl1(struct mmc_host *mmc)
 {
-
+	set_emmc_cmd_delay(mmc, 1);
 	tl1_emmc_line_timing(mmc);
 	emmc_ds_manual_sht(mmc);
+	set_emmc_cmd_delay(mmc, 0);
 }
 
 static int emmc_data_alignment(struct mmc_host *mmc, int best_size)
@@ -1200,6 +1410,7 @@ static int emmc_data_alignment(struct mmc_host *mmc, int best_size)
 	u32 d[8];
 
 	host->is_tunning = 1;
+	host->find_win = 1;
 	gintf3->ds_sht_m = pdata->win_start + 4;
 	writel(intf3, host->base + SD_EMMC_INTF3);
 	for (line_x = 0; line_x < 8; line_x++) {
@@ -1214,7 +1425,7 @@ static int emmc_data_alignment(struct mmc_host *mmc, int best_size)
 			err = aml_sd_emmc_cali_v3(mmc, MMC_READ_MULTIPLE_BLOCK,
 				host->blk_test, blksz, 40, MMC_RANDOM_NAME);
 			if (err) {
-				pr_info("[%s]adjust line_x[%d]:%d\n",
+				pr_debug("[%s]adjust line_x[%d]:%d\n",
 						__func__, line_x, i);
 				d[line_x] = i;
 				delay1 = delay1_bak;
@@ -1258,6 +1469,7 @@ static int emmc_data_alignment(struct mmc_host *mmc, int best_size)
 			readl(host->base + SD_EMMC_DELAY2_V3));
 	}
 	host->is_tunning = 0;
+	host->find_win = 0;
 	return 0;
 }
 
@@ -1276,6 +1488,8 @@ static void aml_emmc_hs400_Revb(struct mmc_host *mmc)
 		readl(host->base + SD_EMMC_DELAY2_V3));
 	win_size = emmc_ds_manual_sht(mmc);
 	emmc_data_alignment(mmc, win_size);
+	set_emmc_cmd_delay(mmc, 0);
+
 }
 /* test clock, return delay cells for one cycle
  */
@@ -1345,10 +1559,10 @@ static void pr_adj_info(char *name,
 {
 	int i;
 
-	pr_info("[%s] fixed_adj_win_map:%lu\n",
+	pr_debug("[%s] fixed_adj_win_map:%lu\n",
 			name, x);
 	for (i = 0; i < div; i++)
-		pr_info("[%d]=%d\n", (fir_adj + i) % div,
+		pr_debug("[%d]=%d\n", (fir_adj + i) % div,
 				((x >> i) & 0x1) ? 1 : 0);
 }
 
@@ -1358,6 +1572,8 @@ static unsigned long _test_fixed_adj(struct amlsd_platform *pdata,
 {
 	struct amlsd_host *host = pdata->host;
 	int i = 0;
+	u8 *adj_print = host->adj_win;
+	u32 len = 0;
 	u32 nmatch = 0;
 	u32 adjust = readl(host->base + SD_EMMC_ADJUST_V3);
 	struct sd_emmc_adjust_v3 *gadjust =
@@ -1366,6 +1582,8 @@ static unsigned long _test_fixed_adj(struct amlsd_platform *pdata,
 	unsigned int blksz = tuning_data->blksz;
 	DECLARE_BITMAP(fixed_adj_map, div);
 
+	memset(adj_print, 0, sizeof(u8) * ADJ_WIN_PRINT_MAXLEN);
+	len += sprintf(adj_print + len, "%s: adj_win: < ", pdata->pinname);
 	bitmap_zero(fixed_adj_map, div);
 	for (i = 0; i < div; i++) {
 		gadjust->adj_delay = adj + i;
@@ -1379,10 +1597,15 @@ static unsigned long _test_fixed_adj(struct amlsd_platform *pdata,
 		/*get a ok adjust point!*/
 		if (nmatch == TUNING_NUM_PER_POINT) {
 			set_bit(adj+i, fixed_adj_map);
-			pr_info("%s: rx_tuning_result[%d] = %d\n",
+			len += sprintf(adj_print + len,
+				"%d ", gadjust->adj_delay);
+			pr_debug("%s: rx_tuning_result[%d] = %d\n",
 				mmc_hostname(host->mmc), adj+i, nmatch);
 		}
 	}
+	len += sprintf(adj_print + len, ">\n");
+	pr_info("%s", host->adj_win);
+
 	return *fixed_adj_map;
 }
 
@@ -1450,7 +1673,7 @@ static u32 _find_fixed_adj_valid_win(struct amlsd_platform *pdata,
 	*prev_map = *fixed_adj_map;
 	pr_adj_info("prev_map", *prev_map, 0, div);
 	for (; step <= 63;) {
-		pr_info("[%s]retry test fixed adj...\n", __func__);
+		pr_debug("[%s]retry test fixed adj...\n", __func__);
 		step += AML_FIXED_ADJ_STEP;
 		set_fixed_adj_line_delay(step, pdata);
 		*cur_map = _test_fixed_adj(pdata, tuning_data, opcode, 0, div);
@@ -1460,7 +1683,7 @@ static u32 _find_fixed_adj_valid_win(struct amlsd_platform *pdata,
 		if (*dst != 0) {
 			fir_adj = find_first_bit(dst, div);
 			pr_adj_info(">>>>>>>>bitmap_xor_dst", *dst, 0, div);
-			pr_info("[%s] fir_adj:%u\n", __func__, fir_adj);
+			pr_debug("[%s] fir_adj:%u\n", __func__, fir_adj);
 
 			*prev_map = _swap_fixed_adj_win(*prev_map,
 					fir_adj, div);
@@ -1516,6 +1739,8 @@ static int _aml_sd_emmc_execute_tuning(struct mmc_host *mmc, u32 opcode,
 	u32 old_dly, d1_dly, dly;
 	unsigned long fixed_adj_map[1];
 	bool all_flag = false;
+	u8 *adj_print = NULL;
+	u32 len;
 
 	if ((host->mem->start == host->data->port_b_base)
 			&& host->data->tdma_f)
@@ -1535,6 +1760,10 @@ tunning:
 	curr_win_start = -1;
 	curr_win_size = 0;
 
+	len = 0;
+	adj_print = host->adj_win;
+	memset(adj_print, 0, sizeof(u8) * ADJ_WIN_PRINT_MAXLEN);
+	len += sprintf(adj_print, "%s: adj_win: < ", pdata->pinname);
 	spin_lock_irqsave(&host->mrq_lock, flags);
 	pdata->need_retuning = false;
 	spin_unlock_irqrestore(&host->mrq_lock, flags);
@@ -1568,7 +1797,8 @@ tunning:
 				curr_win_start = adj_delay;
 
 			curr_win_size++;
-			pr_info("%s: rx_tuning_result[%d] = %d\n",
+			len += sprintf(adj_print + len, "%d ", adj_delay);
+			pr_debug("%s: rx_tuning_result[%d] = %d\n",
 				mmc_hostname(host->mmc), adj_delay, nmatch);
 			if (clk_div <= AML_FIXED_ADJ_MAX)
 				set_bit(adj_delay, fixed_adj_map);
@@ -1590,6 +1820,9 @@ tunning:
 			}
 		}
 	}
+	sprintf(adj_print + len, ">\n");
+	pr_info("%s", host->adj_win);
+
 	/* last point is ok! */
 	if (curr_win_start >= 0) {
 		if (best_win_start < 0) {
@@ -1804,6 +2037,27 @@ retry:
 			pdata->align[9]);
 	writel(0, host->base + SD_EMMC_DELAY2_V3);
 	writel(clk_bak, host->base + SD_EMMC_CLOCK_V3);
+
+	delay2 = 0;
+	for (i = 0; i < 63; i++) {
+		retry_times = 0;
+		delay2 += (1 << 24);
+		writel(delay2, host->base + SD_EMMC_DELAY2_V3);
+retry1:
+		err = emmc_eyetest_log(mmc, 9);
+		if (err)
+			continue;
+
+		count = fbinary(pdata->align[9]);
+		if (count >= 8 && count <= 56) {
+			if (retry_times != 3) {
+				retry_times++;
+				goto retry1;
+			} else
+				break;
+		}
+	}
+
 	pr_info("[%s][%d] clk config:0x%x\n",
 		__func__, __LINE__, readl(host->base + SD_EMMC_CLOCK_V3));
 	return 0;
@@ -2070,8 +2324,7 @@ int aml_mmc_execute_tuning_v3(struct mmc_host *mmc, u32 opcode)
 		intf3 |= (1<<22);
 		writel(intf3, (host->base + SD_EMMC_INTF3));
 		pdata->intf3 = intf3;
-		if ((host->data->chip_type >= MMC_CHIP_TL1)
-			|| (host->data->chip_type == MMC_CHIP_G12B))
+		if (host->data->chip_type == MMC_CHIP_G12B)
 			aml_emmc_hs200_tl1(mmc);
 		err = 0;
 	}
@@ -2095,6 +2348,18 @@ int aml_post_hs400_timming(struct mmc_host *mmc)
 	else
 		aml_emmc_hs400_general(mmc);
 	return 0;
+}
+
+ssize_t emmc_scan_cmd_win(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct amlsd_host *host = dev_get_drvdata(dev);
+	struct mmc_host *mmc = host->mmc;
+
+	mmc_claim_host(mmc);
+	scan_emmc_cmd_win(mmc, 0);
+	mmc_release_host(mmc);
+	return sprintf(buf, "%s\n", "Emmc scan command window.\n");
 }
 
 ssize_t emmc_eyetest_show(struct device *dev,
