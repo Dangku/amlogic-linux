@@ -56,7 +56,7 @@
 #define MAX_GE2D_CLK 500000000
 #define HHI_MEM_PD_REG0 0x40
 #define RESET2_LEVEL    0x422
-//#define GE2D_POWER_DOMAIN_CTRL
+#define GE2D_POWER_DOMAIN_CTRL
 
 struct ge2d_device_s {
 	char name[20];
