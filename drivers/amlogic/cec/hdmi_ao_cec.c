@@ -3537,7 +3537,7 @@ static const struct cec_platform_data_s cec_g12b_data = {
 
 static const struct cec_platform_data_s cec_txl_data = {
 	.chip_id = CEC_CHIP_TXL,
-	.line_reg = 0,
+	.line_reg = 0,/*line_reg=0:AO_GPIO_I*/
 	.line_bit = 7,
 	.ee_to_ao = 0,
 	.ceca_sts_reg = 0,
@@ -3548,7 +3548,7 @@ static const struct cec_platform_data_s cec_txl_data = {
 
 static const struct cec_platform_data_s cec_tl1_data = {
 	.chip_id = CEC_CHIP_TL1,
-	.line_reg = 0,
+	.line_reg = 0,/*line_reg=0:AO_GPIO_I*/
 	.line_bit = 10,
 	.ee_to_ao = 1,
 	.ceca_sts_reg = 1,
@@ -3559,8 +3559,8 @@ static const struct cec_platform_data_s cec_tl1_data = {
 
 static const struct cec_platform_data_s cec_sm1_data = {
 	.chip_id = CEC_CHIP_SM1,
-	.line_reg = 1,
-	.line_bit = 10,
+	.line_reg = 1,/*line_reg=1:PREG_PAD_GPIO3_I*/
+	.line_bit = 3,
 	.ee_to_ao = 1,
 	.ceca_sts_reg = 1,
 	.ceca_ver = CECA_VER_1,
@@ -3570,7 +3570,7 @@ static const struct cec_platform_data_s cec_sm1_data = {
 
 static const struct cec_platform_data_s cec_tm2_data = {
 	.chip_id = CEC_CHIP_TM2,
-	.line_reg = 0,
+	.line_reg = 0,/*line_reg=0:AO_GPIO_I*/
 	.line_bit = 10,
 	.ee_to_ao = 1,
 	.ceca_sts_reg = 1,
