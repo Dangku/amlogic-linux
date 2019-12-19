@@ -3856,7 +3856,10 @@ static unsigned char pre_de_buf_config(void)
 			return 0;
 
 		/*for support compress from dec*/
-		if (IS_COMP_MODE(vframe->type)) {
+		if (IS_COMP_MODE(vframe->type) &&
+			!is_bypass(vframe) &&
+			afbc_is_supported()) {
+			is_afbc_mode = true;
 			if (IS_VDIN_SRC(vframe->source_type)
 				&& IS_I_SRC(vframe->type)) {
 				vframe->width = vframe->compWidth;
