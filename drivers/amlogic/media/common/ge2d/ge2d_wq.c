@@ -2042,6 +2042,8 @@ int ge2d_context_config_ex_ion(struct ge2d_context_s *context,
 	/* context->config.src1_data.ddr_burst_size_cb = 3; */
 	/* context->config.src1_data.ddr_burst_size_cr = 3; */
 	/* context->config.src2_dst_data.ddr_burst_size= 3; */
+	memcpy(&context->config.matrix_custom, &ge2d_config_mem->matrix_custom,
+	       sizeof(struct ge2d_matrix_s));
 
 	return  0;
 }
