@@ -747,7 +747,7 @@ static int build_ge2d_config(struct ge2d_context_s *context,
 		src->ge2d_color_index = cfg->src_format;
 		src->bpp = bpp(cfg->src_format);
 		for (i = 0; i < MAX_PLANE; i++) {
-			if (cfg->src_planes[i].addr) {
+			if (cfg->src_planes[0].addr) {
 				if (ge2d_meson_dev.canvas_status == 1) {
 					if (i == 0) {
 						src->canvas_index = 0;
@@ -1279,9 +1279,8 @@ static int build_ge2d_config_ex_dma(struct ge2d_context_s *context,
 				canvas_set = 1;
 				ret = 0;
 			} else if (plane[i].addr) {
-	//			plane[i].addr += plane[0].addr;
+				plane[i].addr += plane[0].addr;
 				canvas_set = 1;
-				ret = 0;
 			}
 			if (canvas_set) {
 				canvas_cfg = ge2d_wq_get_canvas_cfg(context,
@@ -2042,8 +2041,6 @@ int ge2d_context_config_ex_ion(struct ge2d_context_s *context,
 	/* context->config.src1_data.ddr_burst_size_cb = 3; */
 	/* context->config.src1_data.ddr_burst_size_cr = 3; */
 	/* context->config.src2_dst_data.ddr_burst_size= 3; */
-	memcpy(&context->config.matrix_custom, &ge2d_config_mem->matrix_custom,
-	       sizeof(struct ge2d_matrix_s));
 
 	return  0;
 }
