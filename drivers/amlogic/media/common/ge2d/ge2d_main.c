@@ -1140,6 +1140,16 @@ struct ge2d_power_table_s default_poweron_table = {1, default_poweron_ctrl};
 struct ge2d_power_table_s default_poweroff_table = {1, default_poweroff_ctrl};
 #endif
 
+static struct ge2d_ctrl_s smc_poweron_ctrl[] = {
+			{PWR_SMC, 0, 1, 0, 0}
+		};
+static struct ge2d_ctrl_s smc_poweroff_ctrl[] = {
+			{PWR_SMC, 0, 0, 0, 0}
+		};
+
+struct ge2d_power_table_s smc_poweron_table = {1, smc_poweron_ctrl};
+struct ge2d_power_table_s smc_poweroff_table = {1, smc_poweroff_ctrl};
+
 static struct ge2d_device_data_s ge2d_gxl = {
 	.ge2d_rate = 400000000,
 	.src2_alp = 0,
