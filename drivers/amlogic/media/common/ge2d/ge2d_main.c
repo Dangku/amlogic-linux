@@ -1141,10 +1141,10 @@ struct ge2d_power_table_s default_poweroff_table = {1, default_poweroff_ctrl};
 #endif
 
 static struct ge2d_ctrl_s smc_poweron_ctrl[] = {
-			{PWR_SMC, 0, 1, 0, 0}
+			{PWR_SMC, 0, PWR_ON, 0, 0}
 		};
 static struct ge2d_ctrl_s smc_poweroff_ctrl[] = {
-			{PWR_SMC, 0, 0, 0, 0}
+			{PWR_SMC, 0, PWR_OFF, 0, 0}
 		};
 
 struct ge2d_power_table_s smc_poweron_table = {1, smc_poweron_ctrl};
