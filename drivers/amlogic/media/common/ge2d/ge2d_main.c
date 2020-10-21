@@ -832,6 +832,22 @@ static long ge2d_ioctl(struct file *filp, unsigned int cmd, unsigned long args)
 			return -EINVAL;
 		}
 		break;
+	case GE2D_ATTACH_DMA_FD:
+		ret = copy_from_user(&attatch, argp,
+				     sizeof(struct ge2d_dmabuf_attach_s));
+		if (ret < 0) {
+			pr_err("Error user param\n");
+			return -EINVAL;
+		}
+		break;
+	case GE2D_DETACH_DMA_FD:
+		ret = copy_from_user(&data_type, argp,
+				     sizeof(enum ge2d_data_type_e));
+		if (ret < 0) {
+			pr_err("Error user param\n");
+			return -EINVAL;
+		}
+		break;
 	case GE2D_CONFIG_OLD:
 	case GE2D_CONFIG_EX_OLD:
 	case GE2D_SRCCOLORKEY_OLD:
