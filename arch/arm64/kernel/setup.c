@@ -244,6 +244,10 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
     		system_rev = 0x0000;
     		__odroid_model = BOARD_BANANAPI_M5;
     		__odroid_amlogic_usb3 = false;
+	} else if (!strcmp(machine_name, "Bananapi BPI-M2-Pro")) {
+		system_rev = 0x0000;
+		__odroid_model = BOARD_BANANAPI_M2_PRO;
+		__odroid_amlogic_usb3 = false;
 	}
 #endif
 }
