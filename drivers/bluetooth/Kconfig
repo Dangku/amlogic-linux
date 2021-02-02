@@ -41,6 +41,8 @@ config BT_HCIBTUSB_BCM
 
 	  Say Y here to compile support for Broadcom protocol.
 
+source "drivers/bluetooth/rtk_btusb/Kconfig"
+
 config BT_HCIBTUSB_RTL
 	bool "Realtek protocol support"
 	depends on BT_HCIBTUSB
