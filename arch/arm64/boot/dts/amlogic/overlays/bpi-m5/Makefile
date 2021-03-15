@@ -1,8 +1,10 @@
 # Overlays for the Bananapi M5
 
 dtbo-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += spi0.dtbo \
+					spi0_flash.dtbo \
 					i2c0.dtbo \
 					i2c1.dtbo \
+					i2c0_eeprom.dtbo \
 					pwm_ab.dtbo \
 					pwm_cd.dtbo \
 					pwm_cd-c.dtbo \
