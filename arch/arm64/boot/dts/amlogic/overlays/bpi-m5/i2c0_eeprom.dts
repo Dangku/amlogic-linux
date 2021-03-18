@@ -11,9 +11,9 @@
 			status = "okay";
 
 			at24@50 {
-				compatible = "at24,24c256";
+				compatible = "at24,24c02";
 				reg = <0x50>;
-				pagesize = <64>;
+				pagesize = <8>;
 				//read-only;
 			};
 		};
