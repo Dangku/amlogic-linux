@@ -47,17 +47,13 @@
 #include <linux/platform_data/board_odroid.h>
 #include <linux/amlogic/cpu_version.h>
 
-#ifdef CONFIG_ARCH_MESON64_ODROIDN2
 #define N2_A53_DEFAULT		1896000	/* N2 Core A53 */
 #define N2_A73_DEFAULT		1800000	/* N2 Core A73 */
 
 #define N2PLUS_A53_DEFAULT	1908000	/* N2 Plus Core A53 */
 #define N2PLUS_A73_DEFAULT	2208000	/* N2 Plus Core A73 */
-#endif
 
-#ifdef CONFIG_ARCH_MESON64_ODROIDC4
 #define C4_A55_DEFAULT		1800000	/* C4 Core A55 */
-#endif
 
 static unsigned long max_freq[2] = {
 	0,
@@ -600,7 +596,7 @@ static int meson_cpufreq_init(struct cpufreq_policy *policy)
 
 #ifdef CONFIG_ARCH_MESON64_ODROID_COMMON
 	if (board_is_odroidn2() || board_is_odroidc4()
-			|| board_is_odroidhc4()) {
+      || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro()) {
 		int i = 0;
 
 		max_freq[cur_cluster] = min(max_freq[cur_cluster],
@@ -726,7 +722,7 @@ __setup("max_freq_a53=", get_max_freq_a53);
 
 static int __init get_max_freq_a55(char *str)
 {
-	if (board_is_odroidc4() || board_is_odroidhc4())
+	if (board_is_odroidc4() || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro())
 		return get_max_freq_cortex(0, str);
 	return -EINVAL;
 }
@@ -843,7 +839,8 @@ static int meson_cpufreq_probe(struct platform_device *pdev)
 			max_freq[1] = (is_meson_g12b_cpu() && is_meson_rev_a())
 				? N2_A73_DEFAULT : N2PLUS_A73_DEFAULT;
 		}
-	} else if (board_is_odroidc4() || board_is_odroidhc4()) {
+	} else if (board_is_odroidc4() || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro()) {
+
 		if (!max_freq[0])
 			max_freq[0] = C4_A55_DEFAULT;
 	}

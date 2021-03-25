@@ -7,11 +7,14 @@ dtb-y += g12a_s905d2_u200_drm_buildroot.dtb
 dtb-y += g12b_a311d_w400.dtb
 dtb-y += g12b_a311d_w400_buildroot.dtb
 endif
+dtb-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += meson64_bananapi_m5.dtb
+dtb-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += meson64_bananapi_m2_pro.dtb
 dtb-$(CONFIG_ARCH_MESON64_ODROIDC4) += meson64_odroidc4.dtb
 dtb-$(CONFIG_ARCH_MESON64_ODROIDC4) += meson64_odroidhc4.dtb
 dtb-$(CONFIG_ARCH_MESON64_ODROIDN2) += meson64_odroidn2.dtb
 dtb-$(CONFIG_ARCH_MESON64_ODROIDN2) += meson64_odroidn2_plus.dtb
 dtb-$(CONFIG_ARCH_MESON64_ODROIDN2) += meson64_odroidn2_drm.dtb
 
+subdir-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += overlays/bpi-m5
 subdir-$(CONFIG_ARCH_MESON64_ODROIDC4) += overlays/odroidc4
 subdir-$(CONFIG_ARCH_MESON64_ODROIDN2) += overlays/odroidn2
