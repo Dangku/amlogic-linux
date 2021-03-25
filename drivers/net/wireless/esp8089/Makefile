@@ -9,7 +9,7 @@ KVERS_ARCH ?= $(shell arch)
 # KBUILD is the path to the Linux kernel build tree.  It is usually the
 # same as the kernel source tree, except when the kernel was compiled in
 # a separate directory.
-KBUILD ?= $(PWD)
+KBUILD ?= $(PWD)/linux-aml
 #KBUILD ?= $(PWD)/out/target/product/$(TARGET_PRODUCT)/obj/KERNEL_OBJ
 
 ifeq (,$(KBUILD))
