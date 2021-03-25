@@ -59,10 +59,6 @@
 #include <linux/amlogic/media/amdolbyvision/dolby_vision.h>
 #endif
 
-#if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
-#include <linux/platform_data/board_odroid.h>
-#endif
-
 /* Local Headers */
 #include "osd_canvas.h"
 #include "osd_prot.h"
@@ -2807,13 +2803,6 @@ void osd_setup_hw(u32 index,
 	u32 w = (color->bpp * xres_virtual + 7) >> 3;
 	u32 i;
 
-#if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
-	if (board_is_odroidn2() && (index == 0)) {
-		xres_virtual = xres;
-		yres_virtual = yres;
-	}
-#endif /* CONFIG_ARCH_MESON64_ODROID_COMMON */
-
 	osd_hw.buffer_alloc[index] = 1;
 	pan_data.x_start = xoffset;
 	pan_data.y_start = yoffset;
@@ -2897,10 +2886,6 @@ void osd_setup_hw(u32 index,
 		osd_log_info("osd[%d] out_addr_id =0x%x\n",
 			index, osd_hw.osd_afbcd[index].out_addr_id);
 
-#if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
-		if (board_is_odroidn2())
-			set_osd_logo_freescaler();
-#endif
 		if (osd_hw.osd_meson_dev.osd_ver == OSD_SIMPLE)
 			osd_update_phy_addr(0);
 #ifdef CONFIG_AMLOGIC_MEDIA_CANVAS
