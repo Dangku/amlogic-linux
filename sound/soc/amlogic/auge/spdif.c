@@ -1245,17 +1245,18 @@ static int aml_dai_spdif_prepare(
 		spdif_set_channel_status_info(&chsts, p_spdif->id);
 
 		/* TOHDMITX_CTRL0 */
-		if (!board_is_odroidn2()) {
-			spdifout_to_hdmitx_ctrl(p_spdif->id);
-			/* notify to hdmitx */
-			spdif_notify_to_hdmitx(substream);
-		} else {
+		if (board_is_odroidn2() || board_is_bananapi_firewalla())
+		{
 			/* ODROID-N2 is spdif_b only would notify to hdmitx */
 			if (p_spdif->id == 1) {
 				spdifout_to_hdmitx_ctrl(p_spdif->id);
 				/* notify to hdmitx */
 				spdif_notify_to_hdmitx(substream);
 			}
+		} else {
+			spdifout_to_hdmitx_ctrl(p_spdif->id);
+			/* notify to hdmitx */
+			spdif_notify_to_hdmitx(substream);
 		}
 	} else {
 		struct toddr *to = p_spdif->tddr;
