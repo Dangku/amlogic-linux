@@ -69,7 +69,7 @@
 		};
 	};
 
-	gpio-reset {
+	gpioreset: gpio-reset {
 		compatible = "linux,gpio-reset";
 		usb_hub_en {
 			gpios = <&gpio GPIOH_6 GPIO_ACTIVE_HIGH>;
@@ -105,6 +105,9 @@
 		};
 	};//End efusekey
 
+	jtag {
+		status = "disabled";
+	};
 };
 
 &ethmac {

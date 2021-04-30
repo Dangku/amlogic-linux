@@ -251,7 +251,8 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 	} else if (!strcmp(machine_name, "Bananapi BPI-Firewalla")) {
 		system_rev = 0x0000;
 		__odroid_model = BOARD_BANANAPI_FIREWALLA;
-		__odroid_amlogic_usb3 = true;
+		__odroid_amlogic_usb3 = false;
+		pr_info("Board: %s\n", machine_name);
 	}
 #endif
 }

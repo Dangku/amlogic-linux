@@ -839,6 +839,8 @@ static int meson_cpufreq_probe(struct platform_device *pdev)
 			max_freq[1] = (is_meson_g12b_cpu() && is_meson_rev_a())
 				? N2_A73_DEFAULT : N2PLUS_A73_DEFAULT;
 		}
+
+		pr_info("BPI%s, max_freq[0]=%lu max_freq[1]=%lu\n", __func__, max_freq[0], max_freq[1]);
 	} else if (board_is_odroidc4() || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro()) {
 
 		if (!max_freq[0])
