@@ -150,6 +150,19 @@
 		duty_cycle = <15270>;
 	};
 
+	adc_keypad {
+                compatible = "amlogic, adc_keypad";
+                status = "okay";
+                key_name = "power";
+                key_num = <1>;
+                io-channels = <&saradc SARADC_CH2>;
+                io-channel-names = "key-chan-2";
+                key_chan = <SARADC_CH2>;
+                key_code = <116>;
+                key_val = <0>; //val=voltage/1800mV*1023
+                key_tolerance = <40>;
+        };
+
 	cvbsout {
 		compatible = "amlogic, cvbsout-g12b";
 		dev_name = "cvbsout";
@@ -450,12 +463,6 @@
 		spi-max-frequency = <100000000>;
 	};
 };
-
-//&dwc2_a {
-//        port-type = <1>;
- //       port-id-mode = <1>; /** 0: hardware, 1: sw_host, 2: sw_slave*/
- //       controller-type = <1>;
-//};
 
 &usb3_phy_v2 {
 	status = "disabled";
