@@ -17,6 +17,7 @@
 
 /dts-v1/;
 
+#include <include/dt-bindings/thermal/thermal.h>
 #include "mesong12b_a.dtsi"
 #include "mesong12_bananapi_common.dtsi"
 
@@ -369,6 +370,43 @@
 	};
 }; /* end of / */
 
+&soc_thermal {
+	trips {
+		fan_0: trip-point@4 {
+			temperature = <45000>;
+			hysteresis = <5000>;
+			type = "active";
+		};
+		fan_1: trip-point@5 {
+			temperature = <55000>;
+			hysteresis = <5000>;
+			type = "active";
+		};
+		fan_2: trip-point@6 {
+			temperature = <60000>;
+			hysteresis = <5000>;
+			type = "active";
+		};
+	};
+	cooling-maps {
+		cpucore_cooling_map {
+			trip = <&phot>;
+		};
+		fan_cooling_map0 {
+			trip = <&fan_0>;
+			cooling-device = <&pwmfan 0 1>;
+		};
+		fan_cooling_map1 {
+			trip = <&fan_1>;
+			cooling-device = <&pwmfan 1 2>;
+		};
+		fan_cooling_map2 {
+			trip = <&fan_2>;
+			cooling-device = <&pwmfan 2 3>;
+		};
+	};
+};
+
 &meson_fb {
 	status = "disabled";
 	display_size_default = <1920 1080 1920 2160 32>;
@@ -499,8 +537,6 @@
 
 &pwm_ef {
 	status = "okay";
-	pinctrl-names = "pwm_pins";
-	pinctrl-0 = <&pwm_e_pins>;
 };
 
 &remote {
