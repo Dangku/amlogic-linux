@@ -669,7 +669,7 @@ static int wifi_dev_probe(struct platform_device *pdev)
 			plat->power_on_pin2 = desc_to_gpio(desc);
 		}
 
-		if (get_cpu_type() == MESON_CPU_MAJOR_ID_SM1) {
+		if (get_cpu_type() == MESON_CPU_MAJOR_ID_SM1 || get_cpu_type() == MESON_CPU_MAJOR_ID_G12B) {
 			WIFI_INFO("set pwm as 32k output\n");
 			ret = pwm_single_channel_conf(plat);
 			if (ret)
