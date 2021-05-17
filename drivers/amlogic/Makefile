@@ -145,4 +145,4 @@ obj-$(CONFIG_AMLOGIC_PIXEL_PROBE) += pixel_probe/
 
 obj-$(CONFIG_AMLOGIC_FIRMWARE) += firmware/
 
-obj-y += media_modules/
+obj-$(CONFIG_AMLOGIC_MEDIA_ENABLE) += media_modules/
