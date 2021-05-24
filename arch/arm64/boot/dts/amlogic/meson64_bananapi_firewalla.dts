@@ -129,6 +129,23 @@
 		};
 	};
 
+	leds {
+		/delete-node/ blueled;
+		/delete-node/ greenled;
+
+		red {
+			label = "red";
+			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "timer";
+		};
+
+		yellow {
+			label = "yellow";
+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "none";
+		};
+	};
+
 	bt-dev {
 		compatible = "amlogic, bt-dev";
 		dev_name = "bt-dev";
@@ -519,7 +536,7 @@
 };
 
 &usb3_phy_v2 {
-	status = "disabled";
+	status = "okay";
 	portnum = <0>;
 	otg = <1>;
 };
