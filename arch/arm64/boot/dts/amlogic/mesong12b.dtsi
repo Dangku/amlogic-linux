@@ -1155,11 +1155,6 @@
 		pcie-apb-rst-bit = <15>;
 		pcie-phy-rst-bit = <14>;
 		pcie-ctrl-a-rst-bit = <12>;
-		pwr-ctl = <1>;
-                pcie-ctrl-sleep-shift = <18>;
-                pcie-hhi-mem-pd-shift = <26>;
-                pcie-hhi-mem-pd-mask = <0xf>;
-                pcie-ctrl-iso-shift = <18>;
 		status = "disabled";
 	};
 
