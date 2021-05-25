@@ -1722,7 +1722,7 @@
 			cooling-maps {
 				cpufreq_cooling_map0 {
 					trip = <&pcontrol>;
-					cooling-device = <&cpufreq_cool0 0 10>;
+					cooling-device = <&cpufreq_cool0 0 9>;
 					contribution = <1024>;
 				};
 				cpufreq_cooling_map1 {
