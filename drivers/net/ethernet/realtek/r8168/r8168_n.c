@@ -9320,6 +9320,11 @@ rtl8168_hw_init(struct net_device *dev)
                 break;
         }
 
+	//Set Led Blinking freq
+	pr_info("BPI-R8168: SET LED BLINKING\n");
+	RTL_W8(CustomLEDBlink, RTL_R8(CustomLEDBlink) & 0xf0);
+	RTL_W8(CustomLEDBlink, RTL_R8(CustomLEDBlink) | 0x0a);  //02-240ms, 06-160ms,0a-80ms, 0e-link speed dependent
+
         if (s0_magic_packet == 1)
                 rtl8168_enable_magic_packet(dev);
 }

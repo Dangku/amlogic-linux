@@ -1030,6 +1030,7 @@ enum RTL8168_registers {
         CounterAddrLow      = 0x10,
         CounterAddrHigh     = 0x14,
         CustomLED       = 0x18,
+        CustomLEDBlink  = 0x1A,
         TxDescStartAddrLow  = 0x20,
         TxDescStartAddrHigh = 0x24,
         TxHDescStartAddrLow = 0x28,
