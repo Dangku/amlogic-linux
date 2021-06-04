@@ -313,6 +313,11 @@ static void aml_vrtc_shutdown(struct platform_device *pdev)
 	u32 vrtc_val;
 	struct timespec	new_system;
 
+	if (wakeup_time > 0) {
+		pr_info("aml_vrtc_shutdown wakeup_time=%d\n", wakeup_time);
+		set_wakeup_time(wakeup_time);
+	}
+
 	vrtc_val = read_te();
 	getnstimeofday(&new_system);
 
