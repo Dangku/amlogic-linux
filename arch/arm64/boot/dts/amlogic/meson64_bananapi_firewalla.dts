@@ -52,6 +52,7 @@
 		};
 		logo_reserved:linux,meson-fb {
 			compatible = "shared-dma-pool";
+			status = "disabled";
 			reusable;
 			size = <0x0 0x800000>;
 			alignment = <0x0 0x400000>;
@@ -59,6 +60,7 @@
 		};
 		ion_cma_reserved:linux,ion-dev {
 			compatible = "shared-dma-pool";
+			status = "disabled";
 			reusable;
 			size = <0x0 0x8000000>;
 			alignment = <0x0 0x400000>;
@@ -77,6 +79,7 @@
 		/*di CMA pool */
 		di_cma_reserved:linux,di_cma {
 			compatible = "shared-dma-pool";
+			status = "disabled";
 			reusable;
 			/* buffer_size = 3621952(yuv422 8bit)
 			 *  | 4736064(yuv422 10bit)
@@ -91,10 +94,12 @@
 		/*  POST PROCESS MANAGER */
 		ppmgr_reserved:linux,ppmgr {
 			compatible = "shared-dma-pool";
+			status = "disabled";
 			size = <0x0 0x0>;
 		};
 		codec_mm_cma:linux,codec_mm_cma {
 			compatible = "shared-dma-pool";
+			status = "disable";
 			reusable;
 			/* ion_codec_mm max can alloc size 80M*/
 			size = <0x0 0x13400000>;
@@ -105,6 +110,7 @@
 		/* codec shared reserved */
 		codec_mm_reserved:linux,codec_mm_reserved {
 			compatible = "amlogic, codec-mm-reserved";
+			status = "disable";
 			size = <0x0 0x0>;
 			alignment = <0x0 0x100000>;
 			//no-map;
@@ -127,6 +133,10 @@
 			size = <0x0 0x04000000>;
 			alignment = <0x0 0x400000>;
 		};
+	};
+
+	ion_dev {
+		status = "disabled";
 	};
 
 	leds {
@@ -219,7 +229,7 @@
 
 	deinterlace {
 		compatible = "amlogic, deinterlace";
-		status = "okay";
+		status = "disabled";
 		/* 0:use reserved; 1:use cma; 2:use cma as reserved */
 		flag_cma = <1>;
 		//memory-region = <&di_reserved>;
@@ -245,7 +255,7 @@
 	amlvecm {
 		compatible = "amlogic, vecm";
 		dev_name = "aml_vecm";
-		status = "okay";
+		status = "disabled";
 		gamma_en = <0>;/*1:enabel ;0:disable*/
 		wb_en = <0>;/*1:enabel ;0:disable*/
 		cm_en = <0>;/*1:enabel ;0:disable*/
@@ -388,6 +398,18 @@
 		#cooling-cells = <2>;
 		cooling-levels = <0 120 170 220>;
 		status = "okay";
+	};
+
+	codec_mm {
+		status = "disabled";
+	};
+
+	ppmgr {
+		status = "disabled";
+	};
+
+	ionvideo {
+		status = "disabled";
 	};
 }; /* end of / */
 
