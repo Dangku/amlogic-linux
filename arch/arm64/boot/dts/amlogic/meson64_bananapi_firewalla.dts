@@ -117,7 +117,7 @@
 		};
 		/*  vdin0 CMA pool */
 		vdin0_cma_reserved:linux,vdin0_cma {
-			status = "disable";
+			status = "disabled";
 			compatible = "shared-dma-pool";
 			reusable;
 			/* 1920x1080x2x4  =16+4 M */
@@ -126,7 +126,7 @@
 		};
 		/*  vdin1 CMA pool */
 		vdin1_cma_reserved:linux,vdin1_cma {
-			status = "disable";
+			status = "disabled";
 			compatible = "shared-dma-pool";
 			reusable;
 			/* 1920x1080x2x4  =16 M */
@@ -140,19 +140,18 @@
 	};
 
 	leds {
-		/delete-node/ blueled;
-		/delete-node/ greenled;
+		/delete-node/ green;
 
 		red {
 			label = "red";
 			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "timer";
+			linux,default-trigger = "none";
 		};
 
-		yellow {
-			label = "yellow";
+		blue {
+			label = "blue";
 			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "none";
+			linux,default-trigger = "timer";
 		};
 	};
 
