@@ -488,7 +488,7 @@
 					contribution = <1024>;
 				};
 				cpucore_cooling_map {
-					trip = <&pcontrol>;
+					trip = <&phot>;
 					cooling-device = <&cpucore_cool0 0 3>;
 					contribution = <1024>;
 				};
