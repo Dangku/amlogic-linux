@@ -21,3 +21,5 @@ subdir-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += overlays/bpi-m5
 subdir-$(CONFIG_ARCH_MESON64_BANANAPI_FIREWALLA) += overlays/bpi-firewalla
 subdir-$(CONFIG_ARCH_MESON64_ODROIDC4) += overlays/odroidc4
 subdir-$(CONFIG_ARCH_MESON64_ODROIDN2) += overlays/odroidn2
+
+clean-files     := *.dtb
