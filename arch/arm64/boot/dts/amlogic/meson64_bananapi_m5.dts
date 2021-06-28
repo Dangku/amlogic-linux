@@ -1,5 +1,5 @@
 /*
- * arch/arm64/boot/dts/amlogic/meson64_odroidc4.dts
+ * arch/arm64/boot/dts/amlogic/meson64_bananapi_m5.dts
  *
  * Copyright (C) 2019 Hardkernel Co., Ltd. All rights reserved.
  *
@@ -958,6 +958,13 @@
 				"tdmb_dout0_ao";
 			function = "tdmb_out_ao";
 			drive-strength = <2>;
+		};
+	};
+	ao_b_uart_pins2: ao_b_uart2 {
+		mux { /* GPIOAO_8, GPIOAO_9 */
+			groups = "uart_ao_tx_b_8",
+				"uart_ao_rx_b_9";
+			function = "uart_ao_b";
 		};
 	};
 }; /* end of pinctrl_aobus */
