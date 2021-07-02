@@ -605,10 +605,6 @@
 		status = "okay";
 	};
 
-	remote {
-		status = "disabled";
-	};
-
 	meson_ir: meson-ir {
 		compatible = "amlogic,meson6-ir";
 		/* Multi-format IR controller */

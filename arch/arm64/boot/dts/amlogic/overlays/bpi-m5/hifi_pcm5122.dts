@@ -39,7 +39,7 @@
 
 		__overlay__ {
 			compatible = "amlogic, g12a-sound-card";
-			aml-audio-card,name = "ODROID-HIFI2";
+			aml-audio-card,name = "HIFIBox DAC";
 			status = "okay";
 
 			aml-audio-card,dai-link@0 {
