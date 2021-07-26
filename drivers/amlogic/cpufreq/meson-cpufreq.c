@@ -596,7 +596,7 @@ static int meson_cpufreq_init(struct cpufreq_policy *policy)
 
 #ifdef CONFIG_ARCH_MESON64_ODROID_COMMON
 	if (board_is_odroidn2() || board_is_odroidc4()
-      || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro() || board_is_bananapi_firewalla()) {
+      || board_is_odroidhc4() || board_is_bananapi_m5() || board_is_bananapi_m2_pro()) {
 		int i = 0;
 
 		max_freq[cur_cluster] = min(max_freq[cur_cluster],
@@ -714,7 +714,7 @@ static int __init get_max_freq_cortex(unsigned int cluster, char *str)
 
 static int __init get_max_freq_a53(char *str)
 {
-	if (board_is_odroidn2() || board_is_bananapi_firewalla())
+	if (board_is_odroidn2())
 		return get_max_freq_cortex(0, str);
 	return -EINVAL;
 }
@@ -730,7 +730,7 @@ __setup("max_freq_a55=", get_max_freq_a55);
 
 static int __init get_max_freq_a73(char *str)
 {
-	if (board_is_odroidn2() || board_is_bananapi_firewalla())
+	if (board_is_odroidn2())
 		return get_max_freq_cortex(1, str);
 	return -EINVAL;
 }
@@ -830,7 +830,7 @@ static int meson_cpufreq_probe(struct platform_device *pdev)
 #ifdef CONFIG_ARCH_MESON64_ODROID_COMMON
 	/* Set the maximum cpufreq when kernel parameter is not given with
 	   'max_freq_<a53|a55|a73>' */
-	if (board_is_odroidn2() || board_is_bananapi_firewalla()) {
+	if (board_is_odroidn2()) {
 		if (!max_freq[0]) {
 			max_freq[0] = (is_meson_g12b_cpu() && is_meson_rev_a())
 				?  N2_A53_DEFAULT : N2PLUS_A53_DEFAULT;

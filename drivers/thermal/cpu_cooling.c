@@ -299,8 +299,8 @@ static int build_dyn_power_table(struct cpufreq_cooling_device *cpufreq_device,
 	if (num_opps == 0)
 		return -EINVAL;
 
-#if defined(CONFIG_ARCH_MESON64_ODROIDN2) || defined(CONFIG_ARCH_MESON64_BANANAPI_FIREWALLA)
-	if (board_is_odroidn2() || board_is_bananapi_firewalla()) {
+#if defined(CONFIG_ARCH_MESON64_ODROIDN2))
+	if (board_is_odroidn2()) {
 		pr_debug("[%s] num_opps %d cpufreq max_level %d\n",
 				__func__, num_opps, cpufreq_device->max_level);
 
@@ -326,7 +326,7 @@ static int build_dyn_power_table(struct cpufreq_cooling_device *cpufreq_device,
 		u32 freq_mhz, voltage_mv;
 		u64 power;
 
-		if (board_is_odroidn2() || board_is_bananapi_firewalla()) {
+		if (board_is_odroidn2()) {
 			if (i >= num_opps)
 				break;
 		} else {

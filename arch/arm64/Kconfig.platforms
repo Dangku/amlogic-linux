@@ -250,14 +250,6 @@ config ARCH_MESON64_BANANAPI_M5
 	  This enables support for the board Bananapi M5 of Sinovoip
 	  which is based on ARMv8 SoC of AMLogic, Inc.
 
-config ARCH_MESON64_BANANAPI_FIREWALLA
-        bool "Bananapi Firewalla Single Board Computer"
-        select ARCH_MESON64_BANANAPI_COMMON
-	select DRM_BIFROST if DRM_MESON
-        help
-          This enables support for the board Bananapi Firewalla of Sinovoip
-          which is based on ARMv8 SoC of AMLogic, Inc.
-
 config ARCH_MESON64_ODROIDN2
 	bool "Hardkkernel's ODROID-N2 Single Board Computer"
 	select ARCH_MESON64_ODROID_COMMON

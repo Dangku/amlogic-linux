@@ -1245,7 +1245,7 @@ static int aml_dai_spdif_prepare(
 		spdif_set_channel_status_info(&chsts, p_spdif->id);
 
 		/* TOHDMITX_CTRL0 */
-		if (board_is_odroidn2() || board_is_bananapi_firewalla())
+		if (board_is_odroidn2())
 		{
 			/* ODROID-N2 is spdif_b only would notify to hdmitx */
 			if (p_spdif->id == 1) {

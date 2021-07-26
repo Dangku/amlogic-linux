@@ -8,7 +8,6 @@
 #define BOARD_ODROIDHC4			0x09052000
 #define BOARD_BANANAPI_M5		0x09053000
 #define BOARD_BANANAPI_M2_PRO           0x09053001
-#define BOARD_BANANAPI_FIREWALLA	0x09224000
 
 #if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
 
@@ -26,6 +25,5 @@ extern bool odroid_amlogic_usb3(void);
 #define board_is_odroidhc4()	__board_is_odroid(BOARD_ODROIDHC4)
 #define board_is_bananapi_m5()  __board_is_odroid(BOARD_BANANAPI_M5)
 #define board_is_bananapi_m2_pro()  __board_is_odroid(BOARD_BANANAPI_M2_PRO)
-#define board_is_bananapi_firewalla()  __board_is_odroid(BOARD_BANANAPI_FIREWALLA)
 
 #endif
