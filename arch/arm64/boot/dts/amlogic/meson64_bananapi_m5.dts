@@ -755,8 +755,11 @@
 		dai-tdm-clk-sel = <1>;
 		clocks = <&clkaudio CLKID_AUDIO_MCLK_B
 				&clkaudio CLKID_AUDIO_MCLK_PAD0
-				&clkc CLKID_MPLL0>;
-		clock-names = "mclk", "mclk_pad", "clk_srcpll";
+				&clkc CLKID_MPLL1
+				&clkc CLKID_MPLL0
+				&clkaudio CLKID_AUDIO_SPDIFOUT_A>;
+		clock-names = "mclk", "mclk_pad", "clk_srcpll",
+			"samesource_srcpll", "samesource_clk";
 		pinctrl-names = "tdm_pins";
 		pinctrl-0 = <&tdmb_mclk_ao &tdmout_b_ao>;
 		i2s2hdmi = <0>;
@@ -791,12 +794,10 @@
 				&clkaudio CLKID_AUDIO_SPDIFOUT_A>;
 		clock-names = "sysclk", "fixed_clk", "gate_spdifin",
 				"gate_spdifout", "clk_spdifin", "clk_spdifout";
-		interrupts =
-				<GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
-
+		interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
 		interrupt-names = "irq_spdifin";
 		pinctrl-names = "spdif_pins";
-		pinctrl-0 = <&spdifout>;
+		pinctrl-0 = <&spdifout_ao>;
 
 		status = "okay";
 	};
@@ -931,10 +932,17 @@
 			function = "uart_a";
 		};
 	};
+
+	spdifout: spdifout {
+		mux {/* GPIOH_4 */
+			groups = "spdif_out_h";
+			function = "spdif_out";
+		};
+	};
 };
 
 &pinctrl_aobus {
-	spdifout: spdifout {
+	spdifout_ao: spdifout_ao {
 		mux {/* GPIOAO_10 */
 			groups = "spdif_out_ao";
 			function = "spdif_out_ao";
@@ -963,6 +971,15 @@
 			function = "uart_ao_b";
 		};
 	};
+
+	tdmin_b_ao: tdmin_b_ao {
+		mux { /* GPIOAO_10 */
+			groups = "tdmb_din1_ao";
+			function = "tdmb_in_ao";
+			drive-strength = <2>;
+		};
+	};
+
 }; /* end of pinctrl_aobus */
 
 &spicc0 {

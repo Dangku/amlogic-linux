@@ -6,35 +6,13 @@
 		target = <&tdmb>;
 		__overlay__ {
 			status = "okay";
+
+			pinctrl-names = "tdm_pins";
+			pinctrl-0 = <&tdmb_mclk_ao &tdmout_b_ao &tdmin_b_ao>;
 		};
 	};
 
 	fragment@1 {
-		// i2c2 aliased with i2c0.
-		target = <&i2c2>;
-
-		__overlay__ {
-			status = "okay";
-
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			pcm5122: pcm5122@4d {
-				compatible = "ti,pcm5122";
-				reg = <0x4d>;
-				#sound-dai-cells = <0>;
-				status = "okay";
-
-				/*
-				AVDD-supply = <&reg_3v3_analog>;
-				DVDD-supply = <&reg_1v8>;
-				CPVDD-supply = <&reg_3v3>;
-				*/
-			};
-		};
-	};
-
-	fragment@2 {
 		target = <&auge_sound>;
 
 		__overlay__ {
@@ -46,7 +24,7 @@
 				format = "i2s";
 				mclk-fs = <256>;
 				continuous-clock;
-				suffix-name = "HiFi-DAC";
+				suffix-name = "i2s-mic";
 				bitclock-master = <&tdmb>;
 				frame-master = <&tdmb>;
 				cpu {
@@ -58,7 +36,7 @@
 					system-clock-frequency = <12288000>;
 				};
 				codec {
-					sound-dai = <&pcm5122 &dummy_codec>;
+					sound-dai = <&dummy_codec &dummy_codec>;
 				};
 			};
 		};
