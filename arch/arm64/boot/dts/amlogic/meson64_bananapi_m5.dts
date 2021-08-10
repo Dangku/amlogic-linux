@@ -617,6 +617,12 @@
 	};
 
 	/* Audio Related start */
+	pdm_codec:dummy{
+		#sound-dai-cells = <0>;
+		compatible = "amlogic, pdm_dummy_codec";
+		status = "okay";
+	};
+
 	dummy_codec:dummy{
 		#sound-dai-cells = <0>;
 		compatible = "amlogic, aml_dummy_codec";
@@ -801,6 +807,30 @@
 
 		status = "okay";
 	};
+
+	pdm: pdm {
+		compatible = "amlogic, sm1-snd-pdm";
+		#sound-dai-cells = <0>;
+
+		clocks = <&clkaudio CLKID_AUDIO_GATE_PDM
+			&clkc CLKID_FCLK_DIV3
+			&clkc CLKID_MPLL3
+			&clkaudio CLKID_AUDIO_PDMIN0
+			&clkaudio CLKID_AUDIO_PDMIN1>;
+		clock-names = "gate",
+			"sysclk_srcpll",
+			"dclk_srcpll",
+			"pdm_dclk",
+			"pdm_sysclk";
+
+		pinctrl-names = "pdm_pins";
+		pinctrl-0 = <&pdmin>;
+
+		/* mode 0~4, defalut:1 */
+		filter_mode = <1>;
+
+		status = "disabled";
+	};
 }; /* end of audiobus */
 
 &gpio {
@@ -937,6 +967,17 @@
 		mux {/* GPIOH_4 */
 			groups = "spdif_out_h";
 			function = "spdif_out";
+		};
+	};
+
+	pdmin: pdmin {
+		mux { /* GPIOX_0, GPIOX_1, GPIOX_2, GPIOX_3, GPIOX_4 */
+			groups = "pdm_din0_x",
+				"pdm_din1_x",
+				"pdm_din2_x",
+				"pdm_din3_x",
+				"pdm_dclk_x";
+			function = "pdm";
 		};
 	};
 };

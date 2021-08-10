@@ -1,0 +1,35 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&pdm>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&auge_sound>;
+
+		__overlay__ {
+			compatible = "amlogic, g12a-sound-card";
+			aml-audio-card,name = "AML-AUGESOUND";
+			status = "okay";
+
+			aml-audio-card,dai-link@3 {
+				mclk-fs = <64>;
+				/* suffix-name, sync with android audio hal
+			 	* what's the dai link used for
+			 	*/
+				suffix-name = "pdm-mic";
+				cpu {
+					sound-dai = <&pdm>;
+				};
+				codec {
+					sound-dai = <&pdm_codec>;
+				};
+                	};
+		};
+	};
+};
