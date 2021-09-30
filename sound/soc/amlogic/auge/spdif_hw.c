@@ -27,6 +27,7 @@
 #include <linux/platform_data/board_odroid.h>
 #else
 #define board_is_odroidn2()		(0)
+#define board_is_bananapi_m2s		(0)
 #endif
 
 /*#define G12A_PTM*/
@@ -670,7 +671,7 @@ void spdifout_play_with_zerodata(unsigned int spdif_id, bool reenable)
 		/* spdif clk */
 		//spdifout_clk_ctrl(spdif_id, true);
 
-		if (board_is_odroidn2())
+		if (board_is_odroidn2() || board_is_bananapi_m2s())
 		{
 			/* ODROID-N2 spdif_b only to hdmitx */
                         if (spdif_id == 1)
