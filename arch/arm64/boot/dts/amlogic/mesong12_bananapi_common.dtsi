@@ -160,8 +160,16 @@
 	status = "disabled";
 };
 
+&i2c1 {
+	status = "disabled";
+	pinctrl-names = "default","gpio_periphs";
+	pinctrl-0 = <&i2c1_master_pins1>;
+	pinctrl-1 = <&i2c1_to_gpiox>;
+	clock-frequency = <100000>;             /* default 100k */
+};
+
 &i2c2 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default","gpio_periphs";
 	pinctrl-0 = <&i2c2_master_pins1>;
 	pinctrl-1 = <&i2c2_to_gpiox>;
@@ -169,7 +177,7 @@
 };
 
 &i2c3 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default","gpio_periphs";
 	pinctrl-0 = <&i2c3_master_pins2>;
 	pinctrl-1 = <&i2c3_to_gpioa>;
@@ -233,11 +241,27 @@
 };
 
 &pinctrl_periphs {
+	i2c1_master_pins1:i2c1_pins1 {
+		mux {
+			drive-strength = <3>;
+		};
+	};
+
+	i2c1_to_gpiox:i2c1_gpiox {
+		mux {
+			groups = "GPIOX_10",
+				"GPIOX_11";
+			function = "gpio_periphs";
+			drive-strength = <3>;
+		};
+	};
+
 	i2c2_master_pins1:i2c2_pins1 {
 		mux {
 			drive-strength = <3>;
 		};
 	};
+
 	i2c2_to_gpiox:i2c2_gpiox {
 		mux {
 			groups = "GPIOX_17",
@@ -246,11 +270,13 @@
 			drive-strength = <3>;
 		};
 	};
+
 	i2c3_master_pins2:i2c3_pins2 {
 		mux {
 			drive-strength = <3>;
 		};
 	};
+
 	i2c3_to_gpioa:i2c3_gpioa {
 		mux {
 			groups = "GPIOA_14",

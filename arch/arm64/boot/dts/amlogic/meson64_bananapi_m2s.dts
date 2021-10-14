@@ -136,17 +136,15 @@
 	};
 
 	leds {
-		/delete-node/ green;
-
-		red {
-			label = "red";
-			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "none";
-		};
-
 		blue {
 			label = "blue";
-			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "default-on";
+		};
+
+		green {
+			label = "green";
+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "timer";
 		};
 	};
@@ -601,7 +599,7 @@
 		"", "", "", "", "", "", "", "",
 		/* GPIOH */
 		"", "", "", "", "",
-		"PIN_36", /* GPIOH_5 */
+		"PIN_27", /* GPIOH_5 */
 		"", "", "",
 		/* BOOT */
 		"", "", "", "", "", "", "", "",
@@ -609,10 +607,13 @@
 		/* GPIOC */
 		"", "", "", "", "", "", "", "",
 		/* GPIOA */
-		"", "", "", "", "", "", "", "",
-		"", "", "", "", "", "",
-		"PIN_27", /* GPIOA_14 */
-		"PIN_28", /* GPIOA_15 */
+		"PIN_37", /* GPIOA_0 */
+		"PIN_12", /* GPIOA_1 */
+		"PIN_35", /* GPIOA_2 */
+		"PIN_40", /* GPIOA_3 */
+		"PIN_38", /* GPIOA_4 */
+		"", "", "", "", "", "", 
+		"", "", "", "",	"",
 		/* GPIOX */
 		"PIN_16", /* GPIOX_0 */
 		"PIN_18", /* GPIOX_1 */
@@ -639,14 +640,9 @@
 &gpio_ao {
 	gpio-line-names =
 		/* GPIOAO */
-		"", "", "", "",
-		"PIN_40", /* GPIOAO_4 */
-		"", "",
-		"PIN_35", /* GPIOAO_7 */
-		"PIN_12", /* GPIOAO_8 */
-		"PIN_37", /* GPIOAO_9 */
-		"PIN_38", /* GPIOAO_10 */
-		"",
+		"", "", "", "",	"",
+		"PIN_36", /* GPIOAO_5 */
+		"", "",	"", "", "", "",
 		/* GPIOE */
 		"", "", "",
 		/* GPIO_TEST_N */
@@ -743,8 +739,8 @@
 	};
 
 	spdifout: spdifout {
-		mux {/* GPIOA_11 */
-			groups = "spdif_out_a11";
+		mux {/* GPIOH_4 */
+			groups = "spdif_out_h";
 			function = "spdif_out";
 		};
 	};
@@ -762,36 +758,6 @@
 }; /* end of pinctrl_periphs */
 
 &pinctrl_aobus {
-	spdifout_ao: spdifout_ao {
-		mux {/* GPIOAO_10 */
-			groups = "spdif_out_ao";
-			function = "spdif_out_ao";
-		};
-	};
-	tdmb_mclk_ao: mclk0_ao {
-		mux { /* GPIOAO_9 */
-			groups = "mclk0_ao";
-			function = "mclk0_ao";
-			drive-strength = <2>;
-		};
-	};
-	tdmout_b_ao: tdmout_b {
-		mux { /* GPIOAO_8, GPIOAO_7, GPIOAO_4 */
-			groups = "tdmb_sclk_ao",
-				"tdmb_fs_ao",
-				"tdmb_dout0_ao";
-			function = "tdmb_out_ao";
-			drive-strength = <2>;
-		};
-	};
-	ao_b_uart_pins2: ao_b_uart2 {
-		mux { /* GPIOAO_8, GPIOAO_9 */
-			groups = "uart_ao_tx_b_8",
-				"uart_ao_rx_b_9";
-			function = "uart_ao_b";
-		};
-	};
-
 	tdmin_b_ao: tdmin_b_ao {
 		mux { /* GPIOAO_10 */
 			groups = "tdmb_din1_ao";
@@ -806,23 +772,24 @@
 	status = "okay";
 };
 
+&i2c1 {
+	status = "disabled";
+};
+
 &i2c2 {
 	status = "disabled";
 };
 
 &i2c3 {
 	status = "disabled";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c3_master_pins2>;
-	clock-frequency = <100000>;             /* default 100k */
 };
 
 &spicc0 {
 	status = "disabled";
 	pinctrl-names = "default";
-	pinctrl-0 = <&spicc1_pins>;
+	pinctrl-0 = <&spicc0_pins_x>;
 	num_chipselect = <1>;
-	cs-gpios = <&gpio GPIOH_6 GPIO_ACTIVE_LOW>;
+	cs-gpios = <&gpio GPIOX_10 GPIO_ACTIVE_LOW>;
 
 	spidev: spidev@0 {
 		status = "okay";

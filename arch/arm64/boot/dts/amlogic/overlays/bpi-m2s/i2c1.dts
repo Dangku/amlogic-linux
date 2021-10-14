@@ -3,9 +3,9 @@
 
 / {
 	fragment@0 {
-		// i2c3 aliased with i2c1.
+		// i2c1 aliased with i2c1.
 		// This activates i2c3 but it will be named as i2c1 on the userspace.
-		target = <&i2c3>;
+		target = <&i2c1>;
 
 		__overlay__ {
 			status = "okay";
