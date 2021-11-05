@@ -306,3 +306,7 @@
 	compatible = "amlogic,meson-gpio-intc-ext",
 		   "amlogic,meson-g12a-gpio-intc";
 };
+
+&defendkey {
+	status = "disabled";
+};
