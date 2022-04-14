@@ -191,15 +191,15 @@
 		compatible = "gpio-leds";
 		status = "okay";
 
-		remote_led {
-			label = "remote_led";
+		blue {
+			label = "blue";
 			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
 			default-state = "on";
-			linux,default-trigger = "rc_feedback";
+			linux,default-trigger = "default-on";
 		};
 
-		sys_led {
-			label="sys_led";
+		green {
+			label="green";
 			gpios=<&gpio_ao GPIOAO_2 GPIO_ACTIVE_LOW>;
 			default-state ="on";
 			linux,default-trigger = "timer";
