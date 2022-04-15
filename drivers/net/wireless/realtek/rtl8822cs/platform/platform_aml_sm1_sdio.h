@@ -1,0 +1,22 @@
+/******************************************************************************
+ *
+ * Copyright(c) 2016 - 2018 Realtek Corporation.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ *****************************************************************************/
+#ifndef __PLATFORM_AML_SM1_SDIO_H__
+#define __PLATFORM_AML_SM1_SDIO_H__
+
+extern void sdio_reinit(void);
+extern void extern_wifi_set_enable(int is_on);
+extern int wifi_irq_num(void);
+
+#endif /* __PLATFORM_AML_SM1_SDIO_H__ */
