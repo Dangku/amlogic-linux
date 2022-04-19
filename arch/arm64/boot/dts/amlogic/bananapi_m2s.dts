@@ -22,7 +22,7 @@
 #include "bananapi_panel.dtsi"
 
 / {
-	model = "Amlogic";
+	model = "Bananapi M2S";
 	amlogic-dt-id = "bananapi_m2s_4g";
 	compatible = "amlogic, g12b";
 	interrupt-parent = <&gic>;

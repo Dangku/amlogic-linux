@@ -105,11 +105,13 @@ static void enable_wol(int enable, bool is_shutdown)
 	}
 }
 
+#if defined(CONFIG_KHADAS_MCU)
 void realtek_enable_wol(int enable, bool is_shutdown)
 {
 	wol_enable = enable & 0x01;
 	support_external_phy_wol = wol_enable;
 }
+#endif
 
 static int rtl821x_ack_interrupt(struct phy_device *phydev)
 {
@@ -237,8 +239,10 @@ static int rtl8211f_config_init(struct phy_device *phydev)
 
 	g_phydev = phydev;
 
+#if defined(CONFIG_KHADAS_MCU)
 	if (3 == mcu_get_wol_status())
 		enable_wol(3, false);
+#endif
 
 	/* restore to default page 0 */
 	phy_write(phydev, RTL8211F_PAGE_SELECT, 0x0);

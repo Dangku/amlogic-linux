@@ -44,9 +44,9 @@
 #include "meson-cpufreq.h"
 #include <linux/amlogic/cpu_version.h>
 
-#define VIM3_A53_DEFAULT	1800000 /* VIM3 Little Core A53 */
-#define VIM3_A73_DEFAULT	2208000 /* VIM3 Big Core A73 */
-#define VIM3L_A55_DEFAULT	1908000 /* VIM3L Core A55 */
+#define AMLOGIC_A53_DEFAULT	1800000 /* Amlogic Little Core A53 */
+#define AMLOGIC_A73_DEFAULT	2208000 /* Amlogic Big Core A73 */
+#define AMLOGIC_A55_DEFAULT	1908000 /* Amlogic Core A55 */
 
 
 static unsigned long max_freq[2] = {0, 0};
@@ -689,25 +689,19 @@ static int __init get_max_freq(unsigned int cluster, char *str)
 
 static int __init get_max_freq_a53(char *str)
 {
-	if (0 == strcmp(machine_model, "Khadas VIM3"))
-		return get_max_freq(0, str);
-	return -EINVAL;
+	return get_max_freq(0, str);
 }
 __setup("max_freq_a53=", get_max_freq_a53);
 
 static int __init get_max_freq_a55(char *str)
 {
-	if (0 == strcmp(machine_model, "Khadas VIM3L"))
-		return get_max_freq(0, str);
-	return -EINVAL;
+	return get_max_freq(0, str);
 }
 __setup("max_freq_a55=", get_max_freq_a55);
 
 static int __init get_max_freq_a73(char *str)
 {
-	if (0 == strcmp(machine_model, "Khadas VIM3"))
-		return get_max_freq(1, str);
-	return -EINVAL;
+	return get_max_freq(1, str);
 }
 __setup("max_freq_a73=", get_max_freq_a73);
 
@@ -803,14 +797,14 @@ static int meson_cpufreq_probe(struct platform_device *pdev)
 
 	if (is_meson_g12b_cpu()) {
 		if (!max_freq[0]) {
-			max_freq[0] = VIM3_A53_DEFAULT;
+			max_freq[0] = AMLOGIC_A53_DEFAULT;
 		}
 		if (!max_freq[1]) {
-			max_freq[1] = VIM3_A73_DEFAULT;
+			max_freq[1] = AMLOGIC_A73_DEFAULT;
 		}
 	} else if (is_meson_sm1_cpu()) {
 		if (!max_freq[0])
-			max_freq[0] = VIM3L_A55_DEFAULT;
+			max_freq[0] = AMLOGIC_A55_DEFAULT;
 	}
 
 	for (i = 0; i < MAX_CLUSTERS; i++)
