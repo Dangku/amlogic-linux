@@ -254,7 +254,7 @@
 		/* max 0xff, each bit for one channel */
 		channel_mask = <0x3>;
 	};
-	auge_sound {
+	auge_sound: auge_sound {
 		compatible = "amlogic, g12a-sound-card";
 		aml-audio-card,name = "AML-AUGESOUND";
 		/*line-out mute gpio*/
@@ -635,6 +635,20 @@
 		mux {/* GPIOA_11 */
 			groups = "spdif_out_a11";
 			function = "spdif_out";
+		};
+	};
+
+	pwmcd_to_gpios: pwmcd_gpio {
+		mux {
+			groups = "GPIOX_5", "GPIOX_6";
+			function = "gpio_periphs";
+		};
+	};
+
+	pwmef_to_gpios: pwmef_gpio {
+		mux {
+			groups = "GPIOX_16", "GPIOX_7";
+			function = "gpio_periphs";
 		};
 	};
 }; /* end of pinctrl_periphs */

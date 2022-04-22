@@ -99,6 +99,18 @@ static const struct dmi_system_id rotated_screen[] = {
 		},
 	},
 	{
+		.ident = "Teclast X98 Pro",
+		.matches = {
+			/*
+			 * Only match BIOS date, because the manufacturers
+			 * BIOS does not report the board name at all
+			 * (sometimes)...
+			 */
+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
+		},
+	},
+	{
 		.ident = "WinBook TW100",
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "WinBook"),
@@ -729,6 +741,11 @@ static int goodix_ts_probe(struct i2c_client *client,
 		}
 	}
 
+#ifdef CONFIG_ARCH_MESON64_ODROID_COMMON
+	client->irq = gpiod_to_irq(ts->gpiod_int);
+	if (client->irq)
+		dev_info(&client->dev, "GT911 irq number : %d\n", client->irq);
+#endif
 	error = goodix_i2c_test(client);
 	if (error) {
 		dev_err(&client->dev, "I2C communication failure: %d\n", error);

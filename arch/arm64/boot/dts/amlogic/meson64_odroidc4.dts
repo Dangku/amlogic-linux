@@ -662,7 +662,7 @@
 		/* max 0xff, each bit for one channel */
 		channel_mask = <0x3>;
 	};
-	odroid_hdmi {
+	odroid_hdmi: odroid_hdmi{
 		compatible = "amlogic, g12a-sound-card";
 		aml-audio-card,name = "ODROID-HDMI";
 
@@ -923,6 +923,26 @@
 };
 
 &pinctrl_periphs {
+	pwmab_to_gpios: pwmab_gpio {
+		mux {
+			groups = "GPIOX_6", "GPIOX_19";
+			function = "gpio_periphs";
+		};
+	};
+
+	pwmcd_to_gpios: pwmcd_gpio {
+		mux {
+			groups = "GPIOX_5", "GPIOX_3";
+			function = "gpio_periphs";
+		};
+	};
+
+	pwmef_to_gpios: pwmef_gpio {
+		mux {
+			groups = "GPIOX_16", "GPIOX_7";
+			function = "gpio_periphs";
+		};
+	};
 };
 
 &pinctrl_aobus {
@@ -946,6 +966,13 @@
 				"tdmb_dout0_ao";
 			function = "tdmb_out_ao";
 			drive-strength = <2>;
+		};
+	};
+	ao_b_uart_pins2: ao_b_uart2 {
+		mux { /* GPIOAO_8, GPIOAO_9 */
+			groups = "uart_ao_tx_b_8",
+				"uart_ao_rx_b_9";
+			function = "uart_ao_b";
 		};
 	};
 }; /* end of pinctrl_aobus */
