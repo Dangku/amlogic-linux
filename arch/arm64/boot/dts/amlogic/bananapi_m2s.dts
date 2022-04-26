@@ -163,7 +163,7 @@
 			compatible = "shared-dma-pool";
 			reusable;
 			status = "okay";
-			size = <0x0 0x1f000000>;
+			size = <0x0 0x06800000>;
 			alignment = <0x0 0x400000>;
 		};
 
@@ -171,7 +171,7 @@
 			compatible = "shared-dma-pool";
 			reusable;
 			status = "okay";
-			size = <0x0 0x03000000>;
+			size = <0x0 0x01800000>;
 			alignment = <0x0 0x400000>;
 		};
 		gdc_cma_reserved:linux,gdc_cma {
@@ -193,7 +193,7 @@
 
 		blue {
 			label = "blue";
-			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 			linux,default-trigger = "default-on";
 		};
@@ -783,19 +783,21 @@
 
 	sensor: sensor {
 		compatible = "soc, sensor";
-		status = "disabled";
+		status = "okay";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 		pinctrl-names="default";
 		pinctrl-0=<&gen_clk_ee_ao>;
 		clocks = <&clkc CLKID_GEN_CLK>;
 		clock-names = "gen_clk";
-		reset = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
-		ir_cut_gpio = <&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;
+		//power-enable = <&gpio GPIOA_13 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio GPIOA_12 GPIO_ACTIVE_HIGH>;
+		//pwdn = <&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;
+		ir_cut_gpio = <&gpio_ao GPIOAO_6 GPIO_ACTIVE_HIGH>;
 	};
 
 	iq: iq {
 		compatible = "soc, iq";
-		status = "disabled";
+		status = "okay";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 	};
 
@@ -852,12 +854,17 @@
 };
 
 &isp {
-	status = "disabled";
+	status = "okay";
+	temper-line-offset = <0x1E00>;
+	temper-buf-size = <32>;
+	temper-frame-num = <1>;
+	temper-frame-size = <0x1FA4000>;
 	memory-region = <&isp_cma_reserved>;
 };
 
 &adapter {
-	status = "disabled";
+	status = "okay";
+	mem_alloc = <24>;
 	memory-region = <&adapt_cma_reserved>;
 };
 
@@ -888,15 +895,8 @@
 	status = "okay";
 };
 
-&i2c0 {
-	status = "disabled";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c0_master_pins2>;
-	clock-frequency = <400000>;
-};
-
 &i2c1 {
-	status = "disabled";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_master_pins3>; /* GPIOH_6,GPIOH_7 */
 	clock-frequency = <400000>;
@@ -940,8 +940,8 @@
 				&clkaudio CLKID_AUDIO_SPDIFOUT_CTRL>;
 		clock-names = "mclk", "clk_srcpll",
 			"samesource_srcpll", "samesource_clk";
-		pinctrl-names = "tdm_pins";
-		pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
+		//pinctrl-names = "tdm_pins";
+		//pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
 		mclk_pad = <0>;  /* 0: mclk_0; 1: mclk_1 */
 		/*
 		 * 0: tdmout_a;
@@ -967,9 +967,9 @@
 		interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
 
 		interrupt-names = "irq_spdifin";
-		pinctrl-names = "spdif_pins", "spdif_pins_mute";
-		pinctrl-0 = <&spdifout>;
-		pinctrl-1 = <&spdifout_mute>;
+		//pinctrl-names = "spdif_pins", "spdif_pins_mute";
+		//pinctrl-0 = <&spdifout>;
+		//pinctrl-1 = <&spdifout_mute>;
 		status = "okay";
 	};
 	aml_spdif_b: spdif_b {
@@ -1142,11 +1142,11 @@
 	};
 	
 	pdmin: pdmin {
-		mux { /* gpioa_5, gpioa_6, gpioa_7, gpioa_8, gpioa_9*/
+		mux { /* GPIOX_0, GPIOX_1, GPIOX_2, GPIOX_3, GPIOX_4*/
 			groups = "pdm_din0_x",
-			/*"pdm_din1_x",*/
+			"pdm_din1_x",
 			"pdm_din2_x",
-			/*"pdm_din3_x",*/
+			"pdm_din3_x",
 			"pdm_dclk_x";
 			function = "pdm";
 		};
@@ -1182,7 +1182,7 @@
 /*if you want to use vdin just modify status to "ok"*/
 &vdin0 {
 	memory-region = <&vdin0_cma_reserved>;
-	status = "disabled";
+	status = "okay";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
@@ -1195,7 +1195,7 @@
 
 &vdin1 {
 	memory-region = <&vdin1_cma_reserved>;
-	status = "disabled";
+	status = "okay";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
