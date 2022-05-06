@@ -18,11 +18,12 @@
 /dts-v1/;
 
 #include "mesong12b.dtsi"
+#include "partition_linux.dtsi"
 #include "bananapi_panel.dtsi"
 
 / {
 	model = "Bananapi M2S";
-	amlogic-dt-id = "bananapi_m2s_a311d";
+	amlogic-dt-id = "bananapi_m2s_922x";
 	compatible = "amlogic, g12b";
 	interrupt-parent = <&gic>;
 	#address-cells = <2>;
@@ -55,6 +56,7 @@
 		/* global autoconfigured region for contiguous allocations */
 		ramoops@0x07400000 {
 			compatible = "ramoops";
+			status = "disabled";
 			reg = <0x0 0x07400000 0x0 0x00100000>;
 			record-size = <0x8000>;
 			console-size = <0x8000>;
@@ -136,14 +138,16 @@
 		};
 		/*  vdin0 CMA pool */
 		vdin0_cma_reserved:linux,vdin0_cma {
+			status = "disabled";
 			compatible = "shared-dma-pool";
 			reusable;
-		/* 1920x1080x2x4  =16+4 M */
+			/* 1920x1080x2x4  =16+4 M */
 			size = <0x0 0x04000000>;
 			alignment = <0x0 0x400000>;
 		};
 		/*  vdin1 CMA pool */
 		vdin1_cma_reserved:linux,vdin1_cma {
+			status = "disabled";
 			compatible = "shared-dma-pool";
 			reusable;
 			/* 1920x1080x2x4  =16 M */
@@ -151,38 +155,37 @@
 			alignment = <0x0 0x400000>;
 		};
 		galcore_reserved:linux,galcore {
+			status = "disabled";
 			compatible = "shared-dma-pool";
 			reusable;
 			size = <0x0 0x1000000>;
 			alignment = <0x0 0x400000>;
 			linux,contiguous-region;
 		};
-
 		isp_cma_reserved:linux,isp_cma {
 			compatible = "shared-dma-pool";
 			reusable;
-			status = "okay";
+			status = "disabled";
 			size = <0x0 0x06800000>;
 			alignment = <0x0 0x400000>;
 		};
-
 		adapt_cma_reserved:linux,adapt_cma {
 			compatible = "shared-dma-pool";
 			reusable;
-			status = "okay";
+			status = "disabled";
 			size = <0x0 0x01800000>;
 			alignment = <0x0 0x400000>;
 		};
 		gdc_cma_reserved:linux,gdc_cma {
 			compatible = "shared-dma-pool";
 			reusable;
-			status = "okay";
+			status = "disabled";
 			size = <0x0 0x04000000>;
 			alignment = <0x0 0x400000>;
 		};
 	};
 	galcore {
-		status = "okay";
+		status = "disabled";
 		memory-region = <&galcore_reserved>;
 	};
 
@@ -782,7 +785,7 @@
 
 	sensor: sensor {
 		compatible = "soc, sensor";
-		status = "okay";
+		status = "disabled";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 		pinctrl-names="default";
 		pinctrl-0=<&gen_clk_ee_ao>;
@@ -796,7 +799,7 @@
 
 	iq: iq {
 		compatible = "soc, iq";
-		status = "okay";
+		status = "disabled";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 	};
 
@@ -853,7 +856,7 @@
 };
 
 &isp {
-	status = "okay";
+	status = "disabled";
 	temper-line-offset = <0x1E00>;
 	temper-buf-size = <32>;
 	temper-frame-num = <1>;
@@ -862,13 +865,13 @@
 };
 
 &adapter {
-	status = "okay";
+	status = "disabled";
 	mem_alloc = <24>;
 	memory-region = <&adapt_cma_reserved>;
 };
 
 &gdc {
-	status = "okay";
+	status = "disabled";
 	memory-region = <&gdc_cma_reserved>;
 };
 
@@ -895,13 +898,14 @@
 };
 
 &i2c1 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_master_pins3>; /* GPIOH_6,GPIOH_7 */
 	clock-frequency = <400000>;
 
 	sensor-i2c@6c {
 		compatible = "arm, i2c-sensor";
+		status = "disabled";
 		reg = <0x6c>;
 		reg-names = "i2c-sensor";
 		slave-addr = <0x6c>;
@@ -1181,7 +1185,7 @@
 /*if you want to use vdin just modify status to "ok"*/
 &vdin0 {
 	memory-region = <&vdin0_cma_reserved>;
-	status = "okay";
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
@@ -1194,7 +1198,7 @@
 
 &vdin1 {
 	memory-region = <&vdin1_cma_reserved>;
-	status = "okay";
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
