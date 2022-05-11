@@ -40,6 +40,7 @@
 		i2c4 = &i2c_AO;
 		tsensor0 = &p_tsensor;
 		tsensor1 = &d_tsensor;
+		spi0 = &spicc0;
 	};
 /*
 	memory@00000000 {
@@ -554,6 +555,11 @@
 		compatible = "amlogic, aml_dummy_codec";
 		status = "okay";
 	};
+	pcm5102a: pcm5102a {
+		compatible = "ti,pcm5102a";
+		#sound-dai-cells = <0>;
+		status = "disabled";
+	};
 	amlogic_codec:t9015{
 		#sound-dai-cells = <0>;
 		compatible = "amlogic, aml_codec_T9015";
@@ -578,7 +584,7 @@
 		/* max 0xff, each bit for one channel */
 		channel_mask = <0x3>;
 	};
-	auge_sound {
+	aml_sound: auge_sound {
 		compatible = "amlogic, g12a-sound-card";
 		aml-audio-card,name = "AML-AUGESOUND";
 
@@ -1147,6 +1153,16 @@
 			output-high;
 		};
 	};
+
+        a_uart_cts_rts_pins: a_uart_cts_rts {
+		mux { /* GPIOX_12, GPIOX_13, GPIOX_14, GPIOX_15 */
+			groups = "uart_tx_a",
+				"uart_rx_a",
+				"uart_cts_a",
+				"uart_rts_a";
+			function = "uart_a";
+		};
+	};
 }; /* end of pinctrl_periphs */
 
 &pinctrl_aobus {
@@ -1287,6 +1303,14 @@
 
 	/* reset */
 	rst_pin-gpios = <&gpio GPIOZ_15 GPIO_ACTIVE_LOW>;
+};
+
+&a_uart_pins {
+	mux { /* GPIOX_12, GPIOX_13 */
+		groups = "uart_tx_a",
+			"uart_rx_a";
+		function = "uart_a";
+	};
 };
 
 &uart_A {
