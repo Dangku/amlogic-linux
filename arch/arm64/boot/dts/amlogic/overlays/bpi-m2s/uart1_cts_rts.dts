@@ -1,0 +1,14 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&uart_A>;
+
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&a_uart_cts_rts_pins>; /* GPIOX_12,GPIOX_13,GPIOX_14,GPIOX_15 */
+		};
+	};
+};

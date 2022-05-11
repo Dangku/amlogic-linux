@@ -1,0 +1,40 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&aml_pdm>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&pdm_codec>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+	
+	fragment@2 {
+		target = <&aml_sound>;
+
+		__overlay__ {
+			status = "okay";
+
+			aml-audio-card,dai-link@3 {
+				mclk-fs = <64>;
+				/* suffix-name, sync with android audio hal
+			 	* what's the dai link used for
+			 	*/
+				suffix-name = "pdm-mic";
+				cpu {
+					sound-dai = <&aml_pdm>;
+				};
+				codec {
+					sound-dai = <&pdm_codec>;
+				};
+                	};
+		};
+	};
+};

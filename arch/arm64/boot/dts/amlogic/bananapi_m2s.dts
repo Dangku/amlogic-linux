@@ -41,6 +41,7 @@
 		i2c4 = &i2c_AO;
 		tsensor0 = &p_tsensor;
 		tsensor1 = &d_tsensor;
+		spi0 = &spicc0;
 	};
 /*
 	memory@00000000 {
@@ -55,6 +56,7 @@
 		/* global autoconfigured region for contiguous allocations */
 		ramoops@0x07400000 {
 			compatible = "ramoops";
+			status = "disabled";
 			reg = <0x0 0x07400000 0x0 0x00100000>;
 			record-size = <0x8000>;
 			console-size = <0x8000>;
@@ -138,7 +140,7 @@
 		vdin0_cma_reserved:linux,vdin0_cma {
 			compatible = "shared-dma-pool";
 			reusable;
-		/* 1920x1080x2x4  =16+4 M */
+			/* 1920x1080x2x4  =16+4 M */
 			size = <0x0 0x04000000>;
 			alignment = <0x0 0x400000>;
 		};
@@ -555,6 +557,11 @@
 		compatible = "amlogic, aml_dummy_codec";
 		status = "okay";
 	};
+	pcm5102a: pcm5102a {
+		compatible = "ti,pcm5102a";
+		#sound-dai-cells = <0>;
+		status = "disabled";
+	};
 	amlogic_codec:t9015{
 		#sound-dai-cells = <0>;
 		compatible = "amlogic, aml_codec_T9015";
@@ -579,7 +586,7 @@
 		/* max 0xff, each bit for one channel */
 		channel_mask = <0x3>;
 	};
-	auge_sound {
+	aml_sound: auge_sound {
 		compatible = "amlogic, g12a-sound-card";
 		aml-audio-card,name = "AML-AUGESOUND";
 
@@ -782,7 +789,7 @@
 
 	sensor: sensor {
 		compatible = "soc, sensor";
-		status = "okay";
+		status = "disabled";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 		pinctrl-names="default";
 		pinctrl-0=<&gen_clk_ee_ao>;
@@ -796,7 +803,7 @@
 
 	iq: iq {
 		compatible = "soc, iq";
-		status = "okay";
+		status = "disabled";
 		sensor-name = "os08a10"; /*imx290;os08a10;imx227*/
 	};
 
@@ -853,7 +860,7 @@
 };
 
 &isp {
-	status = "okay";
+	status = "disabled";
 	temper-line-offset = <0x1E00>;
 	temper-buf-size = <32>;
 	temper-frame-num = <1>;
@@ -862,7 +869,7 @@
 };
 
 &adapter {
-	status = "okay";
+	status = "disabled";
 	mem_alloc = <24>;
 	memory-region = <&adapt_cma_reserved>;
 };
@@ -895,20 +902,10 @@
 };
 
 &i2c1 {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_master_pins3>; /* GPIOH_6,GPIOH_7 */
 	clock-frequency = <400000>;
-
-	sensor-i2c@6c {
-		compatible = "arm, i2c-sensor";
-		reg = <0x6c>;
-		reg-names = "i2c-sensor";
-		slave-addr = <0x6c>;
-		reg-type = <2>;
-		reg-data-type = <1>;
-		link-device = <&phycsi>;
-	};
 };
 
 &i2c2 {
@@ -1158,6 +1155,16 @@
 			output-high;
 		};
 	};
+
+        a_uart_cts_rts_pins: a_uart_cts_rts {
+		mux { /* GPIOX_12, GPIOX_13, GPIOX_14, GPIOX_15 */
+			groups = "uart_tx_a",
+				"uart_rx_a",
+				"uart_cts_a",
+				"uart_rts_a";
+			function = "uart_a";
+		};
+	};
 }; /* end of pinctrl_periphs */
 
 &pinctrl_aobus {
@@ -1298,6 +1305,14 @@
 
 	/* reset */
 	rst_pin-gpios = <&gpio GPIOZ_15 GPIO_ACTIVE_LOW>;
+};
+
+&a_uart_pins {
+	mux { /* GPIOX_12, GPIOX_13 */
+		groups = "uart_tx_a",
+			"uart_rx_a";
+		function = "uart_a";
+	};
 };
 
 &uart_A {

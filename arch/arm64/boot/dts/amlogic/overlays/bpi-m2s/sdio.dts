@@ -3,12 +3,10 @@
 
 / {
 	fragment@0 {
-		target = <&pwm_ef>;
+		target = <&sd_emmc_a>;
 
 		__overlay__ {
 			status = "okay";
-			pinctrl-names = "default";
-			pinctrl-0 = <&pwm_f_pins2>;
 		};
 	};
 };
