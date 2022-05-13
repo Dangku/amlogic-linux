@@ -10,7 +10,8 @@
 		__overlay__ {
 			status = "okay";
 			pinctrl-names = "pwm_pins";
-			pinctrl-0 = <&pwm_c_pins2 &pwm_d_pins1>; /* GPIOX_5,GPIOX_3 */
+			//pinctrl-0 = <&pwm_c_pins2 &pwm_d_pins1>; /* GPIOX_5,GPIOX_3 */
+			pinctrl-0 = <&pwm_c_pins2 &pwm_d_pins2>; /* GPIOX_5,GPIOX_6 */
 		};
 	};
 };
