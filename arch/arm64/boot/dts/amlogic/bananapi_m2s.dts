@@ -1200,7 +1200,7 @@
 		};
 	};
 
-        a_uart_cts_rts_pins: a_uart_cts_rts {
+	a_uart_cts_rts_pins: a_uart_cts_rts {
 		mux { /* GPIOX_12, GPIOX_13, GPIOX_14, GPIOX_15 */
 			groups = "uart_tx_a",
 				"uart_rx_a",

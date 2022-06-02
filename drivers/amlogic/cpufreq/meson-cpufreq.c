@@ -216,6 +216,7 @@ static int meson_cpufreq_set_target(struct cpufreq_policy *policy,
 	struct meson_cpufreq_driver_data *cpufreq_data;
 	struct device *cpu_dev;
 	struct regulator *cpu_reg;
+	struct cpufreq_freqs freqs;
 	int ret = 0;
 
 	if (!policy) {
@@ -585,9 +586,15 @@ static int meson_cpufreq_init(struct cpufreq_policy *policy)
 	if (is_meson_g12b_cpu() || is_meson_sm1_cpu()) {
 		int i = 0;
 
-		max_freq[cur_cluster] = min(max_freq[cur_cluster], (unsigned long)get_table_max(freq_table[cur_cluster]));
-		for (i = 0; (freq_table[cur_cluster][i].frequency != CPUFREQ_TABLE_END) && max_freq[cur_cluster]; i++) {
+		max_freq[cur_cluster] = min(max_freq[cur_cluster],
+				(unsigned long)get_table_max(freq_table[cur_cluster]));
+		for (i = 0; (freq_table[cur_cluster][i].frequency != CPUFREQ_TABLE_END)
+				&& max_freq[cur_cluster]; i++) {
 			if (freq_table[cur_cluster][i].frequency > max_freq[cur_cluster]) {
+				pr_info("dvfs [%s] - cluster %d freq %d\n",
+						__func__, cur_cluster,
+						freq_table[cur_cluster][i].frequency);
+
 				freq_table[cur_cluster][i].frequency = CPUFREQ_TABLE_END;
 			}
 		}
