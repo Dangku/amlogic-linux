@@ -1433,6 +1433,7 @@ static void hdmi_tvenc_set(struct hdmitx_vidpara *param)
 	unsigned long vso_begin_evn = 0;
 	struct hdmi_format_para *hdmi_encp_para = NULL;
 	struct hdmi_cea_timing *hdmi_encp_timing = NULL;
+	struct hdmi_cea_timing *custom_timing;
 
 	if(param->VIC >= HDMITX_VESA_OFFSET) {
 		/* VESA modes setting */
@@ -1663,6 +1664,39 @@ static void hdmi_tvenc_set(struct hdmitx_vidpara *param)
         SOF_LINES = 29;
         TOTAL_FRAMES = 4;
         break;
+	case HDMIV_480x320p60hz:
+		INTERLACE_MODE = 0;
+		PIXEL_REPEAT_VENC = 0;
+		PIXEL_REPEAT_HDMI = 0;
+		ACTIVE_PIXELS = (480*(1+PIXEL_REPEAT_HDMI));
+		ACTIVE_LINES = (320/(1+INTERLACE_MODE));
+		LINES_F0 = 263;
+		LINES_F1 = 263;
+		FRONT_PORCH = 120;
+		HSYNC_PIXELS = 100;
+		BACK_PORCH = 100;
+		EOF_LINES = 8;
+		VSYNC_LINES = 4;
+		SOF_LINES = 95;
+		TOTAL_FRAMES = 4;
+		break;
+	case HDMI_CUSTOMBUILT:
+		custom_timing = get_custom_timing();
+		INTERLACE_MODE = 0U;
+		PIXEL_REPEAT_VENC = 0;
+		PIXEL_REPEAT_HDMI = 0;
+		ACTIVE_PIXELS = custom_timing->h_active;
+		ACTIVE_LINES = custom_timing->v_active;
+		LINES_F0 = custom_timing->v_total;
+		LINES_F1  = custom_timing->v_total;
+		FRONT_PORCH = custom_timing->h_front;
+		HSYNC_PIXELS = custom_timing->h_sync;
+		BACK_PORCH = custom_timing->h_back;
+		EOF_LINES = custom_timing->v_front;
+		VSYNC_LINES = custom_timing->v_sync;
+		SOF_LINES = custom_timing->v_back;
+		TOTAL_FRAMES = 4;
+		break;
 	default:
 		break;
 	}

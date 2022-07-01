@@ -113,6 +113,13 @@ struct extcon_dev *hdmitx_extcon_rxsense;
 struct extcon_dev *hdmitx_extcon_hdcp;
 struct extcon_dev *hdmitx_extcon_cedst;
 
+static struct hdmi_cea_timing custom_timing;
+struct hdmi_cea_timing *get_custom_timing(void)
+{
+	return &custom_timing;
+}
+EXPORT_SYMBOL(get_custom_timing);
+
 static inline void hdmitx_notify_hpd(int hpd)
 {
 	if (hpd)
@@ -2235,6 +2242,7 @@ const char *disp_mode_t[] = {
 	"2560x1440p60hz",
 	"2560x1600p60hz",
 	"3440x1440p60hz",
+	"480x320p60hz",
 	NULL
 };
 
