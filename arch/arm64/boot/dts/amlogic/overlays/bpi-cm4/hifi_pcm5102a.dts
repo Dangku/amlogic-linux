@@ -1,0 +1,28 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&aml_tdmb>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "tdm_pins";
+			pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
+		};
+	};
+
+	fragment@1 {
+		target = <&pcm5102a>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&tdmbcodec>;
+
+		__overlay__ {
+			sound-dai = <&pcm5122 &dummy_codec>;
+		};
+	};
+};
