@@ -48,6 +48,8 @@ static unsigned int quirks;
 module_param(quirks, uint, S_IRUGO);
 MODULE_PARM_DESC(quirks, "Bit flags for quirks to be enabled as default");
 
+static unsigned int kpara_sg_tablesize;
+
 /*
  * xhci_handshake - spin reading hc until handshake completes or fails
  * @ptr: address of hc register to be read
@@ -1454,9 +1456,11 @@ int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flags)
 		if (xhci->xhc_state & XHCI_STATE_DYING)
 			goto dying;
 
-#ifdef CONFIG_AMLOGIC_USB
+#ifdef CONFIG_AMLOGIC_USB	// FIXME:
 		setup = (struct usb_ctrlrequest *) urb->setup_packet;
-		if ((setup->bRequestType == 0x80) && (setup->bRequest == 0x06)
+		if (bpi_amlogic_usb3()
+			&& (setup->bRequestType == 0x80)
+			&& (setup->bRequest == 0x06)
 			&& (setup->wValue == 0x0100)
 			&& (setup->wIndex != 0x0)) {
 			if ((((setup->wIndex)>>8) & 0xff) == 7) {
@@ -1636,14 +1640,22 @@ int xhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 	/* Queue a stop endpoint command, but only if this is
 	 * the first cancellation to be handled.
 	 */
+#ifdef CONFIG_AMLOGIC_USB
+	if (!(ep->ep_state & EP_STOP_CMD_PENDING)) {
+#else
 	if (!(ep->ep_state & EP_HALT_PENDING)) {
+#endif
 		command = xhci_alloc_command(xhci, false, false, GFP_ATOMIC);
 		if (!command) {
 			ret = -ENOMEM;
 			goto done;
 		}
+#ifdef CONFIG_AMLOGIC_USB
+		ep->ep_state |= EP_STOP_CMD_PENDING;
+#else
 		ep->ep_state |= EP_HALT_PENDING;
 		ep->stop_cmds_pending++;
+#endif
 		ep->stop_cmd_timer.expires = jiffies +
 			XHCI_STOP_EP_CMD_TIMEOUT * HZ;
 		add_timer(&ep->stop_cmd_timer);
@@ -1821,7 +1833,12 @@ int xhci_add_endpoint(struct usb_hcd *hcd, struct usb_device *udev,
 	 * process context, not interrupt context (or so documenation
 	 * for usb_set_interface() and usb_set_configuration() claim).
 	 */
+#ifdef CONFIG_AMLOGIC_CMA
+	if (xhci_endpoint_init(xhci, virt_dev, udev, ep,
+		 GFP_NOIO | __GFP_BDEV) < 0) {
+#else
 	if (xhci_endpoint_init(xhci, virt_dev, udev, ep, GFP_NOIO) < 0) {
+#endif
 		dev_dbg(&udev->dev, "%s - could not initialize ep %#x\n",
 				__func__, ep->desc.bEndpointAddress);
 		return -ENOMEM;
@@ -3684,12 +3701,17 @@ void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
 
 	/* Stop any wayward timer functions (which may grab the lock) */
 	for (i = 0; i < 31; ++i) {
+#ifdef CONFIG_AMLOGIC_USB
+		virt_dev->eps[i].ep_state &= ~EP_STOP_CMD_PENDING;
+#else
 		virt_dev->eps[i].ep_state &= ~EP_HALT_PENDING;
+#endif
 		del_timer_sync(&virt_dev->eps[i].stop_cmd_timer);
 	}
 
 #ifdef CONFIG_AMLOGIC_USB
-	virt_dev->udev = NULL;
+	if (bpi_amlogic_usb3())
+		virt_dev->udev = NULL;
 #endif
 
 	spin_lock_irqsave(&xhci->lock, flags);
@@ -4933,6 +4955,12 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
 	/* Accept arbitrarily long scatter-gather lists */
 	hcd->self.sg_tablesize = ~0;
 
+	if (bpi_amlogic_usb3()) {
+		if (kpara_sg_tablesize > 0)
+			hcd->self.sg_tablesize = kpara_sg_tablesize;
+		pr_info("usb: xhci: determined sg_tablesize: %u", hcd->self.sg_tablesize);
+	}
+
 	/* support to build packet from discontinuous buffers */
 	hcd->self.no_sg_constraint = 1;
 
@@ -5163,6 +5191,19 @@ static int __init xhci_hcd_init(void)
  * to allow module unload.
  */
 static void __exit xhci_hcd_fini(void) { }
+
+static int __init get_sg_tablesize(char *str)
+{
+	int ret = kstrtouint(str, 0, &kpara_sg_tablesize);
+
+	if (ret != 0 || kpara_sg_tablesize == 0) {
+		pr_info("usb: xhci: [%s]: Invalid sg_tablesize on bootargs. It will use default value.", __func__);
+		ret = -EINVAL;
+	}
+
+	return ret;
+}
+__setup("usb-xhci.tablesize=", get_sg_tablesize);
 
 module_init(xhci_hcd_init);
 module_exit(xhci_hcd_fini);

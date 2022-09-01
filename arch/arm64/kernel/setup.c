@@ -69,6 +69,13 @@ phys_addr_t __fdt_pointer __initdata;
 const char *machine_model;
 EXPORT_SYMBOL(machine_model);
 
+static bool __bpi_amlogic_usb3 = true;
+
+bool bpi_amlogic_usb3(void)
+{
+	return __bpi_amlogic_usb3;
+}
+
 /*
  * Standard memory resources
  */
@@ -204,6 +211,11 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
 
 	pr_info("Machine model: %s\n", name);
 	dump_stack_set_arch_desc("%s (DT)", name);
+
+	if (!strcmp(machine_model, "Bananapi BPI-M2S") ||
+                !strcmp(machine_model, "Bananapi BPI-CM4")) {
+                __bpi_amlogic_usb3 = false;
+        }
 }
 
 static void __init request_standard_resources(void)

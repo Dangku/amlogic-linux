@@ -393,8 +393,13 @@ void xhci_ring_ep_doorbell(struct xhci_hcd *xhci,
 	 * pointer command pending because the device can choose to start any
 	 * stream once the endpoint is on the HW schedule.
 	 */
+#ifdef CONFIG_AMLOGIC_USB
+	if ((ep_state & EP_STOP_CMD_PENDING) || (ep_state & SET_DEQ_PENDING)
+		|| (ep_state & EP_HALTED))
+#else
 	if ((ep_state & EP_HALT_PENDING) || (ep_state & SET_DEQ_PENDING) ||
 	    (ep_state & EP_HALTED))
+#endif
 		return;
 	writel(DB_VALUE(ep_index, stream_id), db_addr);
 	/* The CPU has better things to do at this point than wait for a
@@ -632,13 +637,19 @@ static void td_to_noop(struct xhci_hcd *xhci, struct xhci_ring *ep_ring,
 static void xhci_stop_watchdog_timer_in_irq(struct xhci_hcd *xhci,
 		struct xhci_virt_ep *ep)
 {
+#ifdef CONFIG_AMLOGIC_USB
+	ep->ep_state &= ~EP_STOP_CMD_PENDING;
+	/* Can't del_timer_sync in interrupt */
+	del_timer(&ep->stop_cmd_timer);
+#else
 	ep->ep_state &= ~EP_HALT_PENDING;
-	/* Can't del_timer_sync in interrupt, so we attempt to cancel.  If the
+	/* Can't del_timer_sync in interrupt, so we attempt to cancel.	If the
 	 * timer is running on another CPU, we don't decrement stop_cmds_pending
 	 * (since we didn't successfully stop the watchdog timer).
 	 */
 	if (del_timer(&ep->stop_cmd_timer))
 		ep->stop_cmds_pending--;
+#endif
 }
 
 /* Must be called with xhci->lock held in interrupt context */
@@ -906,10 +917,15 @@ static void xhci_kill_endpoint_urbs(struct xhci_hcd *xhci,
  * simple flag to say whether there is a pending stop endpoint command for a
  * particular endpoint.
  *
+#ifdef CONFIG_AMLOGIC_USB
+ * Instead we use a combination of that flag and checking if a new timer is
+ * pending.
+#else
  * Instead we use a combination of that flag and a counter for the number of
  * pending stop endpoint commands.  If the timer is the tail end of the last
  * stop endpoint command, and the endpoint's command is still pending, we assume
  * the host is dying.
+#endif
  */
 void xhci_stop_endpoint_command_watchdog(unsigned long arg)
 {
@@ -923,12 +939,21 @@ void xhci_stop_endpoint_command_watchdog(unsigned long arg)
 
 	spin_lock_irqsave(&xhci->lock, flags);
 
+#ifdef CONFIG_AMLOGIC_USB
+	/* bail out if cmd completed but raced with stop ep watchdog timer.*/
+	if (!(ep->ep_state & EP_STOP_CMD_PENDING) ||
+	    timer_pending(&ep->stop_cmd_timer)) {
+#else
 	ep->stop_cmds_pending--;
 	if (!(ep->stop_cmds_pending == 0 && (ep->ep_state & EP_HALT_PENDING))) {
 		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
 				"Stop EP timer ran, but no command pending, "
 				"exiting.");
+#endif
 		spin_unlock_irqrestore(&xhci->lock, flags);
+#ifdef CONFIG_AMLOGIC_USB
+		xhci_dbg(xhci, "Stop EP timer raced with cmd completion, exit");
+#endif
 		return;
 	}
 
@@ -1713,8 +1738,10 @@ cleanup:
 	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
 	spin_unlock(&xhci->lock);
 #ifdef CONFIG_AMLOGIC_USB
-	if (!(temp & PORT_CONNECT) || !(temp & PORT_PE))
-		set_usb_phy_host_tuning(faked_port_index, 1);
+	if (bpi_amlogic_usb3()) {
+		if (!(temp & PORT_CONNECT) || !(temp & PORT_PE))
+			set_usb_phy_host_tuning(faked_port_index, 1);
+	}
 #endif
 	/* Pass this up to the core */
 	usb_hcd_poll_rh_status(hcd);
