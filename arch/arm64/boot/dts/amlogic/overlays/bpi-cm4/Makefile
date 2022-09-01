@@ -8,6 +8,7 @@ dtbo-y += i2c2.dtbo \
 	pwm_c-beeper.dtbo \
 	pwm_ef-f.dtbo \
 	i2smic.dtbo \
+	i2smic_tdmc.dtbo \
 	pdmmic.dtbo \
 	ds3231.dtbo \
 	hifi_pcm5102a.dtbo \
