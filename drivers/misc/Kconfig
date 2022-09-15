@@ -799,6 +799,13 @@ config KHADAS_MCU
 	help
 	  This driver is for Khadas MCU.
 
+config RPI_MCU
+        tristate "rpi mcu"
+        default n
+        depends on I2C
+        help
+          Control the power of rpi 7 touch screen.
+
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"

@@ -905,6 +905,8 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_master_pins3>; /* GPIOH_6,GPIOH_7 */
 	clock-frequency = <400000>;
+	//i2c-scl-rising-time-ns = <300>;
+	//i2c-scl-falling-time-ns = <15>;
 
 	sensor-i2c@6c {
 		compatible = "arm, i2c-sensor";
@@ -934,6 +936,18 @@
 			max-rpm = /bits/ 16 <5500>;
 		};
 	};
+
+	rpi_mcu: rpi_mcu@45 {
+		compatible = "rpi_mcu";
+		reg = <0x45>;
+		status = "okay";
+	};
+
+	rpi_ft5406: rpi_ft5406@38 {
+                compatible = "rpi_ft5406";
+                reg = <0x38>;
+                status = "okay";
+        };
 };
 
 &i2c2 {
