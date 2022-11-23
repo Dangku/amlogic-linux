@@ -7,6 +7,8 @@
 
 		__overlay__ {
 			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c2_master_pins1>; /* GPIOX_17,GPIOX_18 */
 		};
 	};
 };

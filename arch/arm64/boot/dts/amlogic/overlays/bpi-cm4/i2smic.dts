@@ -7,7 +7,7 @@
 		__overlay__ {
 			status = "okay";
 			pinctrl-names = "tdm_pins";
-			pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
+			pinctrl-0 = <&tdmb_mclk &tdmin_b>;
 		};
 	};
 

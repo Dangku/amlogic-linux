@@ -1133,8 +1133,8 @@
 	};
 
 	tdmin_b:tdmin_b {
-		mux { /* GPIOA_4 */
-			groups = "tdmb_din1"
+		mux { /* GPIOA_3 */
+			groups = "tdmb_din0"
 				/*,"tdmb_slv_sclk", "tdmb_slv_fs"*/;
 			function = "tdmb_in";
 			drive-strength = <2>;

@@ -25,14 +25,14 @@
 				bgr = <0>;
 				fps = <30>;
 				buswidth = <8>;
-				reset-gpios = <&gpio GPIOA_6 GPIO_ACTIVE_LOW>;   //phy.13
-				dc-gpios = <&gpio GPIOA_11 GPIO_ACTIVE_HIGH>;    //phy.22
+				reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;   //phy.13
+				dc-gpios = <&gpio GPIOA_7 GPIO_ACTIVE_HIGH>;    //phy.22
 				led-gpios = <&gpio GPIOA_1 GPIO_ACTIVE_LOW>;     //phy.12
 				debug = <0>;
 
 				tft24_pins: tft24_pins {
 					mux {
-						groups = "GPIOA_1", "GPIOA_6", "GPIOA_11";
+						groups = "GPIOA_1", "GPIOA_7", "GPIOH_4";
 						function = "gpio_periphs";
 						output-high;
 						drive-strength = <3>;
