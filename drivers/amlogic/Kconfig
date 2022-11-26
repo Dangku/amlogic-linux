@@ -108,6 +108,8 @@ source "drivers/amlogic/dvb/Kconfig"
 
 source "drivers/amlogic/power/Kconfig"
 
+source "drivers/amlogic/yk_power/Kconfig"
+
 source "drivers/amlogic/pci/Kconfig"
 
 source "drivers/amlogic/irblaster/Kconfig"
@@ -148,11 +150,11 @@ source "drivers/amlogic/pixel_probe/Kconfig"
 
 source "drivers/amlogic/firmware/Kconfig"
 
-source "drivers/amlogic/media_modules/Kconfig"
+#source "drivers/amlogic/media_modules/Kconfig"
 
-source "drivers/amlogic/npu/Kconfig"
+#source "drivers/amlogic/npu/Kconfig"
 
-source "drivers/amlogic/isp_module/Kconfig"
+#source "drivers/amlogic/isp_module/Kconfig"
 
 endmenu
 endif

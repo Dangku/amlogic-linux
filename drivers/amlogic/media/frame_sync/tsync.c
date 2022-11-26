@@ -1248,7 +1248,7 @@ int tsync_set_apts(unsigned int pts)
 		t = timestamp_pcrscr_get();
 
 	if (tsync_mode == TSYNC_MODE_AMASTER) {
-		/* special used for Dolby Certification AVSync test */
+		/* special used for Dobly Certification AVSync test */
 		if (dobly_avsync_test) {
 			if (get_vsync_pts_inc_mode()
 				&&
@@ -2064,8 +2064,10 @@ static ssize_t store_latency(struct class *class,
 static ssize_t show_apts_lookup(struct class *class,
 	struct class_attribute *attrr, char *buf)
 {
+	u32 frame_size;
 	unsigned int  pts = 0xffffffff;
-	pts_lookup_offset(PTS_TYPE_AUDIO, apts_lookup_offset, &pts, 300);
+	pts_lookup_offset(PTS_TYPE_AUDIO, apts_lookup_offset,
+		&pts, &frame_size, 300);
 	return sprintf(buf, "0x%x\n", pts);
 }
 

@@ -2081,11 +2081,6 @@ static ssize_t show_config(struct device *dev,
 	int pos = 0;
 	unsigned char *conf;
 	struct hdmitx_dev *hdev = &hdmitx_device;
-	char* pix_fmt[] = {"RGB","YUV422","YUV444","YUV420"};
-	char* eotf[] = {"SDR","HDR","HDR10","HLG"};
-	char* range[] = {"default","limited","full"};
-	char* colourimetry[] = {"default", "BT.601", "BT.709", "xvYCC601","xvYCC709",
-	"sYCC601","Adobe_YCC601","Adobe_RGB","BT.2020c","BT.2020nc","P3 D65","P3 DCI"};
 
 	pos += snprintf(buf+pos, PAGE_SIZE, "cur_VIC: %d\n", hdev->cur_VIC);
 	if (hdev->cur_video_param)

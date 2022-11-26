@@ -197,8 +197,7 @@ void enable_di_post_mif(enum gate_mode_e mode);
 void di_hw_uninit(void);
 void combing_pd22_window_config(unsigned int width, unsigned int height);
 void calc_lmv_init(void);
-void calc_lmv_base_mcinfo(unsigned int vf_height, unsigned long mcinfo_adr,
-						unsigned int mcinfo_size);
+void calc_lmv_base_mcinfo(unsigned int vf_height, unsigned short *mcinfo_vadr);
 void init_field_mode(unsigned short height);
 void film_mode_win_config(unsigned int width, unsigned int height);
 void pulldown_vof_win_config(struct pulldown_detected_s *wins);
@@ -236,5 +235,47 @@ extern void di_patch_post_update_mc_sw(unsigned int cmd, bool on);
 extern void di_rst_protect(bool on);
 extern void di_pre_nr_wr_done_sel(bool on);
 extern void di_arb_sw(bool on);
+extern bool afbc_is_free(void);
+extern enum eAFBC_DEC afbc_get_decnub(void);
+
+/*also see: dbg_mode_name*/
+enum eDI_DBG_MOD {
+	eDI_DBG_MOD_REGB,	//0
+	eDI_DBG_MOD_REGE,	//1
+	eDI_DBG_MOD_UNREGB,	//2
+	eDI_DBG_MOD_UNREGE,	// 3
+	eDI_DBG_MOD_PRE_SETB,	// 4
+	eDI_DBG_MOD_PRE_SETE,	// 5
+	eDI_DBG_MOD_PRE_DONEB,	// 6
+	eDI_DBG_MOD_PRE_DONEE,	// 7
+	eDI_DBG_MOD_POST_SETB,	// 8
+	eDI_DBG_MOD_POST_SETE,	// 9
+	eDI_DBG_MOD_POST_IRQB,	// a
+	eDI_DBG_MOD_POST_IRQE,	// b
+	eDI_DBG_MOD_POST_DB,	// c
+	eDI_DBG_MOD_POST_DE,	// d
+	eDI_DBG_MOD_POST_CH_CHG,	// e
+	eDI_DBG_MOD_POST_TIMEOUT,	// F
+
+	eDI_DBG_MOD_RVB,	//10
+	eDI_DBG_MOD_RVE,	//11
+
+	eDI_DBG_MOD_POST_RESIZE, //0x12
+
+	//---add for debug tl1
+	eDI_DBG_MOD_PQB,	//0x13
+	eDI_DBG_MOD_PQE,	//0x14
+	eDI_DBG_MOD_OREGB,	//0x15
+	eDI_DBG_MOD_OREGE,	//0x16
+	eDI_DBG_MOD_OUNREGB,	//0x17
+	eDI_DBG_MOD_OUNREGE,	//0x18
+	eDI_DBG_MOD_PRE_IRQB,	//0x19
+	eDI_DBG_MOD_PRE_IRQE,	//0x1a
+	eDI_DBG_MOD_PRE_TIMEOUT,	//0x1b
+	eDI_DBG_MOD_END,
+
+};
+
+extern void ddbg_mod_save(unsigned int mod, unsigned int ch, unsigned int cnt);
 
 #endif

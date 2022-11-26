@@ -334,7 +334,8 @@ static int __set_selection(const struct tiocl_selection __user *sel, struct tty_
 		}
 	}
 	sel_buffer_lth = bp - sel_buffer;
-
+unlock:
+	mutex_unlock(&sel_lock);
 	return ret;
 }
 

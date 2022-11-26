@@ -41,16 +41,14 @@
 #define	AO_RTI_GEN_PWR_ACK0		0x8
 
 //mempd reg
-#define	HHI_MEM_PD_REG1			0x4
-#define	HHI_MEM_PD_REG0			0x30
-#define	HHI_VPU_MEM_PD_REG0		0x34
-#define	HHI_VPU_MEM_PD_REG1		0x38
-#define	HHI_DEMOD_MEM_PD_REG		0x3c
-#define	HHI_DSP_MEM_PD_REG0		0x40
-#define	HHI_AUDIO_MEM_PD_REG0		0x44
-#define	HHI_NANOQ_MEM_PD_REG0		0x48
-#define	HHI_NANOQ_MEM_PD_REG1		0x4c
-#define	HHI_VPU_MEM_PD_REG2		0x64
+#define	HHI_MEM_PD_REG0			0x0
+#define	HHI_VPU_MEM_PD_REG0		0x4
+#define	HHI_VPU_MEM_PD_REG1		0x8
+#define	HHI_DEMOD_MEM_PD_REG		0xc
+#define	HHI_DSP_MEM_PD_REG0		0x10
+#define	HHI_NANOQ_MEM_PD_REG0		0x18
+#define	HHI_NANOQ_MEM_PD_REG1		0x1c
+#define	HHI_VPU_MEM_PD_REG2		0x34
 
 //reset reg
 #define	RESET0_LEVEL			0x0
@@ -139,32 +137,6 @@ static void mem_pd_switch(int pwr_domain, bool pwr_switch)
 			value &= ~(0xff << 8);
 			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG0));
 			break;
-		case PM_EMMC_B:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value &= ~(0x3 << 10);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_EMMC_C:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value &= ~(0x3 << 8);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_AUDIO:
-			value = readl(s_pd->mempd_addr + HHI_AUDIO_MEM_PD_REG0);
-			value &= ~(0xffff << 16);
-			writel(value, (s_pd->mempd_addr +
-			       HHI_AUDIO_MEM_PD_REG0));
-			break;
-		case PM_TVFE:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value &= ~(0x3 << 6);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_ATV_DEMOD:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value &= ~(0x3 << 4);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
 		case PM_NN:
 			writel(0x0, (s_pd->mempd_addr + HHI_NANOQ_MEM_PD_REG0));
 			writel(0x0, (s_pd->mempd_addr + HHI_NANOQ_MEM_PD_REG1));
@@ -241,32 +213,6 @@ static void mem_pd_switch(int pwr_domain, bool pwr_switch)
 			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG0);
 			value |= (0xff << 8);
 			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG0));
-			break;
-		case PM_EMMC_B:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value |= (0x3 << 10);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_EMMC_C:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value |= (0x3 << 8);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_AUDIO:
-			value = readl(s_pd->mempd_addr + HHI_AUDIO_MEM_PD_REG0);
-			value |= (0xffff << 16);
-			writel(value, (s_pd->mempd_addr +
-			       HHI_AUDIO_MEM_PD_REG0));
-			break;
-		case PM_TVFE:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value |= (0x3 << 6);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
-			break;
-		case PM_ATV_DEMOD:
-			value = readl(s_pd->mempd_addr + HHI_MEM_PD_REG1);
-			value |= (0x3 << 4);
-			writel(value, (s_pd->mempd_addr + HHI_MEM_PD_REG1));
 			break;
 		case PM_NN:
 			writel(0xffffffff, (s_pd->mempd_addr +
@@ -367,36 +313,6 @@ static void reset_switch(int pwr_domain, bool pwr_switch)
 			value |= tmp;
 			writel(value, (s_pd->reset_addr + RESET7_LEVEL));
 			break;
-		case PM_EMMC_B:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value |= (0x1 << 13);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_EMMC_C:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value |= (0x1 << 14);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_AUDIO:
-			value = readl(s_pd->reset_addr + RESET2_LEVEL);
-			value |= (0x1 << 1);
-			writel(value, (s_pd->reset_addr + RESET2_LEVEL));
-			break;
-		case PM_TVFE:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value |= (0x1 << 7);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_ACODEC:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value |= (0x1 << 29);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_ATV_DEMOD:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value |= (0x1 << 9);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
 		case PM_NN:
 			value = readl(s_pd->reset_addr + RESET2_LEVEL);
 			value |= (0x1 << 12);
@@ -488,36 +404,6 @@ static void reset_switch(int pwr_domain, bool pwr_switch)
 			value = readl(s_pd->reset_addr + RESET7_LEVEL);
 			value &= ~tmp;
 			writel(value, (s_pd->reset_addr + RESET7_LEVEL));
-			break;
-		case PM_EMMC_B:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value &= ~(0x1 << 13);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_EMMC_C:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value &= ~(0x1 << 14);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_AUDIO:
-			value = readl(s_pd->reset_addr + RESET2_LEVEL);
-			value &= ~(0x1 << 1);
-			writel(value, (s_pd->reset_addr + RESET2_LEVEL));
-			break;
-		case PM_TVFE:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value &= ~(0x1 << 7);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_ACODEC:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value &= ~(0x1 << 29);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
-			break;
-		case PM_ATV_DEMOD:
-			value = readl(s_pd->reset_addr + RESET1_LEVEL);
-			value &= ~(0x1 << 9);
-			writel(value, (s_pd->reset_addr + RESET1_LEVEL));
 			break;
 		case PM_NN:
 			value = readl(s_pd->reset_addr + RESET2_LEVEL);

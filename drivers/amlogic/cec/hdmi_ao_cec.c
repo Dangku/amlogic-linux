@@ -64,7 +64,7 @@
 
 
 /*#define CEC_FRAME_DELAY		msecs_to_jiffies(400)*/
-#define CEC_DEV_NAME		"aocec"
+#define CEC_DEV_NAME		"cec"
 
 #define HR_DELAY(n)		(ktime_set(0, n * 1000 * 1000))
 #define MAX_INT    0x7ffffff
@@ -558,7 +558,9 @@ static bool cec_message_op(unsigned char *msg, unsigned char len)
 					break;
 			}
 			if (i == len) {
+			#ifdef CONFIG_AMLOGIC_MEDIA_TVIN_HDMI
 				cec_set_dev_info(dev_osd_name[j][0]);
+			#endif
 				CEC_INFO("specific dev:%d", dev_osd_name[j][0]);
 			}
 		}
@@ -3008,11 +3010,6 @@ static ssize_t hdmitx_cec_write(struct file *f, const char __user *buf,
 	if (cec_cfg & CEC_FUNC_CFG_CEC_ON) {
 		/*cec module on*/
 		ret = cec_ll_tx(tempbuf, size);
-		if (ret == CEC_FAIL_NACK) {
-			return -1;
-		} else {
-			return size;
-		}
 	} else {
 		CEC_ERR("err:cec module disabled\n");
 	}
@@ -3443,7 +3440,9 @@ static char *aml_cec_class_devnode(struct device *dev, umode_t *mode)
 {
 	if (mode) {
 		*mode = 0666;
-	}
+		CEC_INFO("mode is %x\n", *mode);
+	} else
+		CEC_INFO("mode is null\n");
 	return NULL;
 }
 

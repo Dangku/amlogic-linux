@@ -388,10 +388,8 @@ MODULE_PARM_DESC(force_filter_mode, "force_filter_mode");
 module_param(force_filter_mode, int, 0664);
 #endif
 /*temp disable sr for power test*/
-bool super_scaler = false;
+bool super_scaler = true;
 struct sr_info_s sr_info;
-module_param(super_scaler, bool, 0664);
-MODULE_PARM_DESC(super_scaler, "super_scaler");
 static unsigned int super_debug;
 module_param(super_debug, uint, 0664);
 MODULE_PARM_DESC(super_debug, "super_debug");

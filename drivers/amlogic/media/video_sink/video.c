@@ -160,7 +160,6 @@ static bool bypass_pps = true;
 int bit_depth_flag = 8;
 
 bool omx_secret_mode;
-EXPORT_SYMBOL(omx_secret_mode);
 static int omx_continuous_drop_count;
 static bool omx_continuous_drop_flag;
 static u32 cur_disp_omx_index;
@@ -3482,9 +3481,11 @@ static irqreturn_t vsync_isr_in(int irq, void *dev_id)
 			/*vsync_pts_inc_adj, vsync_pts_inc); */
 			timestamp_pcrscr_inc(vsync_pts_inc_adj);
 			timestamp_apts_inc(vsync_pts_inc_adj);
+			videosync_pcrscr_inc(vsync_pts_inc_adj);
 		} else {
 			timestamp_pcrscr_inc(vsync_pts_inc + 1);
 			timestamp_apts_inc(vsync_pts_inc + 1);
+			videosync_pcrscr_inc(vsync_pts_inc + 1);
 		}
 	} else {
 		if (vsync_slow_factor == 0) {
@@ -3504,9 +3505,11 @@ static irqreturn_t vsync_isr_in(int irq, void *dev_id)
 
 			timestamp_pcrscr_inc(inc);
 			timestamp_apts_inc(inc);
+			videosync_pcrscr_inc(inc);
 		} else {
 			timestamp_pcrscr_inc(vsync_pts_inc / vsync_slow_factor);
 			timestamp_apts_inc(vsync_pts_inc / vsync_slow_factor);
+			videosync_pcrscr_inc(vsync_pts_inc / vsync_slow_factor);
 		}
 	}
 	if (omx_secret_mode == true) {
@@ -3514,8 +3517,6 @@ static irqreturn_t vsync_isr_in(int irq, void *dev_id)
 		int diff = 0;
 		unsigned long delta1 = 0;
 		unsigned long time_setomxpts_delta = 0;
-		video_notify_flag |= VIDEO_NOTIFY_TRICK_WAIT;
-		atomic_set(&trickmode_framedone, 1);
 
 		diff = system_time - omx_pts;
 		if (time_setomxpts > 0

@@ -739,7 +739,7 @@ int hdmirx_hw_get_3d_structure(void)
 
 /*
  * hdmirx_get_vsi_info - get vsi info
- * this func is used to get 3D format and dolby
+ * this func is used to get 3D format and dobly
  * vision state of current video
  */
 void hdmirx_get_vsi_info(struct tvin_sig_property_s *prop)

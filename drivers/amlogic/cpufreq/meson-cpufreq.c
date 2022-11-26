@@ -42,6 +42,7 @@
 #include <linux/amlogic/scpi_protocol.h>
 #include "../../base/power/opp/opp.h"
 #include "meson-cpufreq.h"
+#include <linux/arm-smccc.h>
 #include <linux/amlogic/cpu_version.h>
 
 #define AMLOGIC_A53_DEFAULT	1800000 /* Amlogic Little Core A53 */
@@ -166,7 +167,7 @@ static unsigned int meson_cpufreq_set_rate(struct cpufreq_policy *policy,
 			if (ret) {
 				pr_err("%s: CPU%d clk_prepare_enable failed\n",
 					__func__, policy->cpu);
-				return ret;
+				goto out;
 			}
 		}
 
@@ -174,35 +175,35 @@ static unsigned int meson_cpufreq_set_rate(struct cpufreq_policy *policy,
 		if (ret) {
 			pr_err("%s: error in setting low_freq_clk_p as parent\n",
 				__func__);
-			return ret;
+			goto out;
 		}
 
 		ret = clk_set_rate(high_freq_clk_p, new_rate * 1000);
 		if (ret) {
 			pr_err("%s: error in setting high_freq_clk_p rate!\n",
 				__func__);
-			return ret;
+			goto out;
 		}
 
 		ret = clk_set_parent(clk[cur_cluster], high_freq_clk_p);
 		if (ret) {
 			pr_err("%s: error in setting high_freq_clk_p as parent\n",
 				__func__);
-			return ret;
+			goto out;
 		}
 	} else {
 		ret = clk_set_rate(low_freq_clk_p, new_rate * 1000);
 		if (ret) {
 			pr_err("%s: error in setting low_freq_clk_p rate!\n",
 				__func__);
-			return ret;
+			goto out;
 		}
 
 		ret = clk_set_parent(clk[cur_cluster], low_freq_clk_p);
 		if (ret) {
 			pr_err("%s: error in setting low_freq_clk_p rate!\n",
 				__func__);
-			return ret;
+			goto out;
 		}
 
 		if (__clk_get_enable_count(high_freq_clk_p) >= 1)
@@ -222,17 +223,16 @@ static unsigned int meson_cpufreq_set_rate(struct cpufreq_policy *policy,
 			ret = -EIO;
 	}
 
-	if (WARN_ON(ret)) {
+	if (WARN_ON(ret))
 		pr_err("clk_set_rate failed: %d, new cluster: %d\n", ret,
 				cur_cluster);
-		mutex_unlock(&cluster_lock[cur_cluster]);
-		return ret;
-	}
 
+out:
 	mutex_unlock(&cluster_lock[cur_cluster]);
-	return 0;
+	return ret;
 }
 
+#if !defined(CONFIG_REGULATOR_YK618)
 static int meson_regulator_set_volate(struct regulator *regulator, int old_uv,
 			int new_uv, int tol_uv)
 {
@@ -282,6 +282,7 @@ static int meson_regulator_set_volate(struct regulator *regulator, int old_uv,
 	return ret;
 
 }
+#endif
 
 /* Set clock frequency */
 static int meson_cpufreq_set_target(struct cpufreq_policy *policy,
@@ -340,8 +341,13 @@ static int meson_cpufreq_set_target(struct cpufreq_policy *policy,
 
 	/*cpufreq up,change voltage before frequency*/
 	if (freq_new > freq_old) {
+#ifdef CONFIG_REGULATOR_YK618
+		ret = regulator_set_voltage_tol(cpu_reg,
+			volt_new, volt_new+volt_tol);
+#else
 		ret = meson_regulator_set_volate(cpu_reg, volt_old,
 			volt_new, volt_tol);
+#endif
 		if (ret) {
 			mutex_unlock(&cpufreq_target_lock);
 			pr_err("failed to scale voltage %u %u up: %d\n",
@@ -361,8 +367,13 @@ static int meson_cpufreq_set_target(struct cpufreq_policy *policy,
 					freq_new / 1000000, ret);
 		if ((volt_old > 0) && (freq_new > freq_old)) {
 			pr_debug("scaling to old voltage %u\n", volt_old);
+#ifdef CONFIG_REGULATOR_YK618
+			regulator_set_voltage_tol(cpu_reg, volt_old,
+				volt_old+volt_tol);
+#else
 			meson_regulator_set_volate(cpu_reg, volt_old, volt_old,
 				volt_tol);
+#endif
 		}
 		mutex_unlock(&cpufreq_target_lock);
 		return ret;
@@ -371,8 +382,13 @@ static int meson_cpufreq_set_target(struct cpufreq_policy *policy,
 
 	/*cpufreq down,change voltage after frequency*/
 	if (freq_new < freq_old) {
+#ifdef CONFIG_REGULATOR_YK618
+		ret = regulator_set_voltage_tol(cpu_reg,
+			volt_new, volt_new+volt_tol);
+#else
 		ret = meson_regulator_set_volate(cpu_reg, volt_old,
 			volt_new, volt_tol);
+#endif
 		if (ret) {
 			pr_err("failed to scale volt %u %u down: %d\n",
 				volt_new, volt_tol, ret);
@@ -815,7 +831,24 @@ static struct platform_driver meson_cpufreq_platdrv = {
 	.probe		= meson_cpufreq_probe,
 	.remove		= meson_cpufreq_remove,
 };
+
+#ifdef CONFIG_REGULATOR_YK618
+static int __init meson_cpufreq_module_init(void)
+{
+	return platform_driver_register(&meson_cpufreq_platdrv);
+}
+
+static void meson_cpufreq_module_exit(void)
+{
+	platform_driver_unregister(&meson_cpufreq_platdrv);
+}
+
+module_exit(meson_cpufreq_module_exit);
+late_initcall(meson_cpufreq_module_init);
+
+#else
 module_platform_driver(meson_cpufreq_platdrv);
+#endif
 
 MODULE_AUTHOR("Amlogic cpufreq driver owner");
 MODULE_DESCRIPTION("Generic ARM big LITTLE cpufreq driver via DTS");

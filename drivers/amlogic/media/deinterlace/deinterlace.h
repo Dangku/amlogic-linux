@@ -126,6 +126,8 @@ struct di_buf_s {
 	int cnt_canvas_idx;
 	unsigned long mcinfo_adr;
 	int mcinfo_canvas_idx;
+	unsigned short *mcinfo_vaddr;
+	bool bflg_vmap;
 	unsigned long mcvec_adr;
 	int mcvec_canvas_idx;
 	struct mcinfo_pre_s {
@@ -158,6 +160,7 @@ struct di_buf_s {
 	 */
 	atomic_t di_cnt;
 	struct page	*pages;
+	u32 width_bk;
 };
 #define RDMA_DET3D_IRQ				0x20
 /* vdin0 rdma irq */
@@ -365,7 +368,7 @@ struct di_pre_stru_s {
 	unsigned int det_tp;
 	unsigned int det_la;
 	unsigned int det_null;
-	unsigned int width_bk;
+	/*unsigned int width_bk;*/
 #ifdef DET3D
 	int	vframe_interleave_flag;
 #endif
@@ -391,6 +394,8 @@ struct di_pre_stru_s {
 	unsigned long irq_time[2];
 	/* combing adaptive */
 	struct combing_status_s *mtn_status;
+	u64 afbc_rls_time;
+	bool wait_afbc;
 	/*****************/
 	bool retry_en;
 	unsigned int retry_index;
@@ -445,6 +450,16 @@ struct di_buf_pool_s {
 	struct di_buf_s *di_buf_ptr;
 	unsigned int size;
 };
+struct di_mm_s {
+	struct page	*ppage;
+	unsigned long	addr;
+};
+extern bool di_mm_alloc(int cma_mode, size_t count, struct di_mm_s *o);
+extern bool di_mm_release(int cma_mode,
+			struct page *pages,
+			int count,
+			unsigned long addr);
+
 
 unsigned char is_bypass(vframe_t *vf_in);
 
@@ -464,7 +479,13 @@ int get_di_video_peek_cnt(void);
 unsigned long get_di_reg_unreg_timeout_cnt(void);
 struct vframe_s **get_di_vframe_in(void);
 
+extern s32 di_request_afbc_hw(u8 id, bool on);
+u32 di_requeset_afbc(u32 onoff);
+/***********************/
+extern bool di_wr_cue_int(void);
+extern int reg_cue_int_show(struct seq_file *seq, void *v);
 
+bool dil_attach_ext_api(const struct di_ext_ops *di_api);
 /*---------------------*/
 
 struct di_buf_s *get_di_buf(int queue_idx, int *start_pos);

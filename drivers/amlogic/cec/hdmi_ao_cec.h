@@ -20,16 +20,46 @@
 
 #define CEC_DRIVER_VERSION     "2020/03/16:reduece no msg in sleep time\n"
 
-#define CEC_FRAME_DELAY		msecs_to_jiffies(400)
-#define CEC_DEV_NAME		"aocec"
+#define CEC_FRAME_DELAY		msecs_to_jiffies(30)
+#define CEC_CHK_BUS_CNT		20
 
-#define CEC_EARLY_SUSPEND	(1 << 0)
-#define CEC_DEEP_SUSPEND	(1 << 1)
+#define CEC_DEV_NAME		"cec"
+
 #define CEC_PHY_PORT_NUM		4
 #define HR_DELAY(n)		(ktime_set(0, n * 1000 * 1000))
 
+enum cec_chip_ver {
+	CEC_CHIP_GXL = 0,
+	CEC_CHIP_GXM,
+	CEC_CHIP_TXL,
+	CEC_CHIP_TXLX,
+	CEC_CHIP_TXHD,
+	CEC_CHIP_G12A,
+	CEC_CHIP_G12B,
+	CEC_CHIP_SM1,
+	CEC_CHIP_TL1,
+	CEC_CHIP_TM2,
+};
+
+enum cecaver {
+	/*
+	 * first version, only support one logical addr
+	 * "0xf" broadcast addr is default on
+	 */
+	CECA_VER_0 = 0,
+
+	/*
+	 * support multi logical address, "0xf" broadcast
+	 * addr is default on
+	 */
+	CECA_VER_1 = 1,
+};
+
 enum cecbver {
-	/*first version*/
+	/* first version
+	 * support multi logical address, "0xf" broadcast
+	 * addr is default on
+	 */
 	CECB_VER_0 = 0,
 	/*ee to ao */
 	CECB_VER_1 = 1,
