@@ -17,7 +17,7 @@
 
 /dts-v1/;
 
-#include "partition_mbox_normal.dtsi"
+#include "partition_mbox_normal_P_32.dtsi"
 #include "mesong12b_a.dtsi"
 #include "mesong12b_skt-panel.dtsi"
 
@@ -857,7 +857,7 @@
 
 	touchscreen@5d {
 		compatible = "goodix,gt9xx";
-		status = "disabled";
+		status = "okay";
 		reg = <0x5d>;
 		reset-gpio = <&gpio GPIOZ_9 GPIO_ACTIVE_HIGH>;
 		irq-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_HIGH>;
@@ -884,7 +884,7 @@
 
 	touchscreen@38 {
 		compatible = "focaltech,fts";
-		status = "okay";
+		status = "disabled";
 		reg = <0x38>;
 		reset-gpio = <&gpio GPIOZ_9 GPIO_ACTIVE_HIGH>;
 		irq-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_HIGH>;

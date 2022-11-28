@@ -94,7 +94,7 @@ static long iq_ioctl( struct v4l2_subdev *sd, unsigned int cmd, void *arg )
                 *( (uint16_t *)&ARGS_TO_PTR( arg )->ioctl.request_info.lut.rows ) = 0;
                 *( (uint16_t *)&ARGS_TO_PTR( arg )->ioctl.request_info.lut.cols ) = 0;
                 *( (uint16_t *)&ARGS_TO_PTR( arg )->ioctl.request_info.lut.width ) = 0;
-                LOG( LOG_CRIT, "Unitialialized calibration at ctx:%d id:%d\n", context, id );
+                LOG( LOG_INFO, "Unitialialized calibration at ctx:%d id:%d\n", context, id );
             }
             rc = 0;
         } else {
@@ -126,7 +126,7 @@ static long iq_ioctl( struct v4l2_subdev *sd, unsigned int cmd, void *arg )
                         rc = -1;
                     }
                 } else {
-                    LOG( LOG_CRIT, "Uninitialized calibration at ctx:%d id:%d\n", context, id );
+                    LOG( LOG_INFO, "Uninitialized calibration at ctx:%d id:%d\n", context, id );
                 }
             } else {
                 LOG( LOG_ERR, "User pointer is null, lut id %d, lut sensor_arg 0x%x", id, sensor_arg );

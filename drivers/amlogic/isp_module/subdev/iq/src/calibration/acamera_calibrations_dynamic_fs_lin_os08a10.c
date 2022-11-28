@@ -207,15 +207,15 @@ static uint16_t _calibration_stitching_lm_np[][2] = {
     {7 * 256, 50}};
 
 static uint16_t _calibration_stitching_lm_mov_mult[][2] = {
-    {0 * 256, 512},
-    {1 * 256, 384},
-    {2 * 256, 256},
-    {3 * 256, 256},
-    {4 * 256, 256},
-    {5 * 256, 256},
-    {6 * 256, 256},
-    {7 * 256, 256},
-    {8 * 256, 256}};
+    {0 * 256, 0},
+    {1 * 256, 0},
+    {2 * 256, 0},
+    {3 * 256, 0},
+    {4 * 256, 0},
+    {5 * 256, 0},
+    {6 * 256, 0},
+    {7 * 256, 0},
+    {8 * 256, 0}};
 
 static uint16_t _calibration_stitching_lm_med_noise_intensity_thresh[][2] = {
     {0, 32},
@@ -282,7 +282,7 @@ static uint32_t _calibration_cmos_control[] = {
     0,   // manual isp digital gain
     0,   // manual max integration time
     0,   // max integration time
-    120, // max sensor AG
+    126, // max sensor AG
     0,   // max sensor DG
     112, // 159 max isp DG
     6, // max exposure ratio
@@ -333,14 +333,14 @@ static uint32_t _calibration_ae_control[] = {
 };
 
 static uint16_t _calibration_ae_control_HDR_target[][2] = {
-    {0 * 256, 100}, // HDR AE target should not be higher than LDR target
-    {1 * 256, 100},
-    {4 * 256, 100},
-    {5 * 256, 100},
-    {6 * 256, 100},
-    {7 * 256, 100},
-    {8 * 256, 100},
-    {9 * 256, 100}};
+    {0 * 256, 20}, // HDR AE target should not be higher than LDR target
+    {1 * 256, 20},
+    {4 * 256, 20},
+    {5 * 256, 20},
+    {6 * 256, 20},
+    {7 * 256, 20},
+    {8 * 256, 20},
+    {9 * 256, 20}};
 
 static uint8_t _calibration_pf_radial_lut[] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 

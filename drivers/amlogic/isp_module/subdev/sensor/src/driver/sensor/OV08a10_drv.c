@@ -55,19 +55,21 @@ static void start_streaming( void *ctx );
 static void stop_streaming( void *ctx );
 
 static sensor_mode_t supported_modes[] = {
+/*
     {
         .wdr_mode = WDR_MODE_LINEAR,
-        .fps = 5 * 256,
+        .fps = 60 * 256,
         .resolution.width = 1280,
         .resolution.height = 720,
         .bits = 10,
         .exposures = 1,
-        .lanes = 2,
-        .bps = 250,
+        .lanes = 4,
+        .bps = 800,
         .bayer = BAYER_BGGR,
         .dol_type = DOL_NON,
-        .num = 1,
+        .num = 4,
     },
+*/
     {
         .wdr_mode = WDR_MODE_LINEAR,
         .fps = 30 * 256,
@@ -189,7 +191,6 @@ static void sensor_hw_reset_disable( void )
 static int32_t sensor_alloc_analog_gain( void *ctx, int32_t gain )
 {
     sensor_context_t *p_ctx = ctx;
-
     uint32_t again = acamera_math_exp2( gain, LOG2_GAIN_SHIFT, AGAIN_PRECISION );
 
     if ( again > p_ctx->again_limit ) again = p_ctx->again_limit;
@@ -220,28 +221,7 @@ static void sensor_alloc_integration_time( void *ctx, uint16_t *int_time_S, uint
             p_ctx->int_time_S = *int_time_S;
         }
         break;
-    case WDR_MODE_FS_LIN: // DOL3 Frames
-#ifdef FS_LIN_3DOL
-        if ( *int_time_S < 2 ) *int_time_S = 2;
-        if ( *int_time_S > p_ctx->max_S ) *int_time_S = p_ctx->max_S;
-        if ( *int_time_L < 2 ) *int_time_L = 2;
-        if ( *int_time_L > p_ctx->max_L ) *int_time_L = p_ctx->max_L;
-
-        if ( *int_time_M < 2 ) *int_time_M = 2;
-        if ( *int_time_M > p_ctx->max_M ) *int_time_M = p_ctx->max_M;
-
-        if ( p_ctx->int_time_S != *int_time_S || p_ctx->int_time_M != *int_time_M || p_ctx->int_time_L != *int_time_L ) {
-            p_ctx->int_cnt = 3;
-
-            p_ctx->int_time_S = *int_time_S;
-            p_ctx->int_time_M = *int_time_M;
-            p_ctx->int_time_L = *int_time_L;
-
-            p_ctx->shs3 = p_ctx->frame - *int_time_L - 1;
-            p_ctx->shs1 = p_ctx->rhs1 - *int_time_M - 1;
-            p_ctx->shs2 = p_ctx->rhs2 - *int_time_S - 1;
-        }
-#else  //default DOL2 Frames
+    case WDR_MODE_FS_LIN: // DOL2 Frames
         if ( *int_time_S < 2 ) *int_time_S = 2;
         if ( *int_time_S > p_ctx->max_S ) *int_time_S = p_ctx->max_S;
         if ( *int_time_L < 2 ) *int_time_L = 2;
@@ -253,10 +233,9 @@ static void sensor_alloc_integration_time( void *ctx, uint16_t *int_time_S, uint
             p_ctx->int_time_S = *int_time_S;
             p_ctx->int_time_L = *int_time_L;
 
-            p_ctx->shs2 = p_ctx->frame - *int_time_L - 1;
-            p_ctx->shs1 = p_ctx->rhs1 - *int_time_S - 1;
+            p_ctx->shs2 = p_ctx->int_time_L;
+            p_ctx->shs1 = p_ctx->int_time_S;
         }
-#endif
         break;
     }
 }
@@ -324,11 +303,6 @@ static void sensor_update( void *ctx )
             case WDR_MODE_FS_LIN:
                 p_ctx->shs2_old = p_ctx->shs2;
                 p_ctx->shs1_old = p_ctx->shs1;
-#ifdef FS_LIN_3DOL
-                // SHS3
-                acamera_sbus_write_u8( p_sbus, 0x0229, ( p_ctx->shs3 >> 8 ) & 0xFF );
-                acamera_sbus_write_u8( p_sbus, 0x0228, ( p_ctx->shs3 >> 0 ) & 0xFF );
-#endif
                 // SHS1
                 acamera_sbus_write_u8( p_sbus, 0x3511, ( p_ctx->shs1_old >> 8 ) & 0xFF );
                 acamera_sbus_write_u8( p_sbus, 0x3512, ( p_ctx->shs1_old >> 0 ) & 0xFF );
@@ -471,8 +445,8 @@ static void sensor_set_mode( void *ctx, uint8_t mode )
     } else if ((param->modes_table[mode].exposures == 2) && (param->modes_table[mode].fps == 60 * 256)) {
         p_ctx->s_fps = 60;
         p_ctx->vmax = (((uint32_t)acamera_sbus_read_u8(p_sbus,0x380e)<<8)|acamera_sbus_read_u8(p_sbus,0x380f)) - 4;
-        p_ctx->max_S = 100;
-        p_ctx->rhs1 = 100;
+        p_ctx->max_S = 192;
+        p_ctx->rhs1 = 192;
         p_ctx->max_L = p_ctx->vmax - 2;
     } else {
         p_ctx->vmax = (((uint32_t)acamera_sbus_read_u8(p_sbus,0x380e)<<8)|acamera_sbus_read_u8(p_sbus,0x380f)) - 8;

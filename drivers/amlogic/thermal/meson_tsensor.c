@@ -28,7 +28,6 @@
 #include <linux/cpu_cooling.h>
 
 #include "../../thermal/thermal_core.h"
-#include "../../thermal/thermal_hwmon.h"
 
 //#define MESON_G12_PTM
 
@@ -149,8 +148,6 @@ struct meson_tsensor_data {
 	void (*tsensor_clear_irqs)(struct meson_tsensor_data *data);
 	void (*tsensor_update_irqs)(struct meson_tsensor_data *data);
 };
-
-static struct meson_tsensor_data *g_tsensor_data_ptr;
 
 static void meson_report_trigger(struct meson_tsensor_data *p)
 {
@@ -522,21 +519,6 @@ static int meson_get_temp(void *p, int *temp)
 	return 0;
 }
 
-int meson_get_temperature(void)
-{
-	int temp;
-	int ret;
-
-	ret = meson_get_temp(g_tsensor_data_ptr, &temp);
-	if (ret) {
-		printk("meson_get_temp failed!\n");
-		return ret;
-	}
-
-	return temp / 1000;
-}
-EXPORT_SYMBOL(meson_get_temperature);
-
 static void meson_tsensor_work(struct work_struct *work)
 {
 
@@ -706,8 +688,6 @@ static int meson_tsensor_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, data);
 	mutex_init(&data->lock);
 
-	g_tsensor_data_ptr = data;
-
 	data->clk = devm_clk_get(&pdev->dev, "ts_comp");
 	if (IS_ERR(data->clk)) {
 		dev_err(&pdev->dev, "Failed to get tsclock\n");
@@ -747,9 +727,6 @@ static int meson_tsensor_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to request irq: %d\n", data->irq);
 		goto err_thermal;
 	}
-
-	if (thermal_add_hwmon_sysfs(data->tzd))
-		dev_warn(&pdev->dev, "failed to add hwmon sysfs attributes\n");
 
 	meson_tsensor_control(pdev, true);
 	return 0;

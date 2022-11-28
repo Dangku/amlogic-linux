@@ -1453,7 +1453,7 @@ static void hdmi_tvenc_set(struct hdmitx_vidpara *param)
 	struct hdmi_format_para *hdmi_encp_para = NULL;
 	struct hdmi_cea_timing *hdmi_encp_timing = NULL;
 	struct hdmi_cea_timing *custom_timing;
-
+	//if ((param->VIC & HDMITX_VESA_OFFSET) == HDMITX_VESA_OFFSET) {
 	if(param->VIC >= HDMITX_VESA_OFFSET) {
 		/* VESA modes setting */
 		hdmi_tvenc_vesa_set(param);
@@ -2694,6 +2694,14 @@ static void set_aud_acr_pkt(struct hdmitx_dev *hdev,
 	else
 		aud_n_para = hdmi_get_aud_n_paras(audio_param->sample_rate,
 			hdev->para->cd, char_rate);
+	/* N must mutiples 4 for DD+ */
+	switch (audio_param->type) {
+	case CT_DOLBY_D:
+		aud_n_para *= 4;
+		break;
+	default:
+		break;
+	}
 	pr_info(HW "aud_n_para = %d\n", aud_n_para);
 
 	/* ACR packet configuration */
@@ -3741,7 +3749,7 @@ static void hdmitx_dump_audio_info(void)
 		conf = "One Bit Audio";
 		break;
 	case CT_DOLBY_D:
-		conf = "Dolby Digital+";
+		conf = "Dobly Digital+";
 		break;
 	case CT_DTS_HD:
 		conf = "DTS_HD";

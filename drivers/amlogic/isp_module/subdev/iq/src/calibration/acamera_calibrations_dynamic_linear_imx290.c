@@ -22,9 +22,9 @@
 // ------------ 3A & iridix
 static uint8_t _calibration_evtolux_probability_enable[] = {1};
 
-static uint8_t _calibration_awb_avg_coef[] = {30};
+static uint8_t _calibration_awb_avg_coef[] = {15};
 
-static uint8_t _calibration_iridix_avg_coef[] = {30};
+static uint8_t _calibration_iridix_avg_coef[] = {15};
 
 static uint16_t _calibration_ccm_one_gain_threshold[] = {1408};
 
@@ -32,9 +32,9 @@ static uint8_t _calibration_iridix_strength_maximum[] = {255};
 
 static uint16_t _calibration_iridix_min_max_str[] = {0};
 
-static uint32_t _calibration_iridix_ev_lim_full_str[] = {2557570};
+static uint32_t _calibration_iridix_ev_lim_full_str[] = {1300000};
 
-static uint32_t _calibration_iridix_ev_lim_no_str[] = {3750000, 3574729};
+static uint32_t _calibration_iridix_ev_lim_no_str[] = {3760476, 3116186};
 
 static uint8_t _calibration_ae_correction[] = {128, 128, 128, 128, 128, 108, 98, 88, 78, 78, 78, 55};
 
@@ -42,28 +42,28 @@ static uint32_t _calibration_ae_exposure_correction[] = {6710, 15739, 15778, 232
 
 // ------------Noise reduction ----------------------//
 static uint16_t _calibration_sinter_strength[][2] = {
-    {0 * 256, 45},
-    {1 * 256, 53},
-    {2 * 256, 63},
-    {3 * 256, 75},
-    {4 * 256, 75},
-    {5 * 256, 80},
-    {6 * 256, 88},
-    {7 * 256, 92}};
+    {0 * 256, 55},
+    {1 * 256, 63},
+    {2 * 256, 73},
+    {3 * 256, 120},
+    {4 * 256, 130},
+    {5 * 256, 130},
+    {6 * 256, 130},
+    {7 * 256, 130}};
 
 // ------------Noise reduction ----------------------//
 static uint16_t _calibration_sinter_strength_MC_contrast[][2] = {
     {0 * 256, 0}};
 
 static uint16_t _calibration_sinter_strength1[][2] = {
-    {0 * 256, 155},
-    {1 * 256, 155},
-    {2 * 256, 125},
-    {3 * 256, 115},
-    {4 * 256, 115},
-    {5 * 256, 115},
-    {6 * 256, 85},
-    {7 * 256, 85}};
+    {0 * 256, 100},
+    {1 * 256, 100},
+    {2 * 256, 110},
+    {3 * 256, 120},
+    {4 * 256, 120},
+    {5 * 256, 120},
+    {6 * 256, 120},
+    {7 * 256, 120}};
 
 static uint16_t _calibration_sinter_thresh1[][2] = {
     {0 * 256, 10},
@@ -112,22 +112,22 @@ static uint16_t _calibration_sinter_sad[][2] = {
 
 // ------------ Sharpening and demosaic
 static uint16_t _calibration_sharp_alt_d[][2] = {
-    {0 * 256, 28},
-    {1 * 256, 28},
-    {2 * 256, 26},
-    {3 * 256, 26},
-    {4 * 256, 29},
-    {5 * 256, 15},
+    {0 * 256, 50},
+    {1 * 256, 50},
+    {2 * 256, 50},
+    {3 * 256, 50},
+    {4 * 256, 50},
+    {5 * 256, 50},
     {6 * 256, 5},
     {7 * 256, 0}};
 
 static uint16_t _calibration_sharp_alt_ud[][2] = {
-    {0 * 256, 40},
-    {1 * 256, 25},
-    {2 * 256, 10},
-    {3 * 256, 8},
-    {4 * 256, 8},
-    {5 * 256, 2},
+    {0 * 256, 50},
+    {1 * 256, 50},
+    {2 * 256, 50},
+    {3 * 256, 50},
+    {4 * 256, 50},
+    {5 * 256, 50},
     {6 * 256, 0},
     {7 * 256, 0}};
 
@@ -143,8 +143,8 @@ static uint16_t _calibration_sharp_alt_du[][2] = {
 
 static uint16_t _calibration_sharpen_fr[][2] = {
     {0 * 256, 62},
-    {1 * 256, 47},
-    {2 * 256, 40},
+    {1 * 256, 62},
+    {2 * 256, 62},
     {3 * 256, 30},
     {4 * 256, 18},
     {5 * 256, 8},
@@ -166,12 +166,12 @@ static uint16_t _calibration_saturation_strength[][2] = {
     {0 * 256, 128},
     {1 * 256, 128},
     {2 * 256, 128},
-    {3 * 256, 118},
-    {4 * 256, 105},
-    {5 * 256, 90},
-    {6 * 256 - 1, 90},
-    {6 * 256, 128},
-    {7 * 256, 128}};
+    {3 * 256, 128},
+    {4 * 256, 128},
+    {5 * 256, 110},
+    {6 * 256, 110},
+    {6 * 256, 110},
+    {7 * 256, 110}};
 
 // ----------- Frame stitching motion
 static uint16_t _calibration_stitching_lm_np[][2] = {
@@ -254,29 +254,29 @@ static uint32_t _calibration_status_info[] = {
 };
 
 static uint32_t _calibration_iridix8_strength_dk_enh_control[] = {
-    20,      // dark_prc
+    25,      // dark_prc
     95,      // bright_prc
-    400,     // min_dk: minimum dark enhancement
-    2000,    // max_dk: maximum dark enhancement
-    8,       // pD_cut_min: minimum intensity cut for dark regions in which dk_enh will be applied
-    20,      // pD_cut_max: maximum intensity cut for dark regions in which dk_enh will be applied
+    800,     // min_dk: minimum dark enhancement
+    1500,    // max_dk: maximum dark enhancement
+    4,       // pD_cut_min: minimum intensity cut for dark regions in which dk_enh will be applied
+    12,      // pD_cut_max: maximum intensity cut for dark regions in which dk_enh will be applied
     30 << 8, // dark contrast min
     50 << 8, // dark contrast max
     0,       // min_str: iridix strength in percentage
-    40,      // max_str: iridix strength in percentage: 50 = 1x gain. 100 = 2x gain
-    40,      // dark_prc_gain_target: target in histogram (percentage) for dark_prc after iridix is applied
+    20,      // max_str: iridix strength in percentage: 50 = 1x gain. 100 = 2x gain
+    20,      // dark_prc_gain_target: target in histogram (percentage) for dark_prc after iridix is applied
     30 << 8, // contrast_min: clip factor of strength for LDR scenes.
     40 << 8, // contrast_max: clip factor of strength for HDR scenes.
-    20,      // max iridix gain
+    10,      // max iridix gain
     0        // print debug
 };
 
 static uint32_t _calibration_ae_control[] = {
-    30,  // AE convergance
-    236, // LDR AE target -> this should match the 18% grey of teh output gamma
-    0,   // AE tail weight
-    0,   // WDR mode only: Max percentage of clipped pixels for long exposure: WDR mode only: 256 = 100% clipped pixels
-    0,   // WDR mode only: Time filter for exposure ratio
+    15,  // AE convergance
+    190, // LDR AE target -> this should match the 18% grey of teh output gamma
+    0,  // AE tail weight
+    77,  // WDR mode only: Max percentage of clipped pixels for long exposure: WDR mode only: 256 = 100% clipped pixels
+    15,  // WDR mode only: Time filter for exposure ratio
     100, // control for clipping: bright percentage of pixels that should be below hi_target_prc
     99,  // control for clipping: highlights percentage (hi_target_prc): target for tail of histogram
     0,   // 1:0 enable | disable iridix global gain.
@@ -284,14 +284,14 @@ static uint32_t _calibration_ae_control[] = {
 };
 
 static uint16_t _calibration_ae_control_HDR_target[][2] = {
-    {0 * 256, 139}, // HDR AE target should not be higher than LDR target
-    {1 * 256, 139},
-    {2 * 256, 139},
-    {3 * 256, 187},
-    {4 * 256, 236},
-    {5 * 256, 236},
-    {6 * 256, 236},
-    {7 * 256, 236}};
+    {0 * 256, 190}, // HDR AE target should not be higher than LDR target
+    {1 * 256, 190},
+    {2 * 256, 190},
+    {3 * 256, 190},
+    {4 * 256, 190},
+    {5 * 256, 190},
+    {6 * 256, 190},
+    {7 * 256, 190}};
 
 static uint8_t _calibration_pf_radial_lut[] = {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
@@ -353,11 +353,11 @@ static uint32_t _calibration_awb_mix_light_parameters[] = {
 static uint16_t _calibration_rgb2yuv_conversion[] = {76, 150, 29, 0x8025, 0x8049, 111, 157, 0x8083, 0x8019, 0, 512, 512};
 
 
-static uint16_t _calibration_ae_zone_wght_hor[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
-static uint16_t _calibration_ae_zone_wght_ver[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
+static uint16_t _calibration_ae_zone_wght_hor[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
+static uint16_t _calibration_ae_zone_wght_ver[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
 
-static uint16_t _calibration_awb_zone_wght_hor[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
-static uint16_t _calibration_awb_zone_wght_ver[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
+static uint16_t _calibration_awb_zone_wght_hor[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
+static uint16_t _calibration_awb_zone_wght_ver[] = {16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16};
 
 static uint32_t _scaler_h_filter[] = {
     0x27f70200, 0x0002f727, 0x29f70200, 0x0002f824, 0x2cf70200, 0x0002f821, 0x2ef70200, 0x0002f91e, 0x30f70200, 0x0002f91c, 0x33f70200, 0x0001fa19, 0x35f70200, 0x0001fa17, 0x37f70200, 0x0001fb14, 0x39f70200, 0x0001fc11, 0x3af80200, 0x0001fc0f, 0x3bf90200, 0x0001fd0c, 0x3cfa0200, 0x0001fd0a, 0x3efb0100, 0x0000fe08, 0x3efc0100, 0x0000ff06, 0x3ffd0100, 0x0000ff04, 0x40fe0000, 0x00000002, 0x40000000, 0x00000000, 0x40020000, 0x000000fe, 0x3f04ff00, 0x000001fd, 0x3e06ff00, 0x000001fc, 0x3e08fe00, 0x000001fb, 0x3c0afd01, 0x000002fa, 0x3b0cfd01, 0x000002f9, 0x3a0ffc01, 0x000002f8, 0x3911fc01, 0x000002f7, 0x3714fb01, 0x000002f7, 0x3517fa01, 0x000002f7, 0x3319fa01, 0x000002f7, 0x301cf902, 0x000002f7, 0x2e1ef902, 0x000002f7, 0x2c21f802, 0x000002f7, 0x2924f802, 0x000002f7,
@@ -383,14 +383,14 @@ static uint16_t _calibration_sharpen_ds1[][2] = {
     {8 * 256, 10}};
 
 static uint16_t _calibration_temper_strength[][2] = {
-    {0 * 256, 120},
-    {1 * 256, 120},
+    {0 * 256, 100},
+    {1 * 256, 100},
     {2 * 256, 120},
-    {3 * 256, 120},
-    {4 * 256, 140},
-    {5 * 256, 145},
-    {6 * 256, 195},
-    {7 * 256, 195}};
+    {3 * 256, 125},
+    {4 * 256, 125},
+    {5 * 256, 125},
+    {6 * 256, 125},
+    {7 * 256, 125}};
 
 static uint32_t _calibration_af_lms[] = {
     70 << 6,  // Down_FarEnd

@@ -150,11 +150,11 @@ source "drivers/amlogic/pixel_probe/Kconfig"
 
 source "drivers/amlogic/firmware/Kconfig"
 
-#source "drivers/amlogic/media_modules/Kconfig"
+source "drivers/amlogic/media_modules/Kconfig"
 
-#source "drivers/amlogic/npu/Kconfig"
+source "drivers/amlogic/npu/Kconfig"
 
-#source "drivers/amlogic/isp_module/Kconfig"
+source "drivers/amlogic/isp_module/Kconfig"
 
 endmenu
 endif

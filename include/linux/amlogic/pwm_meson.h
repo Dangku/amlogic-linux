@@ -124,7 +124,6 @@ struct meson_pwm {
 	struct mutex lock;
 	spinlock_t pwm_lock;
 	unsigned int clk_mask;
-	struct pinctrl *p_pinctrl;
 };
 
 /*the functions only use for meson pwm driver*/

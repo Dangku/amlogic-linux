@@ -61,8 +61,6 @@
 #include <linux/amlogic/pwm_meson.h>
 #include <linux/of_device.h>
 
-#include <linux/pinctrl/consumer.h>
-
 struct meson_pwm_channel {
 	unsigned int hi;
 	unsigned int lo;
@@ -127,7 +125,6 @@ static int meson_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
 	struct meson_pwm_channel *channel = pwm_get_chip_data(pwm);
 	struct device *dev = chip->dev;
 	int err;
-	struct meson_pwm *meson = to_meson_pwm(chip);
 
 	if (!channel)
 		return -ENODEV;
@@ -151,25 +148,12 @@ static int meson_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
 
 	chip->ops->get_state(chip, pwm, &channel->state);
 
-	meson->p_pinctrl = devm_pinctrl_get_select(dev, "pwm_pins");
-	if (IS_ERR(meson->p_pinctrl)) {
-		meson->p_pinctrl = NULL;
-		dev_err(dev, "pwm pinmux : can't get pinctrl\n");
-	}
-
 	return 0;
 }
 
 static void meson_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
 {
 	struct meson_pwm_channel *channel = pwm_get_chip_data(pwm);
-
-	struct meson_pwm *meson = to_meson_pwm(chip);
-
-	if (meson->p_pinctrl) {
-		devm_pinctrl_put(meson->p_pinctrl);
-		meson->p_pinctrl = NULL;
-	}
 
 	if (channel)
 		clk_disable_unprepare(channel->clk);
@@ -492,7 +476,7 @@ static const char * const pwm_gx_ee_parent_names[] = {
 };
 
 static const char * const pwm_gx_ao_parent_names[] = {
-	"xtal", "clk81", "null", "null"
+	"clk81", "xtal", "null", "null"
 };
 
 static const struct meson_pwm_data pwm_g12a_ee_data = {
@@ -668,7 +652,6 @@ static int meson_pwm_probe(struct platform_device *pdev)
 		meson->chip.npwm = 2;
 	meson->inverter_mask = BIT(meson->chip.npwm) - 1;
 
-	meson->p_pinctrl = NULL;
 	channels = devm_kcalloc(&pdev->dev, meson->chip.npwm, sizeof(*channels),
 				GFP_KERNEL);
 	if (!channels)

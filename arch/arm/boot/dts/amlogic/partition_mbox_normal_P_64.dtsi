@@ -8,7 +8,6 @@
  */
 
 #include "firmware_normal.dtsi"
-#include "firmware_system.dtsi"
 
 / {
     partitions: partitions{

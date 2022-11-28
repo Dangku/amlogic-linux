@@ -405,11 +405,13 @@ uint32_t fw_intf_find_proper_present_idx(const isp_v4l2_sensor_info *sensor_info
             if (custom_wdr_mode == 0) {
                *( (char *)&sensor_info->preset[i].fps_cur ) = 0;
                for ( j = 0; j < sensor_info->preset[i].fps_num; j++ ) {
-                  if ( sensor_info->preset[i].fps[j] > (*fps)) {
-                     *fps = sensor_info->preset[i].fps[j];
-                     idx = sensor_info->preset[i].idx[j];
-                     *( (char *)&sensor_info->preset[i].fps_cur ) = j;
-                  }
+                   if ( sensor_info->preset[i].wdr_mode[j] == custom_wdr_mode ) {
+                       if ( sensor_info->preset[i].fps[j] > (*fps)) {
+                          *fps = sensor_info->preset[i].fps[j];
+                          idx = sensor_info->preset[i].idx[j];
+                          *( (char *)&sensor_info->preset[i].fps_cur ) = j;
+                       }
+                   }
                }
                break;
             } else if ((custom_wdr_mode == 1) || (custom_wdr_mode == 2)) {

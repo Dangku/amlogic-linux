@@ -2,6 +2,7 @@ dtbo-y += i2c2.dtbo \
 	uart2.dtbo \
 	spi0.dtbo \
 	spi0_flash.dtbo \
+	os08a10.dtbo \
 	pwm_cd.dtbo \
 	pwm_cd-c.dtbo \
 	pwm_c-beeper.dtbo \

@@ -58,8 +58,6 @@
 #include <linux/amlogic/media/vout/hdmi_tx/hdmi_tx_module.h>
 #include <linux/amlogic/media/vout/hdmi_tx/hdmi_config.h>
 #include "hw/tvenc_conf.h"
-#include "hw/hdmi_tx_reg.h"
-#include "hw/mach_reg.h"
 #include "hw/common.h"
 #include "hw/hw_clk.h"
 #include "hdmi_tx_hdcp.h"
@@ -511,10 +509,6 @@ static int set_disp_mode_auto(void)
 	struct hdmi_format_para *para = NULL;
 	unsigned char mode[32];
 	enum hdmi_vic vic = HDMI_Unknown;
-//	char* pix_fmt[] = {"RGB","YUV422","YUV444","YUV420"};
-//	char* eotf[] = {"SDR","HDR","HDR10","HLG"};
-//	char* range[] = {"default","limited","full"};
-
 	/* vic_ready got from IP */
 	enum hdmi_vic vic_ready = hdev->hwop.getstate(
 		hdev, STAT_VIDEO_VIC, 0);
@@ -596,7 +590,7 @@ static int set_disp_mode_auto(void)
 	else {
 	/* nothing */
 	}
-	if ((vic_ready != HDMI_Unknown) && (vic_ready == vic) && (strstr(hdmitx_device.fmt_attr,"now") == NULL)) {
+	if ((vic_ready != HDMI_Unknown) && (vic_ready == vic)) {
 		pr_info(SYS "[%s] ALREADY init VIC = %d\n",
 			__func__, vic);
 		if (hdev->rxcap.ieeeoui == 0) {
@@ -623,10 +617,6 @@ static int set_disp_mode_auto(void)
 
 	hdmitx_pre_display_init();
 
-
-	if (strstr(hdmitx_device.fmt_attr,"now") != NULL){
-		memcpy(strstr(hdmitx_device.fmt_attr,"now"), " ", 3);
-	}
 	hdev->cur_VIC = HDMI_Unknown;
 /* if vic is HDMI_Unknown, hdmitx_set_display will disable HDMI */
 	ret = hdmitx_set_display(hdev, vic);
@@ -706,11 +696,6 @@ ssize_t store_attr(struct device *dev,
 		hdmitx_device.para->cs = COLORSPACE_YUV420;
 	else
 		hdmitx_device.para->cs = COLORSPACE_YUV444;
-
-	if (strstr(hdmitx_device.fmt_attr,"now")){
-		set_disp_mode_auto();
-	}
-
 	return count;
 }
 /*aud_mode attr*/
@@ -2197,7 +2182,7 @@ static ssize_t show_config(struct device *dev,
 		conf = "One Bit Audio";
 		break;
 	case CT_DOLBY_D:
-		conf = "Dolby Digital+";
+		conf = "Dobly Digital+";
 		break;
 	case CT_DTS_HD:
 		conf = "DTS_HD";
@@ -2608,7 +2593,6 @@ static ssize_t show_disp_cap(struct device *dev,
 			pos += snprintf(buf+pos, PAGE_SIZE, "\n");
 		}
 		}
-        pos += snprintf(buf + pos, PAGE_SIZE, "1024x768p60hz\n");
 	}
 	return pos;
 }
@@ -2730,7 +2714,7 @@ static ssize_t show_aud_cap(struct device *dev,
 	static const char * const aud_ct[] =  {
 		"ReferToStreamHeader", "PCM", "AC-3", "MPEG1", "MP3",
 		"MPEG2", "AAC", "DTS", "ATRAC",	"OneBitAudio",
-		"Dolby_Digital+", "DTS-HD", "MAT", "DST", "WMA_Pro",
+		"Dobly_Digital+", "DTS-HD", "MAT", "DST", "WMA_Pro",
 		"Reserved", NULL};
 	static const char * const aud_sampling_frequency[] = {
 		"ReferToStreamHeader", "32", "44.1", "48", "88.2", "96",

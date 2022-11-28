@@ -233,7 +233,6 @@ static int lcd_cpu_gpio_register(unsigned int index, int init_value)
 	/* request gpio */
 	cpu_gpio->gpio = devm_gpiod_get_index(lcd_drv->dev,
 		"lcd_cpu", index, value);
-
 	if (IS_ERR(cpu_gpio->gpio)) {
 		LCDERR("register gpio %s[%d]: %p, err: %d\n",
 			cpu_gpio->name, index, cpu_gpio->gpio,

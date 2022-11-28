@@ -53,9 +53,6 @@
 #ifdef CONFIG_INSTABOOT
 #include <linux/amlogic/instaboot/instaboot.h>
 #endif
-#ifdef CONFIG_AMLOGIC_VPU
-#include <linux/amlogic/media/vpu/vpu.h>
-#endif
 /* Local Headers */
 #include "osd.h"
 #include "osd_fb.h"

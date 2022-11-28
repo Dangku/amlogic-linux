@@ -49,7 +49,7 @@ static void stop_streaming( void *ctx );
 static sensor_mode_t supported_modes[] = {
     {
         .wdr_mode = WDR_MODE_LINEAR, // 4 Lanes
-        .fps = 30 * 256,
+        .fps = 25 * 256,
         .resolution.width = 1920,
         .resolution.height = 1080,
         .bits = 12,
@@ -145,10 +145,9 @@ static sensor_mode_t supported_modes[] = {
         .bayer = BAYER_RGGB,
         .dol_type = DOL_LINEINFO,
         .num = 5,
-    }
+    },
 #endif
 };
-
 
 typedef struct _sensor_context_t {
     uint8_t address; // Sensor address for direct write (not used currently)
@@ -479,7 +478,7 @@ static void sensor_set_mode( void *ctx, uint8_t mode )
     switch ( param->modes_table[mode].wdr_mode ) {
     case WDR_MODE_LINEAR:
         sensor_load_sequence( p_sbus, p_ctx->seq_width, p_sensor_data, setting_num );
-        p_ctx->s_fps = 30;
+        p_ctx->s_fps = 25;
         p_ctx->again_delay = 0;
         param->integration_time_apply_delay = 2;
         param->isp_exposure_channel_delay = 0;
@@ -510,9 +509,9 @@ static void sensor_set_mode( void *ctx, uint8_t mode )
         break;
     }
 
-    if ( param->modes_table[mode].fps == 25 * 256 ) {
-        acamera_sbus_write_u8( p_sbus, 0x3018, 0x46 );
-        acamera_sbus_write_u8( p_sbus, 0x3019, 0x05 );
+    if ((param->modes_table[mode].exposures == 1) && (param->modes_table[mode].fps == 25 * 256)) {
+        //acamera_sbus_write_u8( p_sbus, 0x3018, 0x46 );
+        //acamera_sbus_write_u8( p_sbus, 0x3019, 0x05 );
         p_ctx->s_fps = 25;
         p_ctx->vmax = 1350;
     } else if ((param->modes_table[mode].exposures == 2) && (param->modes_table[mode].fps == 30 * 256)) {

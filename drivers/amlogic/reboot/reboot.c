@@ -33,9 +33,10 @@
 #include <asm/compiler.h>
 #include <linux/kdebug.h>
 #include <linux/arm-smccc.h>
+
+static void __iomem *reboot_reason_vaddr;
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
-
 
 int sd_volsw_gpio;
 int sd_power_gpio;
@@ -47,7 +48,6 @@ int sd_vddio_gpio;
 			__func__, ret, __LINE__); \
 }
 
-static void __iomem *reboot_reason_vaddr;
 static u32 psci_function_id_restart;
 static u32 psci_function_id_poweroff;
 static char *kernel_panic;
@@ -238,6 +238,14 @@ static int aml_restart_probe(struct platform_device *pdev)
 		pm_power_off = do_aml_poweroff;
 	}
 
+	ret = of_property_read_u32(pdev->dev.of_node,
+				   "reboot_reason_addr", &paddr);
+	if (!ret) {
+		pr_debug("reboot_reason paddr: 0x%x\n", paddr);
+		reboot_reason_vaddr = ioremap(paddr, 0x4);
+		device_create_file(&pdev->dev, &dev_attr_reboot_reason);
+	}
+
 	of_node = pdev->dev.of_node;
 	sd_volsw_gpio = 0;
 	sd_power_gpio = 0;
@@ -246,13 +254,6 @@ static int aml_restart_probe(struct platform_device *pdev)
 	sd_volsw_gpio = of_get_named_gpio(of_node, "sd_volsw_gpio", 0);
 	sd_power_gpio = of_get_named_gpio(of_node, "sd_power_gpio", 0);
 	sd_vddio_gpio = of_get_named_gpio(of_node, "sd_vddio_gpio", 0);
-
-	ret = of_property_read_u32(of_node, "reboot_reason_addr", &paddr);
-	if (!ret) {
-		pr_debug("reboot_reason paddr: 0x%x\n", paddr);
-		reboot_reason_vaddr = ioremap(paddr, 0x4);
-		device_create_file(&pdev->dev, &dev_attr_reboot_reason);
-	}
 
 	ret = register_die_notifier(&panic_notifier);
 	if (ret != 0) {
