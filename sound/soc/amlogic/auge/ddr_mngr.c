@@ -14,7 +14,7 @@
  * more details.
  *
  */
-#define DEBUG
+/*#define DEBUG*/
 #undef pr_fmt
 #define pr_fmt(fmt) "audio_ddr_mngr: " fmt
 

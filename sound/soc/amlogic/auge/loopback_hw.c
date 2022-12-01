@@ -14,7 +14,7 @@
  * more details.
  *
  */
-#define DEBUG
+/*#define DEBUG*/
 
 #include "linux/kernel.h"
 

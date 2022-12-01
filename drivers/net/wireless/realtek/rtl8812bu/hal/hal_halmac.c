@@ -427,12 +427,15 @@ static u8 _halmac_msg_print(void *p, u32 msg_type, u8 msg_level, s8 *fmt, ...)
 
 	str[0] = '\n';
 	type = 0xFFFFFFFF;
+	
+#ifdef CONFIG_RTW_DEBUG
 	if (rtw_drv_log_level <= _DRV_ERR_)
 		level = HALMAC_DBG_ERR;
 	else if (rtw_drv_log_level <= _DRV_INFO_)
 		level = HALMAC_DBG_WARN;
 	else
 		level = HALMAC_DBG_TRACE;
+#endif
 
 	if (!(type & BIT(msg_type)))
 		return _TRUE;
@@ -460,12 +463,15 @@ static u8 _halmac_buff_print(void *p, u32 msg_type, u8 msg_level, s8 *buf, u32 s
 	u8 level;
 
 	type = 0xFFFFFFFF;
+	
+#ifdef CONFIG_RTW_DEBUG
 	if (rtw_drv_log_level <= _DRV_ERR_)
 		level = HALMAC_DBG_ERR;
 	else if (rtw_drv_log_level <= _DRV_INFO_)
 		level = HALMAC_DBG_WARN;
 	else
 		level = HALMAC_DBG_TRACE;
+#endif
 
 	if (!(type & BIT(msg_type)))
 		return _TRUE;

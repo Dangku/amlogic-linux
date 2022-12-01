@@ -14,7 +14,7 @@
  * more details.
  *
  */
-#define DEBUG
+/*#define DEBUG*/
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/platform_device.h>
@@ -1051,7 +1051,7 @@ static int aml_dai_tdm_hw_free(struct snd_pcm_substream *substream,
 
 	/* disable clock and gate */
 	if (!p_tdm->contns_clk && !IS_ERR(p_tdm->mclk)) {
-		pr_info("%s(), disable mclk for %s", __func__, cpu_dai->name);
+		pr_debug("%s(), disable mclk for %s", __func__, cpu_dai->name);
 		clk_disable_unprepare(p_tdm->mclk);
 	}
 

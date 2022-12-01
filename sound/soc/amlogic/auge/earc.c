@@ -16,7 +16,7 @@
  * Audio External Input/Out drirver
  * such as fratv, frhdmirx
  */
-#define DEBUG
+/*#define DEBUG*/
 
 #include <linux/module.h>
 #include <linux/moduleparam.h>

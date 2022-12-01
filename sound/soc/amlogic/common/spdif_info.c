@@ -14,7 +14,7 @@
  * more details.
  *
  */
-#define DEBUG
+/*#define DEBUG*/
 #undef pr_fmt
 #define pr_fmt(fmt) "spdif_info: " fmt
 
