@@ -29,6 +29,7 @@
 #include <linux/amlogic/amlsd.h>
 #include <linux/amlogic/cpu_version.h>
 
+static int disable_uhs = 0;
 unsigned int sd_emmc_debug;
 
 static const struct sd_caps host_caps[] = {
@@ -59,6 +60,13 @@ static const struct sd_caps host_caps[] = {
 	SD_CAPS(MMC_CAP_AGGRESSIVE_PM, "MMC_CAP_AGGRESSIVE_PM"),
 };
 
+static int __init setup_disableuhs(char *line)
+{
+        disable_uhs = 1;
+        return 0;
+}
+early_param("disableuhs", setup_disableuhs);
+
 static int amlsd_get_host_caps(struct device_node *of_node,
 		struct amlsd_platform *pdata)
 {
@@ -72,6 +80,13 @@ static int amlsd_get_host_caps(struct device_node *of_node,
 				caps |= host_caps[i].caps;
 		}
 	};
+
+	if (disable_uhs) {
+		caps &= ~(MMC_CAP_UHS_SDR12 | MMC_CAP_UHS_SDR25 |
+			MMC_CAP_UHS_SDR50 | MMC_CAP_UHS_SDR104 |
+			MMC_CAP_UHS_DDR50);
+	}
+
 	if (caps & MMC_CAP_8_BIT_DATA)
 		caps |= MMC_CAP_4_BIT_DATA;
 
