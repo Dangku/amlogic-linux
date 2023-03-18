@@ -889,7 +889,7 @@ static struct hw_enc_clk_val_group setting_enc_clk_val_24[] = {
 		5371100, 1, 2, 2, VID_PLL_DIV_5, 1, 1, 1, -1},
 	{{HDMIV_2560x1600p60hz,
 	  HDMI_VIC_END},
-		3485000, 1, 1, 1, VID_PLL_DIV_5, 2, 1, 1, -1},
+		5370000, 2, 1, 2, VID_PLL_DIV_5, 1, 1, 1, -1},
 	{{HDMIV_2560x1080p60hz,
 	  HDMI_VIC_END},
 		1980000, 2, 1, 1, VID_PLL_DIV_5, 2, 1, 1, -1},
