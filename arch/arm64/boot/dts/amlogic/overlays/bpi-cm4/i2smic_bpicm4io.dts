@@ -1,0 +1,35 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&aml_tdmb>;
+		__overlay__ {
+			status = "okay";
+			dai-tdm-lane-slot-mask-in = <1 0 0 0>;
+			pinctrl-names = "tdm_pins";
+			pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
+		};
+	};
+
+
+	fragment@1 {
+		target = <&tdmbcodec>;
+
+		__overlay__ {
+			sound-dai = <&dummy_codec &dummy_codec>;
+		};
+	};
+
+	fragment@2 {
+		target = <&tdmout_b>;
+
+		__overlay__ {
+			mux {
+				groups = "tdmb_sclk", "tdmb_fs";
+				function = "tdmb_out";
+				drive-strength = <2>;
+			};
+		};
+	};
+};
