@@ -18,7 +18,9 @@ dtbo-y += i2c1.dtbo \
 	waveshare_tft24_lcd.dtbo \
 	hifi_pcm5122.dtbo \
 	i2smic.dtbo \
-	pdmmic.dtbo 
+	pdmmic.dtbo \
+	otg-device.dtbo \
+	otg-host.dtbo
 
 targets += $(dtbo-y)
 always  := $(dtbo-y)

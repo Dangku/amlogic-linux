@@ -1,0 +1,20 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&dwc2_a>;
+
+		__overlay__ {
+			controller-type = <1>;
+		};
+	};
+
+	fragment@1 {
+		target = <&usb3_phy_v2>;
+
+		__overlay__ {
+			otg = <0>;
+		};
+	};
+};
