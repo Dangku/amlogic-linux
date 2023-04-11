@@ -1722,6 +1722,22 @@ static void hdmi_tvenc_set(struct hdmitx_vidpara *param)
 		TOTAL_FRAMES = 4;
 		break;
 #if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
+	case HDMIV_1536x2048p60hz:
+		INTERLACE_MODE = 0U;
+		PIXEL_REPEAT_VENC = 0;
+		PIXEL_REPEAT_HDMI = 0;
+		ACTIVE_PIXELS = (1536*(1+PIXEL_REPEAT_HDMI));  //h_active
+		ACTIVE_LINES = (2048/(1+INTERLACE_MODE));         //v_active
+		LINES_F0 = 2131;   //v_total
+		LINES_F1= 2131;   //v_total
+		FRONT_PORCH = 500;  //h_front
+		HSYNC_PIXELS = 66;  //h_sync
+		BACK_PORCH = 158;  //h_back
+		EOF_LINES = 60;   //v_front
+		VSYNC_LINES = 13;  //v_sync
+		SOF_LINES = 10;  //v_back
+		TOTAL_FRAMES = 4;
+		break;
 	case HDMIV_3440x1440p60hz:
 		INTERLACE_MODE = 0U;
 		PIXEL_REPEAT_VENC = 0;

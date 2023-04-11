@@ -2324,6 +2324,7 @@ const char *disp_mode_t[] = {
 	"2560x1440p60hz",
 	"2560x1600p60hz",
 	"3440x1440p60hz",
+	"1536x2048p60hz",
 #if defined(CONFIG_ARCH_MESON64_ODROID_COMMON)
 	"480x320p60hz",
 	"480x800p60hz",
