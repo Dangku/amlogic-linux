@@ -27,7 +27,8 @@ dtbo-$(CONFIG_ARCH_MESON64_BANANAPI_M5) += spi0.dtbo \
 					wifi_bt_rtl8822cs.dtbo \
 					i2smic.dtbo \
 					pdmmic.dtbo \
-					can0.dtbo
+					can0.dtbo \
+					onewire.dtbo
 
 targets	+= $(dtbo-y)
 always	:= $(dtbo-y)
