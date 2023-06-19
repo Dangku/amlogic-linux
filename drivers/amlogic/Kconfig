@@ -1,0 +1,114 @@
+# SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+
+config AMLOGIC_DRIVER
+	bool "Amlogic Peripheral drivers"
+	default n
+	help
+	  this option is provided for control amlogic
+	  drivers, if you want to use amlogic driver
+	  please open it.
+	  Note: All amlogic driver should be placed in
+	  directory drivers/amlogic/
+
+config AMLOGIC_BREAK_GKI_20
+	bool "Amlogic Break GKI 2.0"
+	depends on AMLOGIC_BREAK_GKI
+	default n
+	help
+	  this option is provide for control Break GKI 2.0,
+	  if you want to break gki2.0 rule, should enable it,
+	  all break gki2.0 modify should be depends on this option
+
+if AMLOGIC_DRIVER
+config AMLOGIC_BREAK_GKI
+	bool "Amlogic Break GKI"
+	default n
+	help
+	  this option is provide for control Break GKI,
+	  if you want to debug driver temporarily, should enable it,
+	  export function or variable with this config,
+	  and the driver Kconfig depends on this option
+
+config AMLOGIC_MODIFY
+	bool "Amlogic modify for kernel code"
+	default n
+	help
+	  This option is set up for AMLOGIC modify of standard
+	  kernel source code. All modify of kernel standard code
+	  should be wrapped by this config
+
+config AMLOGIC_IN_KERNEL_MODULES
+	bool "Amlogic Drivers in build or extra build"
+	default n
+	help
+	  this option is provided for control amlogic
+	  drivers in build or extra build, if you want
+	  to in build, should enable; if want to extra
+	  build, should disable
+
+config AMLOGIC_KERNEL_VERSION
+	int "Amlogic Kernel Version"
+	default 13515
+	help
+	  kernel from android13-5.15
+	  so the default value is 13515
+	  the driver uses it to adapt different kernel versions
+
+menu "Amlogic Device Drivers"
+
+source "drivers/amlogic/tty/Kconfig"
+source "drivers/amlogic/clk/Kconfig"
+source "drivers/amlogic/secmon/Kconfig"
+source "drivers/amlogic/drm/Kconfig"
+source "drivers/amlogic/media/Kconfig"
+source "drivers/amlogic/power/Kconfig"
+source "drivers/amlogic/cpu_info/Kconfig"
+source "drivers/amlogic/pm/Kconfig"
+source "drivers/amlogic/gpio/Kconfig"
+source "drivers/amlogic/input/Kconfig"
+source "drivers/amlogic/i2c/Kconfig"
+source "drivers/amlogic/spi/Kconfig"
+source "drivers/amlogic/tee/Kconfig"
+source "drivers/amlogic/aml_tee/Kconfig"
+source "drivers/amlogic/gki_tool/Kconfig"
+source "drivers/amlogic/pwm/Kconfig"
+source "drivers/amlogic/cpufreq/Kconfig"
+source "drivers/amlogic/efuse_unifykey/Kconfig"
+source "drivers/amlogic/mailbox/Kconfig"
+source "drivers/amlogic/jtag/Kconfig"
+source "drivers/amlogic/watchdog/Kconfig"
+source "drivers/amlogic/memory_ext/Kconfig"
+source "drivers/amlogic/memory_debug/Kconfig"
+source "drivers/amlogic/iio/Kconfig"
+source "drivers/amlogic/char/Kconfig"
+source "drivers/amlogic/soc_info/Kconfig"
+source "drivers/amlogic/reset/Kconfig"
+source "drivers/amlogic/rtc/Kconfig"
+source "drivers/amlogic/irblaster/Kconfig"
+source "drivers/amlogic/thermal/Kconfig"
+source "drivers/amlogic/mmc/Kconfig"
+source "drivers/amlogic/hifi4dsp/Kconfig"
+source "drivers/amlogic/debug/Kconfig"
+source "drivers/amlogic/camera/Kconfig"
+source "drivers/amlogic/freertos/Kconfig"
+source "drivers/amlogic/usb/Kconfig"
+source "drivers/amlogic/crypto/Kconfig"
+source "drivers/amlogic/wireless/Kconfig"
+source "drivers/amlogic/net/Kconfig"
+source "drivers/amlogic/mtd/spinand/Kconfig"
+source "drivers/amlogic/mtd/nand/Kconfig"
+source "drivers/amlogic/mtd/common/Kconfig"
+source "drivers/amlogic/dvb/Kconfig"
+source "drivers/amlogic/cpuidle/Kconfig"
+source "drivers/amlogic/pci/Kconfig"
+source "drivers/amlogic/led/Kconfig"
+source "drivers/amlogic/dvb_ci/Kconfig"
+source "drivers/amlogic/hwspinlock/Kconfig"
+source "drivers/amlogic/android/Kconfig"
+source "drivers/amlogic/yaffs2/Kconfig"
+source "drivers/amlogic/audiobridge/Kconfig"
+source "drivers/amlogic/algorithm/Kconfig"
+source "drivers/amlogic/firmware/Kconfig"
+
+endmenu
+endif

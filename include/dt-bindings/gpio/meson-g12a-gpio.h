@@ -1,7 +1,6 @@
-/* SPDX-License-Identifier: (GPL-2.0+ or MIT) */
+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
 /*
- * Copyright (c) 2018 Amlogic, Inc. All rights reserved.
- * Author: Xingyu Chen <xingyu.chen@amlogic.com>
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
  */
 
 #ifndef _DT_BINDINGS_MESON_G12A_GPIO_H
@@ -23,6 +22,7 @@
 #define GPIOE_0		12
 #define GPIOE_1		13
 #define GPIOE_2		14
+#define GPIO_TEST_N	15
 
 /* Second GPIO chip */
 #define GPIOZ_0		0

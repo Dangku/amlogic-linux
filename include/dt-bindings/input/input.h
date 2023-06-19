@@ -1,10 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0 */
+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
 /*
- * This header provides constants for most input bindings.
- *
- * Most input bindings include key code, matrix key code format.
- * In most cases, key code and matrix key code format uses
- * the standard values/macro defined in this header.
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
  */
 
 #ifndef _DT_BINDINGS_INPUT_INPUT_H

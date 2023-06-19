@@ -1,6 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
 /*
- * This header provides constants for the ARM GIC.
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
  */
 
 #ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_ARM_GIC_H

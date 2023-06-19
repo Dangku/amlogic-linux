@@ -1,10 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
 /*
- * This header provides constants for most IRQ bindings.
- *
- * Most IRQ bindings include a flags cell as part of the IRQ specifier.
- * In most cases, the format of the flags cell uses the standard values
- * defined in this header.
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
  */
 
 #ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_IRQ_H

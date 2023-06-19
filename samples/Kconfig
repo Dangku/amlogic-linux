@@ -6,6 +6,13 @@ menuconfig SAMPLES
 
 if SAMPLES
 
+config AMLOGIC_SAMPLES_DEBUG_FILE_TEST
+	tristate "Amlogic debug file test support"
+	depends on AMLOGIC_DEBUG_FILE
+	default n
+	help
+	  This builds an Amlogic debug file function example
+
 config SAMPLE_AUXDISPLAY
 	bool "auxdisplay sample"
 	depends on CC_CAN_LINK

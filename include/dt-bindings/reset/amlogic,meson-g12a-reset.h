@@ -1,8 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause */
+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT) */
 /*
- * Copyright (c) 2019 BayLibre, SAS.
- * Author: Jerome Brunet <jbrunet@baylibre.com>
- *
+ * Copyright (c) 2019 Amlogic, Inc. All rights reserved.
  */
 
 #ifndef _DT_BINDINGS_AMLOGIC_MESON_G12A_RESET_H
@@ -69,7 +67,9 @@
 #define RESET_PARSER_FETCH		72
 #define RESET_CTL			73
 #define RESET_PARSER_TOP		74
-/*					75-77	*/
+#define RESET_NN_PIPELINE0		75
+#define RESET_NN			76
+#define RESET_NN_PIPELINE1		77
 #define RESET_DVALIN			78
 #define RESET_HDMITX			79
 /*					80-95	*/
