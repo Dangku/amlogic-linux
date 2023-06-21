@@ -31,8 +31,6 @@
 #include "../../lcd_common.h"
 #include "../lcd_bl.h"
 
-#include <linux/amlogic/gki_module.h>
-
 static DEFINE_MUTEX(ldim_dev_dbg_mutex);
 static struct delayed_work ldim_dev_probe_dly_work;
 static unsigned int ldim_dev_probe_retry_cnt;

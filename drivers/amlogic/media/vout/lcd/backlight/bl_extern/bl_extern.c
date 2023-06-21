@@ -10,10 +10,7 @@
 #include <linux/amlogic/media/vout/lcd/aml_bl_extern.h>
 #include <linux/amlogic/media/vout/lcd/lcd_unifykey.h>
 #include <linux/amlogic/media/vout/lcd/aml_bl.h>
-#include <linux/amlogic/gki_module.h>
 #include "bl_extern.h"
-
-#include <linux/amlogic/gki_module.h>
 
 static struct bl_extern_driver_s *bl_ext_driver[LCD_MAX_DRV];
 static int bl_ext_index[LCD_MAX_DRV] = {0xff, 0xff, 0xff};

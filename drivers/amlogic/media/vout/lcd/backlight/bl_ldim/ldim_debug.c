@@ -26,8 +26,6 @@
 #include "ldim_drv.h"
 #include "ldim_reg.h"
 
-#include <linux/amlogic/gki_module.h>
-
 #define LDIM_DBG_REG_RW_MODE_NULL              0
 #define LDIM_DBG_REG_RW_MODE_RN                1
 #define LDIM_DBG_REG_RW_MODE_RS                2

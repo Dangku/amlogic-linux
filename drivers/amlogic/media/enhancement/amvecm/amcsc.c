@@ -53,7 +53,6 @@
 #include "hdr/gamut_convert.h"
 #include "hdr/am_hdr10_tm.h"
 #include "reg_helper.h"
-#include <linux/amlogic/gki_module.h>
 #include "color/ai_color.h"
 #include "hdr/am_cuva_hdr_tm.h"
 

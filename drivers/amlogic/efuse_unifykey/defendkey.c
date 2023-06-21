@@ -15,7 +15,6 @@
 #include <linux/memblock.h>
 #include <linux/random.h>
 #include <linux/compat.h>
-#include <linux/amlogic/gki_module.h>
 #include <linux/of_reserved_mem.h>
 #include <linux/io.h>
 #include "defendkey.h"

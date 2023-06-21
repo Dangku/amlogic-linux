@@ -22,7 +22,6 @@
 #include <linux/amlogic/usbtype.h>
 #include "../phy/phy-aml-new-usb-v2.h"
 
-#include <linux/amlogic/gki_module.h>
 #include <linux/regulator/consumer.h>
 #define HOST_MODE	0
 #define DEVICE_MODE	1

@@ -46,8 +46,6 @@
 #include <linux/amlogic/media/vpu/vpu.h>
 #endif
 
-#include <linux/amlogic/gki_module.h>
-
 #define LCD_CDEV_NAME  "lcd"
 
 unsigned int lcd_debug_print_flag;

@@ -63,7 +63,6 @@ MODULE_AMLOG(LOG_LEVEL_ERROR, 0, LOG_DEFAULT_LEVEL_DESC, LOG_MASK_DESC);
 #ifdef CONFIG_AMLOGIC_MEDIA_MSYNC
 #include <uapi/amlogic/msync.h>
 #endif
-#include <linux/amlogic/gki_module.h>
 
 #include <linux/math64.h>
 #include "video_receiver.h"

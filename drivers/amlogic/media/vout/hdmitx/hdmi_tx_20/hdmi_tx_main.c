@@ -66,7 +66,6 @@
 
 #include <linux/component.h>
 #include <uapi/drm/drm_mode.h>
-#include <linux/amlogic/gki_module.h>
 #include <drm/amlogic/meson_drm_bind.h>
 #include <hdmitx_boot_parameters.h>
 #include <hdmitx_drm_hook.h>

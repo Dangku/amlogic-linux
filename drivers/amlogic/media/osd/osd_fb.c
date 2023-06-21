@@ -53,8 +53,6 @@
 #include "osd_sync.h"
 #include "osd_io.h"
 #include "osd_virtual.h"
-
-#include <linux/amlogic/gki_module.h>
 #include "../mm/cma.h"
 
 static __u32 var_screeninfo[5];

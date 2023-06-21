@@ -22,9 +22,6 @@
 #include "vout_func.h"
 #include "vout_reg.h"
 
-/* must be last include file */
-#include <linux/amlogic/gki_module.h>
-
 #define VDIN_MEAS_CLK_FREQ    50000000  //50MHz
 struct vout_mux_data_s {
 	struct clk *msr_clk;

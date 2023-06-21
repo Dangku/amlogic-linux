@@ -16,6 +16,8 @@
  * Copyright (c) 2007-2009 Novell Inc.
  */
 
+#define DEBUG
+
 #include <linux/debugfs.h>
 #include <linux/device.h>
 #include <linux/delay.h>
@@ -524,6 +526,8 @@ static int call_driver_probe(struct device *dev, struct device_driver *drv)
 {
 	int ret = 0;
 
+	pr_info("%s: call driver probe\n", drv->name);
+
 	if (dev->bus->probe)
 		ret = dev->bus->probe(dev);
 	else if (drv->probe)
@@ -534,16 +538,16 @@ static int call_driver_probe(struct device *dev, struct device_driver *drv)
 		break;
 	case -EPROBE_DEFER:
 		/* Driver requested deferred probing */
-		dev_dbg(dev, "Driver %s requests probe deferral\n", drv->name);
+		dev_info(dev, "Driver %s requests probe deferral\n", drv->name);
 		break;
 	case -ENODEV:
 	case -ENXIO:
-		pr_debug("%s: probe of %s rejects match %d\n",
+		pr_info("%s: probe of %s rejects match %d\n",
 			 drv->name, dev_name(dev), ret);
 		break;
 	default:
 		/* driver matched but the probe failed */
-		pr_warn("%s: probe of %s failed with error %d\n",
+		pr_info("%s: probe of %s failed with error %d\n",
 			drv->name, dev_name(dev), ret);
 		break;
 	}
@@ -557,21 +561,25 @@ static int really_probe(struct device *dev, struct device_driver *drv)
 			   !drv->suppress_bind_attrs;
 	int ret;
 
+	pr_info("%s\n", __func__);
+
 	if (defer_all_probes) {
 		/*
 		 * Value of defer_all_probes can be set only by
 		 * device_block_probing() which, in turn, will call
 		 * wait_for_device_probe() right after that to avoid any races.
 		 */
-		dev_dbg(dev, "Driver %s force probe deferral\n", drv->name);
+		dev_info(dev, "Driver %s force probe deferral\n", drv->name);
 		return -EPROBE_DEFER;
 	}
 
 	ret = device_links_check_suppliers(dev);
-	if (ret)
+	if (ret) {
+		dev_err(dev, "Driver %s check suppliers failed\n", drv->name);
 		return ret;
+	}
 
-	pr_debug("bus: '%s': %s: probing driver %s with device %s\n",
+	pr_info("bus: '%s': %s: probing driver %s with device %s\n",
 		 drv->bus->name, __func__, drv->name, dev_name(dev));
 	if (!list_empty(&dev->devres_head)) {
 		dev_crit(dev, "Resources present before probing\n");
@@ -750,18 +758,25 @@ static int __driver_probe_device(struct device_driver *drv, struct device *dev)
 		return -EBUSY;
 
 	dev->can_match = true;
-	pr_debug("bus: '%s': %s: matched device %s with driver %s\n",
+	pr_info("bus: '%s': %s: matched device %s with driver %s\n",
 		 drv->bus->name, __func__, dev_name(dev), drv->name);
+
+	pr_info("%s, %d\n", __func__, __LINE__);
 
 	pm_runtime_get_suppliers(dev);
 	if (dev->parent)
 		pm_runtime_get_sync(dev->parent);
 
+	pr_info("%s, %d\n", __func__, __LINE__);
+
 	pm_runtime_barrier(dev);
-	if (initcall_debug)
+	if (initcall_debug) {
+		pr_info("%s, %d\n", __func__, __LINE__);
 		ret = really_probe_debug(dev, drv);
-	else
+	} else {
+		pr_info("%s, %d\n", __func__, __LINE__);
 		ret = really_probe(dev, drv);
+	}
 	pm_request_idle(dev);
 
 	if (dev->parent)
@@ -1131,7 +1146,7 @@ static int __driver_attach(struct device *dev, void *data)
 		/* no match */
 		return 0;
 	} else if (ret == -EPROBE_DEFER) {
-		dev_dbg(dev, "Device match requests probe deferral\n");
+		dev_info(dev, "Device match requests probe deferral\n");
 		dev->can_match = true;
 		driver_deferred_probe_add(dev);
 		/*
@@ -1140,7 +1155,7 @@ static int __driver_attach(struct device *dev, void *data)
 		 */
 		return 0;
 	} else if (ret < 0) {
-		dev_dbg(dev, "Bus failed to match device: %d\n", ret);
+		dev_info(dev, "Bus failed to match device: %d\n", ret);
 		return ret;
 	} /* ret > 0 means positive match */
 

@@ -21,8 +21,6 @@
 #include <linux/amlogic/media/vout/lcd/lcd_notify.h>
 #include "lcd_extern.h"
 
-#include <linux/amlogic/gki_module.h>
-
 #define EXT_CDEV_NAME "lcd_ext"
 struct ext_cdev_s {
 	dev_t           devno;

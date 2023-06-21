@@ -246,7 +246,7 @@ static int efuse_burn_probe(struct platform_device *pdev)
 	}
 	pefuse_burn_dev = efuse_burn_dev;
 
-	dev_dbg(&pdev->dev, "device %s created OK\n", EFUSE_BURN_DEVICE_NAME);
+	dev_info(&pdev->dev, "device %s created OK\n", EFUSE_BURN_DEVICE_NAME);
 
 	return 0;
 

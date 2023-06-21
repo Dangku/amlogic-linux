@@ -7,7 +7,6 @@
 #include <linux/init.h>
 #include <linux/amlogic/aml_mtd_nand.h>
 #include <linux/moduleparam.h>
-#include <linux/amlogic/gki_module.h>
 
 static char *cmdline;
 struct storage_startup_parameter g_ssp;

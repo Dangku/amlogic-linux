@@ -16,7 +16,6 @@
 #include <linux/of_device.h>
 #include <linux/amlogic/iomap.h>
 #include <linux/amlogic/media/vout/vclk_serve.h>
-#include <linux/amlogic/gki_module.h>
 
 #define VCLKPR(fmt, args...)     pr_info("vclk: " fmt "", ## args)
 #define VCLKERR(fmt, args...)    pr_err("vclk: error: " fmt "", ## args)

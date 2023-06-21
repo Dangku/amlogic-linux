@@ -42,7 +42,6 @@
 #include <linux/namei.h>
 #include <linux/capability.h>
 #include <asm/cacheflush.h>
-#include <linux/amlogic/gki_module.h>
 
 static unsigned long ramdump_base;
 static unsigned long ramdump_size;

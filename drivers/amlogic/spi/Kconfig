@@ -4,6 +4,7 @@ menuconfig AMLOGIC_SPI
 	tristate "Amlogic SoC SPI Hardware Bus support"
 	depends on SPI
 
+if AMLOGIC_SPI
 config AMLOGIC_SPI_MESON_SPICC
 	tristate "Amlogic Meson SPICC controller"
 	help
@@ -33,3 +34,4 @@ config AMLOGIC_SPI_MESON_SPICC_SLAVE
 	  controller) available in Amlogic Meson SoCs. SPICC can work both
 	  in master mode and slave mode.
 	  say Y or M here.If you are not sure, say N.
+endif

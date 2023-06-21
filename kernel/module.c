@@ -2289,8 +2289,7 @@ static int verify_exported_symbols(struct module *mod)
 				.gplok	= true,
 			};
 
-			if (!mod->sig_ok && gki_is_module_exported_symbol(
-						    kernel_symbol_name(s))) {
+			if (!mod->sig_ok) {
 				pr_err("%s: exporting protected symbol(%s)\n",
 				       mod->name, kernel_symbol_name(s));
 				return -EACCES;
@@ -2363,13 +2362,6 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
 			break;
 
 		case SHN_UNDEF:
-			if (!mod->sig_ok &&
-			    gki_is_module_protected_symbol(name)) {
-				pr_err("%s: is not an Android GKI signed module. It can not access protected symbol: %s\n",
-				       mod->name, name);
-				return -EACCES;
-			}
-
 			ksym = resolve_symbol_wait(mod, info, name);
 			/* Ok if resolved.  */
 			if (ksym && !IS_ERR(ksym)) {

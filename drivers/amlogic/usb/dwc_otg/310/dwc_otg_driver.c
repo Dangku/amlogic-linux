@@ -79,8 +79,6 @@
 #include <linux/amlogic/usb-v2.h>
 #endif
 
-#include <linux/amlogic/gki_module.h>
-
 #define DWC_DRIVER_VERSION	"3.10a 12-MAY-2014"
 #define DWC_DRIVER_DESC		"HS OTG USB Controller driver"
 

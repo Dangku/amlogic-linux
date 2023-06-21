@@ -52,7 +52,6 @@
 #include "hdmi_tx_ext.h"
 #include "hdmi_tx.h"
 
-#include <linux/amlogic/gki_module.h>
 #include <linux/component.h>
 #include <uapi/drm/drm_mode.h>
 #include <drm/amlogic/meson_drm_bind.h>

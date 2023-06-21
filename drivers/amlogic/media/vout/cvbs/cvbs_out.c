@@ -60,7 +60,6 @@
 #include "wss.h"
 #endif
 #include <linux/component.h>
-#include <linux/amlogic/gki_module.h>
 #include <drm/amlogic/meson_drm_bind.h>
 
 #ifdef CONFIG_AML_VOUT_CC_BYPASS

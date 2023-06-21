@@ -27,7 +27,6 @@
 #include <linux/amlogic/media/video_sink/video.h>
 #endif
 #include <linux/amlogic/media/vout/vout_notify.h>
-#include <linux/amlogic/gki_module.h>
 
 /* Local Headers */
 #include "vout_func.h"

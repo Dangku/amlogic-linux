@@ -16,7 +16,6 @@
 #include <linux/of_device.h>
 #include <linux/amlogic/iomap.h>
 #include <linux/amlogic/media/vout/vout_notify.h>
-#include <linux/amlogic/gki_module.h>
 
 #define VSPR(fmt, args...)     pr_info("vout sys: " fmt "", ## args)
 #define VSERR(fmt, args...)    pr_err("vout sys: error: " fmt "", ## args)

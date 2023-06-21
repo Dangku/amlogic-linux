@@ -32,7 +32,6 @@
 #include <linux/pm_wakeirq.h>
 #include <linux/amlogic/pm.h>
 #include <linux/irq.h>
-#include <linux/amlogic/gki_module.h>
 
 #include <linux/input.h>
 

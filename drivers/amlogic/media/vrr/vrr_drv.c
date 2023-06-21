@@ -28,8 +28,6 @@
 #include "vrr_drv.h"
 #include "vrr_reg.h"
 
-#include <linux/amlogic/gki_module.h>
-
 #define VRR_CDEV_NAME  "aml_vrr"
 struct vrr_cdev_s {
 	dev_t           devno;

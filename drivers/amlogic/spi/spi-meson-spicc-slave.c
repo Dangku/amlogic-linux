@@ -500,7 +500,7 @@ struct platform_driver sspicc_driver = {
 	},
 };
 
-//module_platform_driver(sspicc_driver);
+module_platform_driver(sspicc_driver);
 
 MODULE_DESCRIPTION("Meson Slave SPICC driver");
 MODULE_AUTHOR("Amlogic");

@@ -1389,6 +1389,8 @@ static int platform_probe(struct device *_dev)
 	struct platform_device *dev = to_platform_device(_dev);
 	int ret;
 
+	pr_info("%s \n", __func__);
+
 	/*
 	 * A driver registered using platform_driver_probe() cannot be bound
 	 * again later because the probe function usually lives in __init code
@@ -1406,6 +1408,8 @@ static int platform_probe(struct device *_dev)
 	ret = dev_pm_domain_attach(_dev, true);
 	if (ret)
 		goto out;
+
+	pr_info("%s: call driver probe\n", drv->driver.name);
 
 	if (drv->probe) {
 		ret = drv->probe(dev);

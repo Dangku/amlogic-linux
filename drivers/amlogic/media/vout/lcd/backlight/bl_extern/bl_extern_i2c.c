@@ -4,7 +4,6 @@
 #include <linux/slab.h>
 #include <linux/amlogic/media/vout/lcd/aml_lcd.h>
 #include <linux/amlogic/media/vout/lcd/aml_bl_extern.h>
-#include <linux/amlogic/gki_module.h>
 #include "bl_extern.h"
 
 static struct bl_extern_i2c_dev_s *i2c_device[BL_EXT_I2C_DEV_MAX];

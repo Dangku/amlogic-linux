@@ -23,8 +23,6 @@
 #include "osd_log.h"
 #include "osd.h"
 
-#include <linux/amlogic/gki_module.h>
-
 #undef pr_fmt
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 

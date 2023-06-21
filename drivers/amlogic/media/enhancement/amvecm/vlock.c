@@ -38,7 +38,6 @@
 #include "amvecm_vlock_regmap.h"
 #include "amcm.h"
 #include "reg_helper.h"
-#include <linux/amlogic/gki_module.h>
 #include "frame_lock_policy.h"
 
 /* video lock */

@@ -1132,7 +1132,7 @@ struct platform_driver meson_spifc_v2_driver = {
 	},
 };
 
-//module_platform_driver(meson_spifc_v2_driver);
+module_platform_driver(meson_spifc_v2_driver);
 
 MODULE_AUTHOR("Amlogic R&D");
 MODULE_DESCRIPTION("Amlogic Meson SPIFC V2 driver");
