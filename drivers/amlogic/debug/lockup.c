@@ -660,60 +660,6 @@ static void ftrace_format_check_hook(void *data, bool *ftrace_check)
 }
 */
 
-int debug_lockup_init(void)
-{
-	int cpu;
-	struct lockup_info *info;
-
-	infos = alloc_percpu(struct lockup_info);
-	if (!infos) {
-		pr_err("alloc percpu infos failed\n");
-		return 1;
-	}
-
-	for_each_possible_cpu(cpu) {
-		info = per_cpu_ptr(infos, cpu);
-		memset(info, 0, sizeof(*info));
-		info->curr_irq = INVALID_IRQ;
-		info->curr_sirq = INVALID_SIRQ;
-	}
-#ifdef CONFIG_ANDROID_VENDOR_HOOKS
-	register_trace_irq_handler_entry(isr_in_hook, NULL);
-	register_trace_irq_handler_exit(isr_out_hook, NULL);
-
-//	register_trace_softirq_entry(softirq_in_hook, NULL);
-//	register_trace_softirq_exit(softirq_out_hook, NULL);
-
-	register_trace_android_vh_cpu_idle_enter(idle_in_hook, NULL);
-	register_trace_android_vh_cpu_idle_exit(idle_out_hook, NULL);
-
-	register_trace_android_vh_sched_show_task(sched_show_task_hook, NULL);
-
-	register_trace_android_vh_dump_throttled_rt_tasks(rt_throttle_func, NULL);
-
-	irq_trace_start_hook = irq_trace_start;
-	irq_trace_stop_hook = irq_trace_stop;
-
-#ifndef CONFIG_FUNCTION_GRAPH_TRACER
-	register_trace_android_rvh_gic_v3_set_affinity(debug_hook_func, NULL);
-#endif
-
-	/* CONFIG_IRQSOFF_TRACER is not enabled, can't use below function */
-	//register_trace_android_rvh_irqs_disable(irq_trace_start, NULL);
-	//register_trace_android_rvh_irqs_enable(irq_trace_stop, NULL);
-
-	//todo after submit abi:__traceiter_android_vh_ftrace_format_check
-	//register_trace_android_vh_ftrace_format_check(ftrace_format_check_hook, NULL);
-#endif
-	initialized = 1;
-
-#if IS_ENABLED(CONFIG_AMLOGIC_DEBUG_TEST)
-	irq_check_en = 1;
-#endif
-
-	return 0;
-}
-
 static ssize_t params_write_file(struct file *file, const char __user *userbuf,
 				size_t count, loff_t *ppos)
 {
@@ -766,9 +712,11 @@ static const struct file_operations params_debug_ops = {
 	.release	= single_release,
 };
 
-int aml_debug_init(void)
+static int __init debug_lockup_init(void)
 {
 	static struct dentry *debug_lockup;
+	int cpu;
+	struct lockup_info *info;
 
 	debug_lockup = debugfs_create_dir("aml_debug", NULL);
 	if (IS_ERR_OR_NULL(debug_lockup)) {
@@ -778,5 +726,56 @@ int aml_debug_init(void)
 	}
 	debugfs_create_file("params", S_IFREG | 0664,
 			    debug_lockup, NULL, &params_debug_ops);
+
+	infos = alloc_percpu(struct lockup_info);
+	if (!infos) {
+		pr_err("alloc percpu infos failed\n");
+		return 1;
+	}
+
+	for_each_possible_cpu(cpu) {
+		info = per_cpu_ptr(infos, cpu);
+		memset(info, 0, sizeof(*info));
+		info->curr_irq = INVALID_IRQ;
+		info->curr_sirq = INVALID_SIRQ;
+	}
+#ifdef CONFIG_ANDROID_VENDOR_HOOKS
+	register_trace_irq_handler_entry(isr_in_hook, NULL);
+	register_trace_irq_handler_exit(isr_out_hook, NULL);
+
+//	register_trace_softirq_entry(softirq_in_hook, NULL);
+//	register_trace_softirq_exit(softirq_out_hook, NULL);
+
+	register_trace_android_vh_cpu_idle_enter(idle_in_hook, NULL);
+	register_trace_android_vh_cpu_idle_exit(idle_out_hook, NULL);
+
+	register_trace_android_vh_sched_show_task(sched_show_task_hook, NULL);
+
+	register_trace_android_vh_dump_throttled_rt_tasks(rt_throttle_func, NULL);
+
+	irq_trace_start_hook = irq_trace_start;
+	irq_trace_stop_hook = irq_trace_stop;
+
+#ifndef CONFIG_FUNCTION_GRAPH_TRACER
+	register_trace_android_rvh_gic_v3_set_affinity(debug_hook_func, NULL);
+#endif
+
+	/* CONFIG_IRQSOFF_TRACER is not enabled, can't use below function */
+	//register_trace_android_rvh_irqs_disable(irq_trace_start, NULL);
+	//register_trace_android_rvh_irqs_enable(irq_trace_stop, NULL);
+
+	//todo after submit abi:__traceiter_android_vh_ftrace_format_check
+	//register_trace_android_vh_ftrace_format_check(ftrace_format_check_hook, NULL);
+#endif
+	initialized = 1;
+
+#if IS_ENABLED(CONFIG_AMLOGIC_DEBUG_TEST)
+	irq_check_en = 1;
+#endif
 	return 0;
 }
+late_initcall(debug_lockup_init);
+
+MODULE_DESCRIPTION("Amlogic debug lockup module");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jianxiong Pan <jianxiong.pan@amlogic.com>");

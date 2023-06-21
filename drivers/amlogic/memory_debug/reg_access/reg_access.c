@@ -332,7 +332,7 @@ static const struct file_operations vdump_file_ops = {
 	.release	= single_release,
 };
 
-int __init aml_reg_init(void)
+static int __init aml_reg_init(void)
 {
 	static struct dentry *dir_aml_reg;
 
@@ -356,6 +356,10 @@ int __init aml_reg_init(void)
 	return 0;
 }
 
-void __exit aml_reg_exit(void)
+static void __exit aml_reg_exit(void)
 {
 }
+module_init(aml_reg_init);
+module_exit(aml_reg_exit);
+
+MODULE_LICENSE("GPL v2");

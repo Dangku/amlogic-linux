@@ -1418,7 +1418,7 @@ static struct platform_driver aucpu_driver = {
 	.remove = aucpu_remove,
 };
 
-s32 __init aucpu_init(void)
+static s32 __init aucpu_init(void)
 {
 	s32 res;
 
@@ -1429,7 +1429,7 @@ s32 __init aucpu_init(void)
 	return res;
 }
 
-void __exit aucpu_exit(void)
+static void __exit aucpu_exit(void)
 {
 	aucpu_pr(LOG_DEBUG, "%s\n", __func__);
 	platform_driver_unregister(&aucpu_driver);
@@ -1451,4 +1451,10 @@ MODULE_PARM_DESC(print_level, "\n print_level\n");
 module_param(dbg_level, uint, 0664);
 MODULE_PARM_DESC(dbg_level, "\n dbg_level\n");
 
+MODULE_AUTHOR("Amlogic Inc.");
+MODULE_DESCRIPTION("AUCPU linux driver");
+MODULE_LICENSE("GPL");
+
+module_init(aucpu_init);
+module_exit(aucpu_exit);
 RESERVEDMEM_OF_DECLARE(aml_aucpu, "aml, Aucpu-mem", aucpu_mem_setup);

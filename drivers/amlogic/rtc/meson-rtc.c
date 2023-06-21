@@ -493,12 +493,7 @@ static struct platform_driver meson_rtc_driver = {
 	.shutdown = meson_rtc_shutdown,
 };
 
-int __init rtc_init(void)
-{
-	return platform_driver_register(&meson_rtc_driver);
-}
+module_platform_driver(meson_rtc_driver);
 
-void __exit rtc_exit(void)
-{
-	platform_driver_unregister(&meson_rtc_driver);
-}
+MODULE_DESCRIPTION("Amlogic RTC driver");
+MODULE_LICENSE("GPL");

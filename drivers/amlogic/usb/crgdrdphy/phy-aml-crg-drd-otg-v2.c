@@ -21,7 +21,6 @@
 #include <linux/notifier.h>
 #include <linux/amlogic/usbtype.h>
 #include "../phy/phy-aml-new-usb-v2.h"
-#include "../usb_main.h"
 
 #include <linux/amlogic/gki_module.h>
 #include <linux/regulator/consumer.h>
@@ -48,7 +47,22 @@ struct amlogic_crg_otg {
 	struct regulator *usb_regulator_vcc5v;
 };
 
+bool crg_force_device_v2_mode;
+module_param_named(otg_device, crg_force_device_v2_mode,
+		bool, 0644);
 
+static char otg_mode_string[2] = "0";
+static int force_otg_mode(char *s)
+{
+	if (s)
+		sprintf(otg_mode_string, "%s", s);
+	if (strncmp(otg_mode_string, "0", 1) == 0)
+		crg_force_device_v2_mode = 0;
+	else
+		crg_force_device_v2_mode = 1;
+	return 0;
+}
+__setup("otg_device=", force_otg_mode);
 
 static void set_mode
 	(unsigned long reg_addr, int mode, unsigned long phy3_addr);
@@ -325,7 +339,7 @@ static int amlogic_crg_otg_v2_probe(struct platform_device *pdev)
 		otg = 1;
 
 	dev_info(&pdev->dev, "controller_type is %d\n", controller_type);
-	dev_info(&pdev->dev, "crg_force_device_mode is %d\n", get_otg_mode());
+	dev_info(&pdev->dev, "crg_force_device_mode is %d\n", crg_force_device_v2_mode);
 	dev_info(&pdev->dev, "otg is %d\n", otg);
 	dev_info(&pdev->dev, "udc_name: %s\n", crg_v2_UDC_name);
 
@@ -401,7 +415,7 @@ NO_M31:
 	amlogic_crg_otg_init(phy);
 
 	if (otg == 0) {
-		if (get_otg_mode() || controller_type == USB_DEVICE_ONLY) {
+		if (crg_force_device_v2_mode || controller_type == USB_DEVICE_ONLY) {
 			set_mode((unsigned long)phy->usb2_phy_cfg,
 				DEVICE_MODE, (unsigned long)phy->phy3_cfg);
 			amlogic_m31_set_vbus_power(phy, 0);
@@ -536,18 +550,15 @@ static struct platform_driver amlogic_crg_otg_v2_driver = {
 	},
 };
 
-int __init crg_otg_v2_init(void)
+static int __init crg_otg_v2_init(void)
 {
 	platform_driver_register(&amlogic_crg_otg_v2_driver);
 
 	return 0;
 }
-
-#if 0
 late_initcall(crg_otg_v2_init);
 
 MODULE_ALIAS("platform: amlogic crg otg v2");
 MODULE_AUTHOR("Amlogic Inc.");
 MODULE_DESCRIPTION("amlogic crg otg v2 driver");
 MODULE_LICENSE("GPL v2");
-#endif

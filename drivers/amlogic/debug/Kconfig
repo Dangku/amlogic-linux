@@ -1,4 +1,4 @@
-config AMLOGIC_DEBUG
+menuconfig AMLOGIC_DEBUG
 	tristate "AMLOGIC kernel debug"
 	default n
 	help
@@ -6,12 +6,12 @@ config AMLOGIC_DEBUG
 	  Modifying the source code, we will use the AMLOGIC_
 	  prefix.If you want to add debug code to the kernel,please
 	  use this option switch it.
+	  
+if AMLOGIC_DEBUG
 
 config AMLOGIC_BGKI_DEBUG_MISC
 	bool "Amlogic Debug Builtin Code"
 	depends on AMLOGIC_DEBUG
-	depends on AMLOGIC_BREAK_GKI
-	depends on AMLOGIC_BREAK_GKI_20
 	default n
 	help
 	  Amlogic debug code must builtin
@@ -28,8 +28,7 @@ config AMLOGIC_DEBUG_ATRACE
 
 config AMLOGIC_BOOT_TIME
 	bool "AMLOGIC boot time optimi zation"
-	depends on AMLOGIC_BREAK_GKI
-	depends on AMLOGIC_BREAK_GKI_20
+	depends on AMLOGIC_DEBUG
 	default n
 	help
 	  This option is set up for Amlogic boot time optimization,
@@ -37,8 +36,8 @@ config AMLOGIC_BOOT_TIME
 
 config AMLOGIC_DEBUG_PRINTK
 	tristate "Amlogic printk support"
-	depends on AMLOGIC_BREAK_GKI_20
 	depends on PRINTK_CALLER
+	depends on AMLOGIC_DEBUG
 	default n
 	help
 	  if you want to print information such as cpu irq,
@@ -46,8 +45,7 @@ config AMLOGIC_DEBUG_PRINTK
 
 config AMLOGIC_BGKI_DEBUG_IOTRACE
 	bool "Amlogic ftrace pstore debug"
-	depends on AMLOGIC_BREAK_GKI
-	depends on AMLOGIC_BREAK_GKI_20
+	depends on AMLOGIC_DEBUG
 	select PSTORE_FTRACE
 	default n
 	help
@@ -57,6 +55,7 @@ config AMLOGIC_BGKI_DEBUG_IOTRACE
 
 config AMLOGIC_DEBUG_FILE
 	bool "Amlogic dump log to debug file"
+	depends on AMLOGIC_DEBUG
 	default n
 	help
 	  Provide some interfaces for dumping log to debug file
@@ -78,6 +77,7 @@ config AMLOGIC_DEBUG_HLD
 
 config AMLOGIC_HOTPLUG_ARM_CPU0
 	bool "Support VTS thermal 1.0 test on arm"
+	depends on AMLOGIC_DEBUG
 	default n
 	help
 	  if build with arm set this config to y for vts thermal 1.0 test,
@@ -85,13 +85,9 @@ config AMLOGIC_HOTPLUG_ARM_CPU0
 
 config AMLOGIC_AUDIO_UTILS
 	tristate "Amlogic audio utils"
+	depends on AMLOGIC_DEBUG
 	default n
 	help
 	  add some debug tools
 
-config AMLOGIC_GKI_CONFIG
-	bool "Meson gki config"
-	depends on AMLOGIC_DEBUG
-	default n
-	help
-	  support GKI config enable or not
+endif

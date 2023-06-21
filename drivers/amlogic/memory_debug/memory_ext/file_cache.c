@@ -571,7 +571,7 @@ static const struct proc_ops filecache_ops = {
 	.proc_release		= single_release,
 };
 
-int __init filecache_module_init(void)
+static int __init filecache_module_init(void)
 {
 	d_filecache = proc_create("filecache", 0444,
 				  NULL, &filecache_ops);
@@ -580,18 +580,15 @@ int __init filecache_module_init(void)
 		return -1;
 	}
 
-#if defined(CONFIG_TRACEPOINTS) && defined(CONFIG_ANDROID_VENDOR_HOOKS) && defined(CONFIG_MEMCG)
-	register_trace_android_vh_mem_cgroup_alloc(get_root_memcg_hook, NULL);
-#endif
 	return 0;
 }
 
-void __exit filecache_module_exit(void)
+static void __exit filecache_module_exit(void)
 {
 	if (d_filecache)
 		proc_remove(d_filecache);
-#if defined(CONFIG_TRACEPOINTS) && defined(CONFIG_ANDROID_VENDOR_HOOKS) && defined(CONFIG_MEMCG)
-	unregister_trace_android_vh_mem_cgroup_alloc(get_root_memcg_hook, NULL);
-#endif
 }
+module_init(filecache_module_init);
+module_exit(filecache_module_exit);
 
+MODULE_LICENSE("GPL v2");

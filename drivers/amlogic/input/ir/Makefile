@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0-only
 
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_core.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_main.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_sysfs.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_cdev.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_raw.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_regmap.o
-$(MODULE_NAME)-$(CONFIG_AMLOGIC_MESON_IR) += ir/meson_ir_decoder_xmp.o
+obj-$(CONFIG_AMLOGIC_MESON_IR) += meson_ir.o
+
+meson_ir-y += meson_ir_core.o \
+	meson_ir_main.o \
+	meson_ir_sysfs.o \
+	meson_ir_cdev.o \
+	meson_ir_raw.o \
+	meson_ir_regmap.o \
+	meson_ir_decoder_xmp.o

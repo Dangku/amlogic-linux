@@ -6,7 +6,7 @@ menuconfig AMLOGIC_WIFI
 	select WEXT_PRIV
 	default n
 	help
-		select y to support wifi
+	  select y to support wifi
 
 if AMLOGIC_WIFI
 
@@ -15,11 +15,11 @@ config AMLOGIC_PWM_32K
 	depends on AMLOGIC_PWM_MESON
 	default y
 	help
-		WiFi usually needs a 32K frequency clock signal.
-		There are three possibilities:
-		using the internal 32K clock or using the 32K input from our SOC,
-		or using the onboard active 32K crystal oscillator.
-		By default,32K of SOC input is enabled,
-		if not, you can disable it by selecting n.
+	  WiFi usually needs a 32K frequency clock signal.
+	  There are three possibilities:
+	  using the internal 32K clock or using the 32K input from our SOC,
+	  or using the onboard active 32K crystal oscillator.
+	  By default,32K of SOC input is enabled,
+	  if not, you can disable it by selecting n.
 
 endif

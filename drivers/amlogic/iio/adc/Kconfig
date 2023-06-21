@@ -6,6 +6,8 @@ config AMLOGIC_MESON_SARADC
 	tristate "Amlogic Meson SAR ADC driver"
 	depends on OF && COMMON_CLK
 	depends on REGMAP_MMIO
+	depends on IIO
+	depends on IIO_BUFFER
 	depends on AMLOGIC_IIO_KFIFO_BUF
 	help
 	  Say yes here to build support for the SAR ADC found in Amlogic Meson

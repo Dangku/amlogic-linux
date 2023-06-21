@@ -502,12 +502,7 @@ static struct platform_driver meson_pm_driver = {
 	.shutdown = meson_pm_shutdown,
 };
 
-int __init pm_init(void)
-{
-	return platform_driver_register(&meson_pm_driver);
-}
-
-void __exit pm_exit(void)
-{
-	platform_driver_unregister(&meson_pm_driver);
-}
+module_platform_driver(meson_pm_driver);
+MODULE_AUTHOR("Amlogic");
+MODULE_DESCRIPTION("Amlogic suspend driver");
+MODULE_LICENSE("GPL");

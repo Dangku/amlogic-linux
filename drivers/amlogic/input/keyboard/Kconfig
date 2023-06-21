@@ -1,20 +1,25 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-config AMLOGIC_GPIO_KEY
-	bool "Amlogic gpio key device support"
+menuconfig AMLOGIC_INPUT_KEYBOARD
+	bool "Keyboards and keypads"
 	default n
 	help
-	  Say Y here if
-	  you want to use
-	  the amlogic hold
-	  key.
+	  Say Y here, and a list of supported keyboards and keypads will be displayed.
+	  This option doesn't affect the kernel.
+
+	  If unsure, say Y.
+
+config AMLOGIC_GPIO_KEY
+	tristate "Amlogic gpio key device support"
+	depends on AMLOGIC_INPUT_KEYBOARD
+	default n
+	help
+	  Say Y here if you want to use the amlogic hold key.
 
 config AMLOGIC_ADC_KEYPADS
-	bool "Meson ADC keypad support"
+	tristate "Meson ADC keypad support"
+	depends on AMLOGIC_INPUT_KEYBOARD
 	depends on AMLOGIC_MESON_SARADC
 	default n
 	help
-	  Say Y here if
-	  you want to
-	  use the Meson ADC
-	  keypad.
+	  Say Y here if you want to use the Meson ADC keypad.

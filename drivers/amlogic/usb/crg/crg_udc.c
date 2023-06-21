@@ -4853,7 +4853,6 @@ void crg_gadget_exit(void)
 		return;
 	platform_driver_unregister(&crg_udc_driver);
 }
-EXPORT_SYMBOL_GPL(crg_gadget_exit);
 
 int crg_gadget_init(void)
 {
@@ -4861,7 +4860,6 @@ int crg_gadget_init(void)
 
 	return platform_driver_register(&crg_udc_driver);
 }
-EXPORT_SYMBOL_GPL(crg_gadget_init);
 
 MODULE_DESCRIPTION("Corigine USB Device Controller");
 MODULE_LICENSE("GPL");

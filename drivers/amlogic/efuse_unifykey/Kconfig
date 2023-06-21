@@ -25,7 +25,7 @@ config AMLOGIC_EFUSE_BURN
 	bool "Amlogic efuse pattern burn suppot"
 	default n
 	help
-	  en, if project need burn efuse pattern file, then
+	  if project need burn efuse pattern file, then
 	  it can enable this. if efuse pattern size exceed
 	  4KB, it must enable this. it write efuse pattern
 	  file through /dev/efuse_burn.
@@ -34,5 +34,5 @@ config AMLOGIC_DEFENDKEY
 	tristate "Amlogic defendkey driver support"
 	default n
 	help
-		amlogic defendkey device driver
-		not choose by default
+	  amlogic defendkey device driver
+	  not choose by default

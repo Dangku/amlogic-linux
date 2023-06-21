@@ -1621,7 +1621,7 @@ static struct platform_driver aml_dvb_extern_driver = {
 	.resume   = aml_dvb_extern_resume
 };
 
-int __init aml_dvb_extern_init(void)
+static int __init aml_dvb_extern_init(void)
 {
 	int ret = 0;
 
@@ -1637,9 +1637,17 @@ int __init aml_dvb_extern_init(void)
 	return 0;
 }
 
-void __exit aml_dvb_extern_exit(void)
+static void __exit aml_dvb_extern_exit(void)
 {
 	platform_driver_unregister(&aml_dvb_extern_driver);
 
 	pr_info("%s: OK.\n", __func__);
 }
+
+module_init(aml_dvb_extern_init);
+module_exit(aml_dvb_extern_exit);
+
+MODULE_AUTHOR("nengwen.chen <nengwen.chen@amlogic.com>");
+MODULE_DESCRIPTION("aml dvb extern device driver");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(AML_DVB_EXTERN_VERSION);

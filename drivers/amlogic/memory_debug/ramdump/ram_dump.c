@@ -636,7 +636,7 @@ static struct platform_driver ramdump_driver = {
 	.remove = ramdump_remove,
 };
 
-int __init ramdump_init(void)
+static int __init ramdump_init(void)
 {
 	int ret;
 
@@ -645,8 +645,11 @@ int __init ramdump_init(void)
 	return ret;
 }
 
-void __exit ramdump_uninit(void)
+static void __exit ramdump_uninit(void)
 {
 	platform_driver_unregister(&ramdump_driver);
 }
+module_init(ramdump_init);
+module_exit(ramdump_uninit);
 
+MODULE_LICENSE("GPL v2");

@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-config AMLOGIC_GPIO
+menuconfig AMLOGIC_GPIO
 	tristate "Amlogic gpio support"
 	default n
 	help
-	  gpio device support
-	  select y for built-in
-	  select m for ko
-	  select n for disable
+	  Say Y here to get to see options for gpio drivers.
+	  This option alone does not add any kernel code.
+
+	  If you say N, all options in this submenu will be
+	  skipped and disabled.
 
 if AMLOGIC_GPIO
 

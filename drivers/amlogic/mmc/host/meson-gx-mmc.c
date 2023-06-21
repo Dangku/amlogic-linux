@@ -42,7 +42,6 @@
 #include "mmc_dtb.h"
 #include <trace/hooks/mmc.h>
 #include <linux/moduleparam.h>
-#include <linux/amlogic/gki_module.h>
 
 struct mmc_gpio {
 	struct gpio_desc *ro_gpio;
@@ -3686,6 +3685,8 @@ static int meson_mmc_probe(struct platform_device *pdev)
 	int ret;
 	u32 val;
 
+	pr_info("%s\n", __func__);
+
 	mmc = mmc_alloc_host(sizeof(struct meson_host), &pdev->dev);
 	if (!mmc)
 		return -ENOMEM;
@@ -3710,7 +3711,7 @@ static int meson_mmc_probe(struct platform_device *pdev)
 	ret = mmc_of_parse(mmc);
 	if (ret) {
 		if (ret != -EPROBE_DEFER)
-			dev_warn(&pdev->dev, "error parsing DT: %d\n", ret);
+			dev_err(&pdev->dev, "error parsing DT: %d\n", ret);
 		goto free_host;
 	}
 	amlogic_of_parse(mmc);

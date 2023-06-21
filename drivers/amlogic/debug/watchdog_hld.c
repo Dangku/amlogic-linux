@@ -226,7 +226,7 @@ static struct smp_hotplug_thread hld_threads = {
 	.unpark			= hld_unpark,
 };
 
-int aml_hld_init(void)
+static int __init aml_hld_init(void)
 {
 	int ret;
 
@@ -238,3 +238,8 @@ int aml_hld_init(void)
 
 	return ret;
 }
+late_initcall(aml_hld_init);
+
+MODULE_DESCRIPTION("Amlogic debug watchdog hld module");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jianxiong Pan <jianxiong.pan@amlogic.com>");

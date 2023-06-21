@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-config AMLOGIC_WIRELESS
+menuconfig AMLOGIC_WIRELESS
 	tristate "Amlogic wifi and bluetooth support"
 	default n
 	help
-	  wifi and bluetooth support
-	  select y for built-in
-	  select m for ko
-	  select n for disable
+	  Say y here to get to see options for wireless drivers
+	  This option alone does not add any kernel code.
+
+          If you say N, all options in this submenu will be
+          skipped and disabled.
 
 if AMLOGIC_WIRELESS
 source "drivers/amlogic/wireless/bluetooth/Kconfig"

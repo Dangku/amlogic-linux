@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-config AMLOGIC_INPUT
-	tristate "Amlogic input devices support"
+menuconfig AMLOGIC_INPUT
+	bool "Amlogic input device support"
 	default n
 	help
-	  input devices support
-	  select y for built-in
-	  select m for ko
-	  select n for disable
+	  Say Y here to enable Amlogic input
+	  devices. Include keyboard, third part
+	  touchscreen, sensor, gpio-key, adc-key,
+	  ir remote control etc.
 
 if AMLOGIC_INPUT
 source "drivers/amlogic/input/keyboard/Kconfig"

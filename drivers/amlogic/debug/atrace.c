@@ -100,7 +100,7 @@ static struct class debug_class = {
 		.class_groups = debug_class_groups,
 };
 
-int meson_atrace_init(void)
+static int __init meson_atrace_init(void)
 {
 	int r;
 
@@ -113,6 +113,11 @@ int meson_atrace_init(void)
 
 	return 0;
 }
+late_initcall(meson_atrace_init);
+
+MODULE_DESCRIPTION("Amlogic debug atrace module");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jianxiong Pan <jianxiong.pan@amlogic.com>");
 
 static char *print_flags_type(unsigned int flags)
 {
