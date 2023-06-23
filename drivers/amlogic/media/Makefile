@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 MEDIA_MODULE_NAME = aml_media
-obj-$(CONFIG_AMLOGIC_MEDIA_MODULE) = $(MEDIA_MODULE_NAME).o
-$(MEDIA_MODULE_NAME)-y = media_main.o
+obj-$(CONFIG_AMLOGIC_MEDIA_MODULE) += $(MEDIA_MODULE_NAME).o
+$(MEDIA_MODULE_NAME)-y := media_main.o
 include drivers/amlogic/media/common/Makefile
 include drivers/amlogic/media/vout/Makefile
 include drivers/amlogic/media/video_sink/Makefile

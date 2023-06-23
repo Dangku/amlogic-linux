@@ -4048,7 +4048,7 @@ static struct platform_driver meson_mmc_driver = {
 	.probe		= meson_mmc_probe,
 	.remove		= meson_mmc_remove,
 	.driver		= {
-		.name = DRIVER_NAME,
+		.name = "meson-axg-mmc",
 		.of_match_table = of_match_ptr(meson_mmc_of_match),
 	},
 };

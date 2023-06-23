@@ -1607,23 +1607,25 @@ static struct platform_driver meson_t7_pinctrl_driver = {
 	},
 };
 
-#ifndef MODULE
+//#ifndef MODULE
 static int __init t7_pmx_init(void)
 {
+	pr_info("meson_t7_pinctrl_init\n");
 	meson_t7_pinctrl_driver.driver.of_match_table =
 			meson_t7_pinctrl_dt_match;
 	return platform_driver_register(&meson_t7_pinctrl_driver);
 }
 arch_initcall(t7_pmx_init);
 
-#else
-int __init meson_t7_pinctrl_init(void)
-{
-	meson_t7_pinctrl_driver.driver.of_match_table =
-			meson_t7_pinctrl_dt_match;
-	return platform_driver_register(&meson_t7_pinctrl_driver);
-}
-module_init(meson_t7_pinctrl_init);
-#endif
+//#else
+//int __init meson_t7_pinctrl_init(void)
+//{
+//	pr_info("meson_t7_pinctrl_init\n");
+//	meson_t7_pinctrl_driver.driver.of_match_table =
+//			meson_t7_pinctrl_dt_match;
+//	return platform_driver_register(&meson_t7_pinctrl_driver);
+//}
+//module_init(meson_t7_pinctrl_init);
+//#endif
 
-MODULE_LICENSE("GPL v2");
+//MODULE_LICENSE("GPL v2");

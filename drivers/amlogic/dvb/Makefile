@@ -5,7 +5,7 @@ obj-$(CONFIG_AMLOGIC_DVB_DMX) += demux/
 obj-$(CONFIG_AMLOGIC_DVB_DSM) += dsm/
 obj-$(CONFIG_AMLOGIC_SMARTCARD) += smartcard_sc2/
 obj-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_dvb_extern.o
-aml_dvb_extern-objs = \
+aml_dvb_extern-objs := \
 		aml_demod_common.o \
 		aml_tuner.o \
 		aml_atvdemod.o \

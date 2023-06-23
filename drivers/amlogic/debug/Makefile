@@ -4,7 +4,7 @@ ccflags-y += -I$(srctree)/fs/pstore/
 ccflags-y += -I$(srctree)/kernel/sched/
 
 obj-$(CONFIG_AMLOGIC_DEBUG) += amlogic-debug.o
-amlogic-debug-y = main.o lockup.o cpu_mhz.o sched.o
+amlogic-debug-y := main.o lockup.o cpu_mhz.o sched.o
 
 obj-$(CONFIG_AMLOGIC_DEBUG_ATRACE) += atrace.o
 obj-$(CONFIG_AMLOGIC_DEBUG_FILE) += debug_file.o

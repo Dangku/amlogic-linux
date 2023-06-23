@@ -2,7 +2,7 @@
 
 obj-$(CONFIG_AMLOGIC_MESON_IR) += meson_ir.o
 
-meson_ir-y += meson_ir_core.o \
+meson_ir-y := meson_ir_core.o \
 	meson_ir_main.o \
 	meson_ir_sysfs.o \
 	meson_ir_cdev.o \

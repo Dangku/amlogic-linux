@@ -938,6 +938,8 @@ int meson_pinctrl_probe(struct platform_device *pdev)
 	struct meson_pinctrl *pc;
 	int ret;
 
+	pr_info("meson_pinctrl_probe\n");
+
 	pc = devm_kzalloc(dev, sizeof(struct meson_pinctrl), GFP_KERNEL);
 	if (!pc)
 		return -ENOMEM;
