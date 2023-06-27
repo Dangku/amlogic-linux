@@ -150,3 +150,5 @@ x509.genkey
 /compile_commands.json
 
 *.symversions
+
+/output/
