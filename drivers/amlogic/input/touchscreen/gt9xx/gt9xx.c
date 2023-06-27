@@ -377,17 +377,9 @@ Output:
 *********************************************************/
 static void gtp_touch_down(struct goodix_ts_data* ts,s32 id,s32 x,s32 y,s32 w)
 {
-#if GTP_CHANGE_X2Y
-		GTP_SWAP(x, y);
-#endif
-
-#if GTP_X_REVERSE_ENABLE 
-		x = ts->abs_x_max - x;
-#endif
-
-#if GTP_Y_REVERSE_ENABLE 
-		y = ts->abs_y_max - y;
-#endif
+if (1 == rotation) {
+    GTP_SWAP(x, y);
+}
 
 #if GTP_ICS_SLOT_REPORT
 
@@ -407,7 +399,11 @@ static void gtp_touch_down(struct goodix_ts_data* ts,s32 id,s32 x,s32 y,s32 w)
 	}else if (3 == rotation) {
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_X, ts->abs_x_max-x);
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, ts->abs_y_max-y);
-	}else{
+	}else if (4 == rotation) { /* bpi, 800x1280 panel */
+		GTP_SWAP(x, y);
+        input_report_abs(ts->input_dev, ABS_MT_POSITION_X, ts->abs_x_max-x);
+        input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, y);
+    }else{
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_X, x);
 		input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, y);
 	}
@@ -433,7 +429,7 @@ static void gtp_touch_down(struct goodix_ts_data* ts,s32 id,s32 x,s32 y,s32 w)
     input_mt_sync(ts->input_dev);
 #endif
 
-    GTP_DEBUG("ID:%d, X:%d, Y:%d, W:%d", id, x, y, w);
+    GTP_INFO("ID:%d, X:%d, Y:%d, W:%d", id, x, y, w);
 }
 
 /*******************************************************
@@ -497,10 +493,9 @@ static void gtp_pen_down(s32 x, s32 y, s32 w, s32 id)
 {
     struct goodix_ts_data *ts = i2c_get_clientdata(i2c_connect_client);
 
-#if GTP_CHANGE_X2Y
-		GTP_SWAP(x, y);
-#endif
-
+if (1 == rotation) {
+    GTP_SWAP(x, y);
+}
 
     input_report_key(ts->pen_dev, BTN_TOOL_PEN, 1);
 #if GTP_ICS_SLOT_REPORT
@@ -1363,6 +1358,7 @@ static s32 gtp_init_panel(struct goodix_ts_data *ts)
     u8 check_sum = 0;
     u8 opr_buf[16] = {0};
     u8 sensor_id = 0;
+	u8 cfg_dtb_id = 0;
 	u8 drv_cfg_version;
 	u8 flash_cfg_version;
 
@@ -1436,12 +1432,26 @@ static s32 gtp_init_panel(struct goodix_ts_data *ts)
 	/* parse config data*/
 #ifdef GTP_CONFIG_OF
 	GTP_DEBUG("Get config data from device tree.");
-	ret = gtp_parse_dt_cfg(&ts->client->dev, &config[GTP_ADDR_LENGTH], &ts->gtp_cfg_len, sensor_id);
+	GTP_INFO("Chip_Version: 0x%x", ts->chip_verion);
+	switch (ts->chip_verion) {
+		case 0x1040:	/*bpi, 800x1280 panel*/
+			cfg_dtb_id = 0;
+			break;
+		case 0x1070:	/*bpi, 1200x1920 panel*/
+			cfg_dtb_id = 1;
+			break;
+		default:
+			return -EINVAL;
+	}
+
+	ret = gtp_parse_dt_cfg(&ts->client->dev, &config[GTP_ADDR_LENGTH], &ts->gtp_cfg_len, cfg_dtb_id);
 	if (ret < 0) {
 		GTP_ERROR("Failed to parse config data form device tree.");
 		ts->pnl_init_error = 1;
 		return -1;
 	}
+
+	GTP_INFO("DTB Config group%d used,length: %d", cfg_dtb_id, ts->gtp_cfg_len);
 #else
 	GTP_DEBUG("Get config data from header file.");
     if ((!cfg_info_len[1]) && (!cfg_info_len[2]) &&
@@ -1453,9 +1463,9 @@ static s32 gtp_init_panel(struct goodix_ts_data *ts)
 	ts->gtp_cfg_len = cfg_info_len[sensor_id];
 	memset(&config[GTP_ADDR_LENGTH], 0, GTP_CONFIG_MAX_LENGTH);
 	memcpy(&config[GTP_ADDR_LENGTH], send_cfg_buf[sensor_id], ts->gtp_cfg_len);
-#endif
 
-    GTP_INFO("Config group%d used,length: %d", sensor_id, ts->gtp_cfg_len);
+	GTP_INFO("Config group%d used,length: %d", sensor_id, ts->gtp_cfg_len);
+#endif
 
     if (ts->gtp_cfg_len < GTP_CONFIG_MIN_LENGTH)
     {
@@ -1849,10 +1859,9 @@ static s8 gtp_request_input_dev(struct goodix_ts_data *ts)
     input_set_capability(ts->input_dev, EV_KEY, KEY_POWER);
 #endif
 
-#if GTP_CHANGE_X2Y
-		GTP_SWAP(x, y);
-#endif
-
+if (1 == rotation || 4 == rotation) {
+    GTP_SWAP(ts->abs_x_max, ts->abs_y_max);
+}
 
     input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X, 0, ts->abs_x_max, 0, 0);
     input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y, 0, ts->abs_y_max, 0, 0);
@@ -2339,7 +2348,7 @@ static void gtp_parse_dt(struct device *dev)
 
 	ret = of_property_read_u32(np, "rotation", &temp_val);
 	if (!ret) {
-		rotation = temp_val;		
+		rotation = temp_val;
 	} else {
 		rotation = 0;
 		GTP_ERROR("cannot get rotation value of touchscreen");
@@ -2434,7 +2443,6 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
 {
     s32 ret = -1;
     struct goodix_ts_data *ts;
-    u16 version_info;
 
     GTP_DEBUG_FUNC();
 
@@ -2528,7 +2536,7 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
         goto err_chip_init;
     }
 
-    ret = gtp_read_version(client, &version_info);
+    ret = gtp_read_version(client, &ts->chip_verion);
     if (ret < 0)
     {
         GTP_ERROR("Read version failed.");
