@@ -95,6 +95,10 @@ static int pcf85063_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	tm->tm_year = bcd2bin(regs[6]);
 	tm->tm_year += 100;
 
+	dev_info(&pcf85063->rtc->dev, "read_time:%4d-%02d-%02d(%d) %02d:%02d:%02d\n",
+                1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday, tm->tm_wday,
+                tm->tm_hour, tm->tm_min, tm->tm_sec);
+
 	return 0;
 }
 
@@ -103,6 +107,13 @@ static int pcf85063_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	struct pcf85063 *pcf85063 = dev_get_drvdata(dev);
 	int rc;
 	u8 regs[7];
+
+	dev_info(&pcf85063->rtc->dev, "set_time:%4d-%02d-%02d(%d) %02d:%02d:%02d\n",
+                1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday, tm->tm_wday,
+                tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+	if ((tm->tm_year < 100) || (tm->tm_year > 199))
+		return -EINVAL;
 
 	/*
 	 * to accurately set the time, reset the divider chain and keep it in
@@ -169,6 +180,9 @@ static int pcf85063_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 		return ret;
 
 	alrm->enabled =  !!(val & PCF85063_CTRL2_AIE);
+	
+	dev_info(&pcf85063->rtc->dev, "read_alarm:%02d %02d:%02d:%02d\n",
+				alrm->time.tm_mday, alrm->time.tm_hour, alrm->time.tm_min, alrm->time.tm_sec);
 
 	return 0;
 }
@@ -178,6 +192,9 @@ static int pcf85063_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 	struct pcf85063 *pcf85063 = dev_get_drvdata(dev);
 	u8 buf[5];
 	int ret;
+	
+	dev_info(&pcf85063->rtc->dev, "set_alarm:%02d %02d:%02d:%02d\n",
+				alrm->time.tm_mday, alrm->time.tm_hour, alrm->time.tm_min, alrm->time.tm_sec);
 
 	buf[0] = bin2bcd(alrm->time.tm_sec);
 	buf[1] = bin2bcd(alrm->time.tm_min);
@@ -410,8 +427,22 @@ static int pcf85063_probe(struct i2c_client *client)
 		.type = NVMEM_TYPE_BATTERY_BACKED,
 		.size = 1,
 	};
+	
+	/*
+     * pcf85063 initial time(2021_1_1_12:00:00),
+     * avoid pcf85063 read time error
+     */
+    struct rtc_time tm_read, tm = {
+            .tm_wday = 0,
+            .tm_year = 121,
+            .tm_mon = 0,
+            .tm_mday = 1,
+            .tm_hour = 12,
+            .tm_min = 0,
+            .tm_sec = 0,
+    };
 
-	dev_dbg(&client->dev, "%s\n", __func__);
+	dev_info(&client->dev, "%s\n", __func__);
 
 	pcf85063 = devm_kzalloc(&client->dev, sizeof(struct pcf85063),
 				GFP_KERNEL);
@@ -442,6 +473,11 @@ static int pcf85063_probe(struct i2c_client *client)
 	if (err < 0)
 		dev_warn(&client->dev, "failed to set xtal load capacitance: %d",
 			 err);
+
+	pcf85063_rtc_read_time(&client->dev, &tm_read);
+    if ((tm_read.tm_year < 70) || (tm_read.tm_year > 200) ||
+        		(tm_read.tm_mon == -1) || (rtc_valid_tm(&tm_read) != 0))
+		pcf85063_rtc_set_time(&client->dev, &tm);
 
 	pcf85063->rtc->ops = &pcf85063_rtc_ops;
 	pcf85063->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
