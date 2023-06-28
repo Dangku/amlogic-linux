@@ -152,3 +152,4 @@ x509.genkey
 *.symversions
 
 /output/
+/kernel/cfg_less.txt
