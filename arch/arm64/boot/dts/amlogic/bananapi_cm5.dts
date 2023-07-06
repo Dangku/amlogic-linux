@@ -1772,7 +1772,7 @@
 };
 
 &drm_subsystem {
-		crtc_masks = <3 7 1>;
+	crtc_masks = <3 7 1>;
 };
 
 &lcd {
@@ -1791,6 +1791,8 @@
 &lcd1 {
 	ports {
 		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
 			lcd1_to_drm: endpoint@0 {
 				reg = <0>;
 				remote-endpoint = <&drm_to_lcd1>;
@@ -1802,6 +1804,8 @@
 &lcd2 {
 	ports {
 		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
 			lcd2_to_drm: endpoint@0 {
 				reg = <0>;
 				remote-endpoint = <&drm_to_lcd2>;
@@ -1812,10 +1816,9 @@
 
 &amhdmitx {
 	status = "okay";
-	repeater_tx = <0>;
 	enc_idx = <0>;
-	vrr_type = <2>; /* 1: GAME-VRR, 2: QMS-VRR */
-	tv_usage = <1>;
+	/* hdcp ctrl 0: sysctrl, 1: drv, 2: linux app */
+	hdcp_ctl_lvl = <1>;
 };
 
 /*if you want to use vdin just modify status to "ok"*/
