@@ -1623,7 +1623,8 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
 	case USB_ENDPOINT_XFER_CONTROL:
 #ifdef CONFIG_AMLOGIC_USB
 		setup = (struct usb_ctrlrequest *)urb->setup_packet;
-		if (setup->bRequestType == 0x80 &&
+		if (bpi_amlogic_usb3() &&
+			setup->bRequestType == 0x80 &&
 		    setup->bRequest == 0x06 &&
 		    setup->wValue == 0x0100 &&
 		    setup->wIndex != 0x0) {

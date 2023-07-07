@@ -2775,6 +2775,8 @@ void queue_trb(struct xhci_hcd *xhci, struct xhci_ring *ring,
 			u32 field1, u32 field2, u32 field3, u32 field4);
 int xhci_stop_device(struct xhci_hcd *xhci, int slot_id, int suspend);
 void xhci_ring_device(struct xhci_hcd *xhci, int slot_id);
+extern void set_usb_phy_host_tuning(int port, int default_val);
+extern void set_usb_phy_host_low_reset(int port);
 #endif
 
 #endif /* __LINUX_XHCI_HCD_H */

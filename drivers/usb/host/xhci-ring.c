@@ -1828,6 +1828,14 @@ cleanup:
 	xhci_dbg(xhci, "%s: starting port polling.\n", __func__);
 	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
 	spin_unlock(&xhci->lock);
+#if 1
+#ifdef CONFIG_AMLOGIC_USB
+	if (bpi_amlogic_usb3()) {
+		if (!(portsc & PORT_CONNECT) || !(portsc & PORT_PE))
+			set_usb_phy_host_tuning(hcd_portnum, 1);
+	}
+#endif
+#endif
 	/* Pass this up to the core */
 	usb_hcd_poll_rh_status(hcd);
 	spin_lock(&xhci->lock);

@@ -280,12 +280,29 @@ static void xhci_usb3_hub_descriptor(struct usb_hcd *hcd, struct xhci_hcd *xhci,
 static void xhci_hub_descriptor(struct usb_hcd *hcd, struct xhci_hcd *xhci,
 		struct usb_hub_descriptor *desc)
 {
-
+#ifdef CONFIG_AMLOGIC_USB
+	if (bpi_amlogic_usb3()) {
+		if (xhci->quirks & XHCI_AML_SUPER_SPEED_SUPPORT) {
+			if (hcd->speed >= HCD_USB3)
+				xhci_usb3_hub_descriptor(hcd, xhci, desc);
+			else
+				xhci_usb2_hub_descriptor(hcd, xhci, desc);
+		} else {
+			if (hcd->speed < HCD_USB3)
+				xhci_usb2_hub_descriptor(hcd, xhci, desc);
+		}
+	} else {
+		if (hcd->speed >= HCD_USB3)
+			xhci_usb3_hub_descriptor(hcd, xhci, desc);
+		else
+			xhci_usb2_hub_descriptor(hcd, xhci, desc);
+	}
+#else
 	if (hcd->speed >= HCD_USB3)
 		xhci_usb3_hub_descriptor(hcd, xhci, desc);
 	else
 		xhci_usb2_hub_descriptor(hcd, xhci, desc);
-
+#endif
 }
 
 static unsigned int xhci_port_speed(unsigned int port_status)
@@ -554,6 +571,18 @@ static void xhci_clear_port_change_bit(struct xhci_hcd *xhci, u16 wValue,
 
 	xhci_dbg(xhci, "clear port%d %s change, portsc: 0x%x\n",
 		 wIndex + 1, port_change_bit, port_status);
+#if 1
+#ifdef CONFIG_AMLOGIC_USB
+	if (bpi_amlogic_usb3()) {
+		if (DEV_HIGHSPEED(port_status) &&
+				(wValue == USB_PORT_FEAT_C_RESET))
+			set_usb_phy_host_tuning(wIndex, 0);
+		if (DEV_LOWSPEED(port_status) &&
+				(wValue == USB_PORT_FEAT_C_RESET))
+			set_usb_phy_host_low_reset(wIndex);
+	}
+#endif
+#endif
 }
 
 struct xhci_hub *xhci_get_rhub(struct usb_hcd *hcd)
@@ -1281,8 +1310,12 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			link_state = (wIndex & 0xff00) >> 3;
 		if (wValue == USB_PORT_FEAT_REMOTE_WAKE_MASK)
 			wake_mask = wIndex & 0xff00;
-		if (wValue == USB_PORT_FEAT_TEST)
-			test_mode = (wIndex & 0xff00) >> 8;
+#ifdef CONFIG_AMLOGIC_USB
+		if (bpi_amlogic_usb3()) {
+			if (wValue == USB_PORT_FEAT_TEST)
+				test_mode = (wIndex & 0xff00) >> 8;
+		}
+#endif
 		/* The MSB of wIndex is the U1/U2 timeout */
 		timeout = (wIndex & 0xff00) >> 8;
 		wIndex &= 0xff;
