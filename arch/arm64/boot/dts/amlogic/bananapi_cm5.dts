@@ -12,7 +12,7 @@
 #include "bananapi-panel.dtsi"
 
 / {
-	model = "Bananapi";
+	model = "Bananapi BPI-CM5";
 	amlogic-dt-id = "a311d2_bananapi_cm5-4g";
 	compatible = "amlogic, t7c";
 	interrupt-parent = <&gic>;
@@ -1352,13 +1352,13 @@
 * USB_M31          	4
 */
 &crg20_otg {
-	status = "disable";
-	controller-type = <3>;
+	status = "okay";
+	controller-type = <1>;
 };
 
 &crg21_otg {
 	status = "okay";
-	controller-type = <3>;
+	controller-type = <1>;
 };
 
 &crg2_drd {
