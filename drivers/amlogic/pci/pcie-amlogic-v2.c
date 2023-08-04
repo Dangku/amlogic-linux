@@ -542,7 +542,6 @@ static int amlogic_pcie_rd_own_conf(struct pcie_port *pp, int where, int size,
 
 static int amlogic_pcie_link_up(struct dw_pcie *pci)
 {
-	u32   smlh_up = 0;
 	u32   rdlh_up = 0;
 	u32   ltssm_up = 0;
 	u32   speed_okay = 0;
@@ -562,11 +561,9 @@ static int amlogic_pcie_link_up(struct dw_pcie *pci)
 		udelay(9);
 	}
 
-	while (smlh_up == 0 || rdlh_up == 0
+	while (rdlh_up == 0
 		|| ltssm_up == 0 || speed_okay == 0) {
 		udelay(20);
-		smlh_up = amlogic_cfg_readl(amlogic_pcie, PCIE_CFG_STATUS12);
-		smlh_up = (smlh_up >> 6) & 0x1;
 
 		rdlh_up = amlogic_cfg_readl(amlogic_pcie, PCIE_CFG_STATUS12);
 		rdlh_up = (rdlh_up >> 16) & 0x1;
@@ -580,8 +577,6 @@ static int amlogic_pcie_link_up(struct dw_pcie *pci)
 			 (current_data_rate == PCIE_GEN1))
 			speed_okay = 1;
 
-		if (smlh_up)
-			dev_dbg(pci->dev, "smlh_link_up is on\n");
 		if (rdlh_up)
 			dev_dbg(pci->dev, "rdlh_link_up is on\n");
 		if (ltssm_up)
