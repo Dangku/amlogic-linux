@@ -2188,3 +2188,52 @@
 		<&a53pwm_opp_table2>,
 		<&a53pwm_opp_table3>;
 };
+
+&soc_thermal {
+	trips {
+		a73switch_on: trip-point@0 {
+			temperature = <75000>;
+		};
+		a73control: trip-point@1 {
+			temperature = <90000>;
+		};
+
+		cpu_warm: cpu-warm {
+			temperature = <75000>;
+			hysteresis = <5000>;
+			type = "active";
+		};
+		cpu_hot: cpu-hot {
+			temperature = <90000>;
+			hysteresis = <5000>;
+			type = "active";
+		};
+	};
+	cooling-maps {
+		cpufreq_cooling_map0 {
+			cooling-device = <&CPU0 0 9>;
+		};
+
+		fan_cooling_map0 {
+			trip = <&cpu_warm>;
+			cooling-device = <&fan 2 6>;
+			contribution = <1024>;
+		};
+		fan_cooling_map1 {
+			trip = <&cpu_hot>;
+			cooling-device = <&fan 7 10>;
+			contribution = <1024>;
+		};
+	};
+};
+
+&a53_thermal {
+	trips {
+		a53switch_on: trip-point@0 {
+			temperature = <75000>;
+		};
+		a53control: trip-point@1 {
+			temperature = <90000>;
+		};
+	};
+};
