@@ -492,7 +492,7 @@
 
 	lcd1:lcd1 {
 		compatible = "amlogic, lcd-t7";
-		status = "okay";
+		status = "disabled";
 		index = <1>;
 		mode = "tablet";
 		fr_auto_policy = <0>; /* 0=disable, 1=60/50hz, 2=60/50/48hz */
@@ -943,7 +943,7 @@
 
 	backlight1{
 		compatible = "amlogic, backlight-t7";
-		status = "okay";
+		status = "disabled";
 		index = <1>;
 		key_valid = <0>;
 		pinctrl-names = "pwm_on",
