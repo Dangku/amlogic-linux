@@ -538,6 +538,8 @@
 		compatible = "amlogic, auge-sound-card";
 		aml-audio-card,name = "AML-AUGESOUND";
 
+		spk_mute-gpios = <&gpio GPIOT_7 GPIO_ACTIVE_LOW>;
+
 		interrupts = <GIC_SPI 51 IRQ_TYPE_EDGE_RISING>;
 		interrupt-names = "audio_exception64";
 
@@ -597,7 +599,7 @@
 				system-clock-frequency = <12288000>;
 			};
 			tdmbcodec: codec {
-				sound-dai = <&dummy_codec &dummy_codec &acodec>;
+				sound-dai = <&dummy_codec &acodec>;
 			};
 		};
 
@@ -865,6 +867,23 @@
 		cma_mode = <1>;
 	};
 
+	pwmgpio: pwmgpio {
+                compatible = "pwm-gpio";
+                #pwm-cells = <3>;
+                pwm-gpios = <&gpio GPIOD_12 GPIO_ACTIVE_LOW>;
+                status = "okay";
+        };
+
+	fan: pwm-fan {
+                compatible = "pwm-fan";
+                pwms = <&pwmgpio 0 40000 PWM_POLARITY_INVERTED>;
+                cooling-min-state = <0>;
+                cooling-max-state = <3>;
+                #cooling-cells = <2>;
+                cooling-levels = <0 120 170 220>;
+                status = "okay";
+        };
+
 	gpioleds {
 		compatible = "gpio-leds";
 		status = "okay";
@@ -887,26 +906,63 @@
 	adc_keypad {
 		compatible = "amlogic, adc_keypad";
 		status = "okay";
-		key_name = "power";
+		key_name = "home";
 		key_num = <1>;
 		io-channels = <&saradc 2>;
 		io-channel-names = "key-chan-2";
 		key_chan = <SARADC_CH2 SARADC_CH2 SARADC_CH2>;
-		key_code = <KEY_POWER>;
+		key_code = <KEY_HOME>;
 		key_val = <0>; //val=voltage/1800mV*1023
 		key_tolerance = <40>;
 	};
 
-	gpio_keypad{
+	gpio_keypad {
 		compatible = "amlogic, gpio_keypad";
-		status = "disabled";
+		status = "okay";
 		scan_period = <20>;
 		key_num = <1>;
 		key_name = "power";
 		key_code = <KEY_POWER>;
 		key_type = <EV_KEY>;
-		key-gpios = <&gpio  GPIOD_3  GPIO_ACTIVE_HIGH>;
+		key-gpios = <&gpio  GPIOH_1  GPIO_ACTIVE_HIGH>;
 		detect_mode = <0>;/*0:polling mode, 1:irq mode*/
+	};
+
+	vbus_5v:regulator-vbus_5v {
+		compatible = "regulator-fixed";
+		regulator-name = "VBUS_5V";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+
+		gpio = <&gpio GPIOD_6 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	mpcie_3v3: regulator-mpcie_3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "MPCIE_3V3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		gpio = <&gpio GPIOT_9 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	mpcie_3v9: regulator-mpcie_3v9 {
+		compatible = "regulator-fixed";
+		status = "disabled";
+		regulator-name = "MPCIE_3V3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		gpio = <&gpio GPIOT_8 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
 	};
 
 	sd_vdd: regulator-sd_vdd {
@@ -989,8 +1045,7 @@
 		samesource_sel = <3>;
 
 		/* In for ACODEC_ADC */
-		/* tdmin-src-name = "acodec_adc"; */
-		tdmin-src-name = "hdmirx";
+		tdmin-src-name = "acodec_adc";
 		/*enable default mclk(12.288M), before extern codec start*/
 		start_clk_enable = <1>;
 		ctrl_gain = <1>;
@@ -1352,13 +1407,13 @@
 * USB_M31          	4
 */
 &crg20_otg {
-	status = "okay";
-	controller-type = <1>;
+	status = "disable";
+	controller-type = <3>;
 };
 
 &crg21_otg {
 	status = "okay";
-	controller-type = <1>;
+	controller-type = <3>;
 };
 
 &crg2_drd {
@@ -1377,18 +1432,19 @@
 &crg_phy_20 {
 	status = "okay";
 	portnum = <1>;
-	gpio-vbus-power = "GPIOM_8";
-	gpios = <&gpio GPIOM_8 GPIO_ACTIVE_HIGH>;
+	gpio-vbus-power = "GPIOT_10"; /* HUB_EN */
+	gpios = <&gpio GPIOT_10 GPIO_ACTIVE_HIGH>;
 };
 
 /* usb_b 2.0 */
 &crg_phy_21 {
 	status = "okay";
 	portnum = <1>;
-	gpio-vbus-power = "GPIOM_9";
-	gpios = <&gpio GPIOM_9 GPIO_ACTIVE_HIGH>;
+	gpio-vbus-power = "GPIOD_9"; /* VDD_TYPEC */
+	gpios = <&gpio GPIOD_9 GPIO_ACTIVE_HIGH>;
 };
 
+/* usb3 */
 &crg3_phy_20 {
 	status = "okay";
 	portnum = <1>;
@@ -1405,22 +1461,39 @@
 	status = "okay";
 };
 
-&i2c1 {
-	status = "disabled";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c1_pins1>;
-	clock-frequency = <100000>; /* default 100k */
-};
-
-/* camera */
-&i2c2 {
+/* camera_a */
+&i2c0 {
 	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c2_pins2>;
+	pinctrl-names="default";
+	pinctrl-0=<&i2c0_pins1>; /* GPIOT_20->SCL, GPIOT_21->SDA */
 	clock-frequency = <100000>; /* default 100k */
+	imx415: sensor1@1a {
+		compatible = "sony, imx415";
+		status = "okay";
+		index = <0>;
+		reg = <0x1a>;
+		reg-addr-type = <2>;
+		reg-data-type = <1>;
 
+		clocks = <&clkc CLKID_MCLK_0>,
+				<&clkc CLKID_MCLK_0_PRE>,
+				<&clkc CLKID_MCLK_PLL>,
+				<&xtal>;
+		clock-names = "mclk","mclk_pre","mclk_p","mclk_x";
+		pwdn = <&gpio GPIOM_10 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio GPIOM_11 GPIO_ACTIVE_HIGH>;
+		port@0 {
+			imx415_4_ep: endpoint {
+				reg = <0>;
+				data-lanes = <0 1 2 3>;
+				link-frequencies = /bits/ 64 <1440000000>;
+				remote-endpoint = <&csiphy0_ep_4>;
+			};
+		};
+	};
 	ov08a10_0: sensor2@36 {
 		compatible = "omini, ov08a10";
+		status = "disabled";
 		index = <0>;
 		reg = <0x36>;
 		reg-addr-type = <2>;
@@ -1431,16 +1504,30 @@
 				<&clkc CLKID_MCLK_PLL>,
 				<&xtal>;
 		clock-names = "mclk","mclk_pre","mclk_p","mclk_x";
-		pwdn = <&gpio GPIOY_9 GPIO_ACTIVE_HIGH>;
-		reset = <&gpio GPIOY_8 GPIO_ACTIVE_HIGH>;
+		pwdn = <&gpio GPIOM_10 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio GPIOM_11 GPIO_ACTIVE_HIGH>;
 		port {
 			ov08a10_0_ep: ov08a10 {
 				data-lanes = <0 1 2 3>;
 				link-frequencies = /bits/ 64 <1440000000>;
-				remote-endpoint = <&csiphy0_ep>;
+				remote-endpoint = <&csiphy0_ep_2>;
 			};
 		};
 	};
+};
+
+&i2c1 {
+	status = "disabled";
+	pinctrl-names="default";
+	pinctrl-0=<&i2c1_pins1>; /* GPIOT_16->SCL, GPIOT_17->SDA */
+	clock-frequency = <100000>; /* default 100k */
+};
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c2_pins2>; /* GPIOT_22->SCL, GPIOT_23->SDA */
+	clock-frequency = <100000>; /* default 100k */
 
 	rtc-pcf85063@51 {
 		compatible = "nxp,pcf85063";
@@ -1448,13 +1535,13 @@
 		status = "okay";
 	};
 
-	fan: emc2301@2f {
+	emc2301@2f {
 		compatible = "microchip,emc2301";
-		status = "okay";
+		status = "disabled";
 		reg = <0x2f>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		#cooling-cells = <0x02>;
+		#cooling-cells = <2>;
 		microchip,cooling-levels = /bits/ 8 <10>;
 
 		channel@0 {
@@ -1462,44 +1549,39 @@
 			pwm-min = /bits/ 8 <0>;
 		};
 	};
+
+	bq25703@6b {
+             status = "okay";
+             compatible = "ti,bq25703";
+             reg = <0x6b>;
+             irq-gpio = <&gpio GPIOT_13 IRQ_TYPE_LEVEL_LOW>;
+             ti,charge-current = <1500000>;
+             ti,max-charge-voltage = <8500000>;
+             ti,max-input-voltage = <20000000>;
+             ti,max-input-current = <6000000>;
+             ti,input-current-sdp = <500000>;
+             ti,input-current-dcp = <2000000>;
+             ti,input-current-cdp = <2000000>;
+             ti,input-current-dc = <2000000>;
+             ti,minimum-sys-voltage = <7400000>;
+             ti,otg-voltage = <5000000>;
+             ti,otg-current = <500000>;
+             ti,input-current = <500000>;
+             pd-charge-only = <0>;
+        };
 };
 
 &i2c3 {
 	status = "disabled";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c3_pins1>;
+	pinctrl-0 = <&i2c3_pins2>; /* GPIOH_2->SCL, GPIOH_3->SDA */
 	clock-frequency = <100000>; /* default 100k */
-	imx290_1: sensor2@1a {
-		compatible = "sony, imx290";
-		index = <0>;
-		reg = <0x1a>;
-		reg-addr-type = <2>;
-		reg-data-type = <1>;
-
-		clocks = <&clkc CLKID_MCLK_1>,
-				<&clkc CLKID_MCLK_1_PRE>,
-				<&clkc CLKID_MCLK_PLL>,
-				<&xtal>;
-		clock-names = "mclk","mclk_pre","mclk_p","mclk_x";
-		pwdn = <&gpio GPIOM_4 GPIO_ACTIVE_HIGH>;
-		reset = <&gpio GPIOM_10 GPIO_ACTIVE_HIGH>;
-		ports {
-			port@0 {
-				imx290_1_ep: imx290 {
-					reg = <0>;
-					data-lanes = <0 1 2 3>;
-					link-frequencies = /bits/ 64 <222750000>;
-					remote-endpoint = <&csiphy2_ep>;
-				};
-			};
-		};
-	};
 };
 
 &i2c4 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c4_pins1>;
+	pinctrl-0 = <&i2c4_pins1>; /* GPIOY_15->SCL, GPIOY_16->SDA */
 	clock-frequency = <100000>; /* default 100k */
 
 
@@ -1551,13 +1633,13 @@
 &i2c5 {
 	status = "okay";
 	pinctrl-names = "default";
-	pinctrl-0 = <&i2c5_pins1>;
+	pinctrl-0 = <&i2c5_pins1>; /* GPIOY_17->SCL, GPIOY_18->SDA */
 	clock-frequency = <100000>; /* default 100k */
 };
 
 /* SDIO */
 &sd_emmc_a {
-	status = "disabled";
+	status = "okay";
 	pinctrl-0 = <&sdio_pins>;
 	pinctrl-1 = <&sdio_clk_gate_pins>;
 	pinctrl-names = "default", "clk-gate";
@@ -1599,9 +1681,10 @@
 	sd-uhs-sdr104;
 	max-frequency = <200000000>;
 
+	//non-removable;
 	disable-wp;
 
-	//cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_HIGH>;
+	cd-gpios = <&gpio GPIOC_6 GPIO_ACTIVE_HIGH>;
 	//dat1-gpios = <&gpio GPIOC_1 GPIO_ACTIVE_HIGH>;
 	vmmc-supply = <&sd_vdd>;
 	vqmmc-supply = <&sd_vccio>;
@@ -1667,12 +1750,21 @@
 &csiphy0 {
 	ports {
 		port@0 {
-			csiphy0_ep: endpoint {
+			csiphy0_ep_2: endpoint {
 				reg = <0>;
-				status = "okay";
+				status = "disabled";
 				clock-lanes = <4>;
 				data-lanes = <0 1 2 3>;
 				remote-endpoint = <&ov08a10_0_ep>;
+			};
+		};
+		port@1 {
+			csiphy0_ep_4: endpoint {
+				reg = <1>;
+				status = "okay";
+				clock-lanes = <4>;
+				data-lanes = <0 1 2 3>;
+				remote-endpoint = <&imx415_4_ep>;
 			};
 		};
 	};
@@ -1689,12 +1781,21 @@
 &csiphy2 {
 	ports {
 		port@0 {
-			csiphy2_ep: endpoint {
+			csiphy2_ep_0: endpoint {
+				reg = <2>;
+				status = "disable";
+				clock-lanes = <4>;
+				data-lanes = <0 1 2 3>;
+//				remote-endpoint = <&imx290_1_ep>;
+			};
+		};
+		port@1 {
+			csiphy2_ep_1: endpoint {
 				reg = <2>;
 				status = "okay";
 				clock-lanes = <4>;
 				data-lanes = <0 1 2 3>;
-				remote-endpoint = <&imx290_1_ep>;
+//				remote-endpoint = <&ov08a10_1_ep>;
 			};
 		};
 	};
@@ -1980,6 +2081,14 @@
 			bias-pull-up;
                 };
         };
+
+	bq25700_ok_int:bq25700_ok_int {
+		mux {
+			groups = "GPIOT_13";
+			function = "gpio_periphs";
+			bias-pull-up;
+		};
+	};
 };
 
 &pinctrl_audio {
@@ -2060,27 +2169,28 @@
 };
 
 &aml_wifi{
-	status = "disabled";
-	interrupt-gpios = <&gpio  GPIOX_7  GPIO_ACTIVE_HIGH>;
-	power_on-gpios = <&gpio   GPIOX_6  GPIO_ACTIVE_HIGH>;
+	status = "okay";
+	interrupt-gpios = <&gpio GPIOX_7  GPIO_ACTIVE_HIGH>;
+	power_on-gpios = <&gpio GPIOX_6  GPIO_ACTIVE_HIGH>;
 };
 
 &aml_bt {
-	status = "disabled";
-	reset-gpios = <&gpio    GPIOX_17 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+	reset-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
 	hostwake-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
+	btwakeup-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
 };
 
 &pwm_ab {
 	pinctrl-0 = <&pwm_a_pins>;  /* wifi 32k, GPIOX_16 */
 	pinctrl-names = "default";
-	status = "disabled";
+	status = "okay";
 };
 
 &pwm_ef {
 	pinctrl-0 = <&pwm_e_pins>;
 	pinctrl-names = "default";
-	status = "okay";
+	status = "disabled";
 };
 
 &irblaster {
@@ -2089,10 +2199,8 @@
 
 /* bt uart */
 &uart_C {
-	pinctrl-names = "default";
-	pinctrl-0 = <&c_uart_pins>;
+	status = "okay";
 	uart-has-rtscts;
-	status = "disabled";
 };
 
 &vrtc {
@@ -2216,12 +2324,12 @@
 
 		fan_cooling_map0 {
 			trip = <&cpu_warm>;
-			cooling-device = <&fan 2 6>;
+			cooling-device = <&fan 1 2>;
 			contribution = <1024>;
 		};
 		fan_cooling_map1 {
 			trip = <&cpu_hot>;
-			cooling-device = <&fan 7 10>;
+			cooling-device = <&fan 2 3>;
 			contribution = <1024>;
 		};
 	};
