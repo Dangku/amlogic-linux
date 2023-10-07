@@ -1,0 +1,15 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&uart_E>; /* /dev/ttyS4 */
+
+		__overlay__ {
+			/* UART_E, GPIOY_6, GPIOY_7, GPIOY_9, GPIOY_8 */
+			pinctrl-0 = <&e_uart_rts_cts_pins>;
+			pinctrl-names = "default";
+			status = "okay";
+		};
+	};
+};

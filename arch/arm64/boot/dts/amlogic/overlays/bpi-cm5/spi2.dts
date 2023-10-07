@@ -3,7 +3,7 @@
 
 / {
 	fragment@0 {
-		target = <&spicc0>;
+		target = <&spicc2>; /* /dev/spidev3.0 */
 
 		__overlay__ {
 			status = "okay";
