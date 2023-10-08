@@ -16,6 +16,7 @@
 #define WIDTH		320
 #define HEIGHT		480
 
+#if 0
 /* this init sequence matches PiScreen */
 static const s16 default_init_sequence[] = {
 	/* Interface Mode Control */
@@ -42,6 +43,7 @@ static const s16 default_init_sequence[] = {
 	/* end marker */
 	-3
 };
+#endif
 
 static void set_addr_win(struct fbtft_par *par, int xs, int ys, int xe, int ye)
 {
@@ -84,7 +86,9 @@ static struct fbtft_display display = {
 	.regwidth = 8,
 	.width = WIDTH,
 	.height = HEIGHT,
+#if 0
 	.init_sequence = default_init_sequence,
+#endif
 	.fbtftops = {
 		.set_addr_win = set_addr_win,
 		.set_var = set_var,

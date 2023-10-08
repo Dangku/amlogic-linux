@@ -8,8 +8,15 @@ dtbo-y += i2c4.dtbo \
 	uart4_rts_cts.dtbo \
 	spi2.dtbo \
 	pwm_f.dtbo \
+	pwm_f_beeper.dtbo \
+	pwm_h.dtbo \
+	pwm_h_beeper.dtbo \
+	i2smic.dtbo \
 	otg-host.dtbo \
-	otg-device.dtbo
+	otg-device.dtbo \
+	hifi_pcm5122.dtbo \
+	waveshare_tft35c.dtbo
+
 
 targets += $(dtbo-y)
 always  := $(dtbo-y)

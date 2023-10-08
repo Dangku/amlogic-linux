@@ -1,0 +1,20 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&tdmb>;
+		__overlay__ {
+			status = "okay";
+
+			pinctrl-names = "tdm_pins";
+			pinctrl-0 = <&mclk_1_pins
+				&tdm_b_pins
+				&tdm_d2_pins
+				&tdm_d3_pins
+				&tdmb_clk_pins>;
+
+			tdmin-src-name = "tdmin_b";
+		};
+	};
+};
