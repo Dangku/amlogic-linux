@@ -7,6 +7,7 @@ dtbo-y += i2c4.dtbo \
 	uart4.dtbo \
 	uart4_rts_cts.dtbo \
 	spi2.dtbo \
+	spi2_flash.dtbo \
 	pwm_f.dtbo \
 	pwm_f_beeper.dtbo \
 	pwm_h.dtbo \
