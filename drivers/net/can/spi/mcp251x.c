@@ -40,6 +40,11 @@
 #include <linux/uaccess.h>
 #include <linux/regulator/consumer.h>
 
+#if defined(CONFIG_AMLOGIC_MODIFY)
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#endif
+
 /* SPI interface instruction set */
 #define INSTRUCTION_WRITE	0x02
 #define INSTRUCTION_READ	0x03
@@ -236,6 +241,29 @@ static inline int mcp251x_is_##_model(struct spi_device *spi) \
 }
 
 MCP251X_IS(2510);
+
+#if defined(CONFIG_AMLOGIC_MODIFY)
+static unsigned int gpio_irq;
+int gpio_irq_init(struct spi_device *spi)
+{
+	struct device *dev = &spi->dev;
+	struct device_node *np;
+	int ret = 0;
+
+	np = dev->of_node;
+	gpio_irq = of_get_named_gpio(np, "gpio-irq", 0);
+	if (!gpio_is_valid(gpio_irq))
+		return -EINVAL;
+
+	if (gpio_request(gpio_irq, "can_irq_gpio") != 0) {
+		gpio_free(gpio_irq);
+		return -EIO;
+	}
+	gpio_direction_input(gpio_irq);
+	spi->irq = gpio_to_irq(gpio_irq);
+	return ret;
+}
+#endif
 
 static void mcp251x_clean(struct net_device *net)
 {
@@ -999,6 +1027,10 @@ static int mcp251x_can_probe(struct spi_device *spi)
 	freq = clk_get_rate(clk);
 	if (freq == 0 && pdata)
 		freq = pdata->oscillator_frequency;
+#if defined(CONFIG_AMLOGIC_MODIFY)
+	else
+		freq = spi->max_speed_hz;
+#endif
 
 	/* Sanity check */
 	if (freq < 1000000 || freq > 25000000)
@@ -1081,6 +1113,9 @@ static int mcp251x_can_probe(struct spi_device *spi)
 		goto error_probe;
 	}
 
+#if defined(CONFIG_AMLOGIC_MODIFY)
+	gpio_irq_init(spi);
+#endif
 	mcp251x_hw_sleep(spi);
 
 	ret = register_candev(net);
@@ -1118,6 +1153,10 @@ static int mcp251x_can_remove(struct spi_device *spi)
 
 	free_candev(net);
 
+#if defined(CONFIG_AMLOGIC_MODIFY)
+	if (gpio_is_valid(gpio_irq))
+		gpio_free(gpio_irq);
+#endif
 	return 0;
 }
 

@@ -16,7 +16,9 @@ dtbo-y += i2c4.dtbo \
 	otg-host.dtbo \
 	otg-device.dtbo \
 	hifi_pcm5122.dtbo \
-	waveshare_tft35c.dtbo
+	waveshare_tft35c.dtbo \
+	onewire.dtbo \
+	can0.dtbo
 
 
 targets += $(dtbo-y)
