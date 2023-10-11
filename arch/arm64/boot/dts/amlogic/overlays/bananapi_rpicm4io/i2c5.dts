@@ -1,0 +1,12 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&i2c5>; /* /dev/i2c-5, I2CM_F, GPIOY_17->SCL, GPIOY_18->SDA */
+
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

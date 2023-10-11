@@ -12,7 +12,7 @@
 #include "bananapi-panel.dtsi"
 
 / {
-	model = "Bananapi BPI-CM5";
+	model = "Bananapi BPI-CM5-RPICM4IO";
 	amlogic-dt-id = "a311d2_bananapi_cm5-4g";
 	compatible = "amlogic, t7c";
 	interrupt-parent = <&gic>;

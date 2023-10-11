@@ -2,8 +2,10 @@
 dtb-y += kvim4.dtb
 dtb-y += kvim4n.dtb
 dtb-y += kvim1s.dtb
-dtb-y += bananapi_cm5.dtb
+dtb-y += bananapi_cm5io.dtb
+dtb-y += bananapi_rpicm4io.dtb
 
-subdir-y += overlays/bpi-cm5
+subdir-y += overlays/bananapi_cm5io
+subdir-y += overlays/bananapi_rpicm4io
 
 clean-files := *.dtb
