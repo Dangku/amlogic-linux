@@ -18,7 +18,8 @@ dtbo-y += i2c4.dtbo \
 	hifi_pcm5122.dtbo \
 	waveshare_tft35c.dtbo \
 	onewire.dtbo \
-	can0.dtbo
+	can0.dtbo \
+	spdifout.dtbo
 
 
 targets += $(dtbo-y)
