@@ -894,15 +894,15 @@
 		compatible = "gpio-leds";
 		status = "okay";
 
-		remote_led {
-			label = "remote_led";
+		blue_led {
+			label = "blue";
 			gpios = <&gpio GPIOH_5 GPIO_ACTIVE_LOW>;
 			default-state = "on"; 
 			linux,default-trigger = "default-on";
 		};
 
-		sys_led {
-			label="sys_led";
+		green_led {
+			label="green";
 			gpios=<&gpio GPIOD_7 GPIO_ACTIVE_LOW>;
 			default-state ="on";
 			linux,default-trigger = "timer";
