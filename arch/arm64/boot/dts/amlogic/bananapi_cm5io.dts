@@ -914,7 +914,7 @@
 		status = "okay";
 		key_name = "home";
 		key_num = <1>;
-		io-channels = <&saradc 2>;
+		io-channels = <&saradc SARADC_CH2>;
 		io-channel-names = "key-chan-2";
 		key_chan = <SARADC_CH2 SARADC_CH2 SARADC_CH2>;
 		key_code = <KEY_HOME>;
@@ -1426,13 +1426,11 @@
 
 &crg2_drd {
 	compatible = "amlogic, crg-drd";
-	/*compatible = "amlogic, crg-host-drd";*/
 	status = "okay";
 };
 
 &crg3_drd {
 	compatible = "amlogic, crg-host-drd";
-	/*compatible = "amlogic, crg-drd";*/
 	status = "okay";
 };
 

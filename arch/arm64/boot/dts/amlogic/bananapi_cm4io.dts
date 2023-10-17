@@ -12,7 +12,7 @@
 #include "bananapi-panel.dtsi"
 
 / {
-	model = "Bananapi BPI-CM5-RPICM4IO";
+	model = "Bananapi BPI-CM5-BPICM4IO";
 	amlogic-dt-id = "a311d2_bananapi_cm5-4g";
 	compatible = "amlogic, t7c";
 	interrupt-parent = <&gic>;
@@ -867,12 +867,18 @@
 		cma_mode = <1>;
 	};
 
+	gpiomem {
+		compatible = "amlogic, gpiomem";
+		reg = <0x0 0xfe004000 0x0 0x1000>;
+		status = "okay";
+	};
+
 	gpioleds {
 		compatible = "gpio-leds";
 		status = "okay";
 
-		red_led {
-			label = "red";
+		blue_led {
+			label = "blue";
 			gpios = <&gpio GPIOH_5 GPIO_ACTIVE_LOW>;
 			default-state = "on"; 
 			linux,default-trigger = "default-on";
@@ -888,20 +894,20 @@
 
 	adc_keypad {
 		compatible = "amlogic, adc_keypad";
-		status = "disabled";
-		key_name = "home";
+		status = "okay";
+		key_name = "power";
 		key_num = <1>;
 		io-channels = <&saradc SARADC_CH2>;
 		io-channel-names = "key-chan-2";
 		key_chan = <SARADC_CH2 SARADC_CH2 SARADC_CH2>;
-		key_code = <KEY_HOME>;
+		key_code = <KEY_POWER>;
 		key_val = <0>; //val=voltage/1800mV*1023
 		key_tolerance = <40>;
 	};
 
 	gpio_keypad {
 		compatible = "amlogic, gpio_keypad";
-		status = "okay";
+		status = "disabled";
 		scan_period = <20>;
 		key_num = <1>;
 		key_name = "power";
@@ -1417,34 +1423,13 @@
 	clock-frequency = <100000>; /* default 100k */
 };
 
-/* rtc, fan, cam1, dsi1 */
+
+/* camera */
 &i2c2 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2_pins2>; /* GPIOT_22->SCL, GPIOT_23->SDA */
 	clock-frequency = <100000>; /* default 100k */
-
-	rtc-pcf85063@51 {
-		compatible = "nxp,pcf85063";
-		reg = <0x51>;
-		status = "okay";
-	};
-
-	fan: emc2301@2f {
-		compatible = "microchip,emc2301";
-		status = "okay";
-		reg = <0x2f>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		#cooling-cells = <2>;
-		microchip,cooling-levels = /bits/ 8 <10>;
-
-		channel@0 {
-			reg = <0>;
-			pwm-min = /bits/ 8 <0>;
-		};
-	};
-
 	imx415: sensor1@1a {
 		compatible = "sony, imx415";
 		status = "disabled";
@@ -1458,8 +1443,9 @@
 				<&clkc CLKID_MCLK_PLL>,
 				<&xtal>;
 		clock-names = "mclk","mclk_pre","mclk_p","mclk_x";
-		pwdn = <&gpio GPIOM_10 GPIO_ACTIVE_HIGH>;
-		reset = <&gpio GPIOM_11 GPIO_ACTIVE_HIGH>;
+		//power = <&gpio GPIOY_9 GPIO_ACTIVE_HIGH>;
+		//pwdn = <&gpio GPIOT_11 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio GPIOY_8 GPIO_ACTIVE_HIGH>;
 		port@0 {
 			imx415_4_ep: endpoint {
 				reg = <0>;
@@ -1483,8 +1469,9 @@
 				<&clkc CLKID_MCLK_PLL>,
 				<&xtal>;
 		clock-names = "mclk","mclk_pre","mclk_p","mclk_x";
-		pwdn = <&gpio GPIOM_10 GPIO_ACTIVE_HIGH>;
-		reset = <&gpio GPIOM_11 GPIO_ACTIVE_HIGH>;
+		//power = <&gpio GPIOY_9 GPIO_ACTIVE_HIGH>;
+		//pwdn = <&gpio GPIOT_11 GPIO_ACTIVE_HIGH>;
+		reset = <&gpio GPIOY_8 GPIO_ACTIVE_HIGH>;
 		port {
 			ov08a10_0_ep: ov08a10 {
 				data-lanes = <0 1 2 3>;
@@ -1502,15 +1489,59 @@
 	clock-frequency = <100000>; /* default 100k */
 };
 
-/* cam0, dsi0, 40pin i2c, PIN.27->SDA, PIN.28->SCL */
+/* tp */
 &i2c4 {
-	status = "disabled";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c4_pins1>; /* GPIOY_15->SCL, GPIOY_16->SDA */
 	clock-frequency = <100000>; /* default 100k */
+
+	gt9xx@14 {
+		compatible = "goodix,gt9xx";
+		reg = <0x14>;
+		status = "okay";
+		irq-gpio = <&gpio GPIOY_10 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpio = <&gpio GPIOY_13 GPIO_ACTIVE_HIGH>;
+		rotation = <4>; /* sf_rotation 0 */
+		//rotation = <0>; /* sf_rotation 90*/
+		//rotation = <5>; /* sf_rotation 180 */
+		//rotation = <3>; /* sf_rotation 270 */
+
+		/*800x1280, RXT101 panel*/
+		goodix,cfg-group0 = [
+			46 00 05 20 03 05 3D 00 01 0F 1E 0F 50 32 03
+			05 00 00 00 00 00 00 04 18 1A 1E 14 8E 2E 88
+			2C 2A B5 06 00 00 00 22 02 24 00 00 00 00 00
+			00 00 00 00 00 00 0F 46 94 C5 02 07 00 00 04
+			FF 11 00 CA 18 00 9E 20 00 7B 2C 00 63 3C 00
+			63 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 15 14 11 10 0F 0E 0D 0C
+			09 08 07 06 05 04 01 00 FF FF FF FF FF FF FF
+			FF 00 00 00 00 00 00 00 02 04 06 07 08 0A 0C
+			0D 0F 10 11 12 13 19 1B 1C 1E 1F 20 21 22 23
+			24 25 26 27 28 FF FF FF FF 00 00 00 00 00 00
+			00 00 00 00 70 01 ];
+
+		/*1200x1920, AML101 panel*/
+		goodix,cfg-group1 = [
+                        00 80 07 B0 04 0A 3C 00 01 0A 28 1F 55 32 03
+			05 00 00 00 00 00 00 00 18 1A 1E 14 90 2F AA
+			1E 20 31 0D 00 00 00 22 03 1D 00 00 00 00 00
+			00 00 00 00 00 00 14 2D 94 D5 02 08 00 00 04
+			9A 15 00 8C 19 00 80 1E 00 77 23 00 70 29 00
+			70 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 01 04 05 06 07 08 09
+			0C 0D 0E 0F 10 11 14 15 16 17 18 19 00 00 00
+			00 00 00 00 00 00 00 29 28 27 26 25 24 23 22
+			21 20 1F 1E 1C 1B 19 14 13 12 11 10 0F 0E 0D
+			0C 0A 08 07 06 04 02 00 FF 00 00 00 00 00 00
+			00 00 00 00 12 01 ];
+	};
 };
 
-/* 40pin i2c, PIN.3->SDA, PIN.2->SCL */
+/* 40pin */
 &i2c5 {
 	status = "disabled";
 	pinctrl-names = "default";
@@ -1694,13 +1725,7 @@
 	cs-gpios = <&gpio GPIOT_21 GPIO_ACTIVE_HIGH>;
 };
 
-/* 40pin spi
- * PIN.19->SPI_C_MOSI
- * PIN.21->SPI_C_MISO
- * PIN.23->SPI_C_CLK
- * PIN.24->SPI_C_SS0
- * PIN.26->SPI_C_SS1
- */
+/* 40pin spi */
 &spicc2 {
 	status = "disabled";
 	pinctrl-names = "default";
@@ -1856,11 +1881,10 @@
 	};
 
 	tdm_b_pins: tdm_b_pin {
-		mux { /* GPIOT_1, GPIOT_2, GPIOT_3, GPIOT_4 */
+		mux { /* GPIOT_1, GPIOT_2, GPIOT_3*/
 			groups = "tdm_sclk1",
 				"tdm_fs1",
-				"tdm_d2",
-				"tdm_d3";
+				"tdm_d2";
 			function = "tdm";
 		};
 	};
@@ -2053,7 +2077,7 @@
 	};
 };
 
-/* 40pin, PIN.31->IR_IN */
+/* 40pin, PIN.11->IR_IN */
 &ir {
 	status = "disabled";
 	pinctrl-0 = <&remote_pins>;
@@ -2107,12 +2131,6 @@
 	uart-has-rtscts;
 };
 
-/* 40pin uart 
- * PIN.11->UART_D_TX
- * PIN.13->UART_D_RX
- * PIN.29->UART_D_RTS
- * PIN.15->UART_D_CTS
- */
 &uart_D {
         pinctrl-0 = <&d_uart_pins2>;
 	//pinctrl-0 = <&d_uart_rts_cts_pins2>;
@@ -2120,15 +2138,9 @@
 	status = "disabled";
 };
 
-/* 40pin uart 
- * PIN.8->UART_E_TX
- * PIN.10->UART_E_RX
- * PIN.16->UART_E_RTS
- * PIN.18->UART_E_CTS
- */
+/* 40pin uart */
 &uart_E {
 	pinctrl-0 = <&e_uart_pins>;
-	//pinctrl-0 = <&e_uart_rts_cts_pins>;
 	pinctrl-names = "default";
 	status = "disabled";
 };
@@ -2143,7 +2155,6 @@
 	status = "okay";
 };
 
-/* 40pin pwm, PIN.18->PWM_F */
 &pwm_ef {
 	pinctrl-0 = <&pwm_f_pins>;
 	pinctrl-names = "default";
@@ -2160,7 +2171,7 @@
 	status = "okay";
 };
 
-/* 40pin pwm, PIN.31->PWM_AO_H */
+/* 40pin pwm, PIN.11->PWM_AO_H */
 &pwmao_gh {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pwm_ao_h_pins1>;
@@ -2255,32 +2266,10 @@
 		a73control: trip-point@1 {
 			temperature = <90000>;
 		};
-
-		cpu_warm: cpu-warm {
-			temperature = <75000>;
-			hysteresis = <5000>;
-			type = "active";
-		};
-		cpu_hot: cpu-hot {
-			temperature = <90000>;
-			hysteresis = <5000>;
-			type = "active";
-		};
 	};
 	cooling-maps {
 		cpufreq_cooling_map0 {
 			cooling-device = <&CPU0 0 9>;
-		};
-
-		fan_cooling_map0 {
-			trip = <&cpu_warm>;
-			cooling-device = <&fan 2 6>;
-			contribution = <1024>;
-		};
-		fan_cooling_map1 {
-			trip = <&cpu_hot>;
-			cooling-device = <&fan 7 10>;
-			contribution = <1024>;
 		};
 	};
 };

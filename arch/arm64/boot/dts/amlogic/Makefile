@@ -3,6 +3,7 @@ dtb-y += kvim4.dtb
 dtb-y += kvim4n.dtb
 dtb-y += kvim1s.dtb
 dtb-y += bananapi_cm5io.dtb
+dtb-y += bananapi_cm4io.dtb
 dtb-y += bananapi_rpicm4io.dtb
 
 subdir-y += overlays/bananapi_cm5io
