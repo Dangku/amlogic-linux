@@ -7,5 +7,6 @@ dtb-y += bananapi_rpicm4io.dtb
 
 subdir-y += overlays/bananapi_cm5io
 subdir-y += overlays/bananapi_rpicm4io
+subdir-y += overlays/kvim4n
 
 clean-files := *.dtb
