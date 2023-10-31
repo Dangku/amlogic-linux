@@ -1401,7 +1401,7 @@
 			};
 		};
 	};
-	ov08a10_0: sensor2@36 {
+	ov08a10: sensor2@36 {
 		compatible = "omini, ov08a10";
 		index = <0>;
 		reg = <0x36>;
