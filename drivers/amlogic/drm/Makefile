@@ -7,35 +7,37 @@ ccflags-y += -I$(srctree)/$(src)/vpu-hw -I$(srctree)/$(src) \
 	     -I$(srctree)/drivers/amlogic/media \
 	     -I$(srctree)/include
 
-ifeq ($(CONFIG_AMLOGIC_DRM_USE_ION),y)
-        aml_drm-y += meson_gem.o meson_fb.o
-	ccflags-y += -I$(srctree)/drivers/amlogic/media/common/ion_dev
-endif
+ccflags-y += -I$(srctree)/drivers/amlogic/media/common/ion_dev
 
-ifeq ($(CONFIG_AMLOGIC_DRM_EMULATE_FBDEV),y)
-        aml_drm-y += meson_fbdev.o
-endif
+aml_drm-$(CONFIG_AMLOGIC_DRM_USE_ION) += meson_gem.o
+aml_drm-$(CONFIG_AMLOGIC_DRM_USE_ION) += meson_fb.o
+aml_drm-$(CONFIG_AMLOGIC_DRM_EMULATE_FBDEV) += meson_fbdev.o
+aml_drm-$(CONFIG_AMLOGIC_DRM_VPU) += meson_vpu.o
 
-ifneq ($(CONFIG_AMLOGIC_DRM_VPU),)
-        aml_drm-y += meson_vpu.o
-endif
-
-aml_drm-y += meson_drv.o meson_plane.o \
-             meson_atomic.o  meson_sysfs.o\
-             meson_writeback.o meson_logo.o\
-             meson_async_atomic.o meson_of_parser.o \
-             meson_vpu_pipeline_traverse.o \
-             meson_crtc.o meson_vpu_pipeline.o \
-             meson_vpu_pipeline_private.o \
-             meson_debugfs.o meson_vpu_util.o \
-             meson_drm_bind.o meson_lcd.o\
-             meson_hdmi.o meson_cvbs.o\
-             vpu-hw/meson_vpu_video_wrapper.o \
-             vpu-hw/meson_vpu_osd_mif.o \
-             vpu-hw/meson_osd_afbc.o \
-             vpu-hw/meson_osd_scaler.o \
-             vpu-hw/meson_osd_proc.o \
-             vpu-hw/meson_vpu_osdblend.o \
-             vpu-hw/meson_vpu_hdr_dv.o \
-             vpu-hw/meson_vpu_postblend.o \
+aml_drm-y += meson_drv.o
+aml_drm-y += meson_plane.o
+aml_drm-y += meson_atomic.o
+aml_drm-y += meson_sysfs.o
+aml_drm-y += meson_writeback.o
+aml_drm-y += meson_logo.o
+aml_drm-y += meson_async_atomic.o
+aml_drm-y += meson_of_parser.o
+aml_drm-y += meson_vpu_pipeline_traverse.o
+aml_drm-y += meson_crtc.o
+aml_drm-y += meson_vpu_pipeline.o
+aml_drm-y += meson_vpu_pipeline_private.o
+aml_drm-y += meson_debugfs.o
+aml_drm-y += meson_vpu_util.o
+aml_drm-y += meson_drm_bind.o
+aml_drm-y += meson_lcd.o
+aml_drm-y += meson_hdmi.o
+aml_drm-y += meson_cvbs.o
+aml_drm-y += vpu-hw/meson_vpu_video_wrapper.o
+aml_drm-y += vpu-hw/meson_vpu_osd_mif.o
+aml_drm-y += vpu-hw/meson_osd_afbc.o
+aml_drm-y += vpu-hw/meson_osd_scaler.o
+aml_drm-y += vpu-hw/meson_osd_proc.o
+aml_drm-y += vpu-hw/meson_vpu_osdblend.o
+aml_drm-y += vpu-hw/meson_vpu_hdr_dv.o
+aml_drm-y += vpu-hw/meson_vpu_postblend.o
 

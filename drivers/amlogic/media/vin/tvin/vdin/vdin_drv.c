@@ -84,6 +84,8 @@
 #include "vdin_v4l2_if.h"
 #include "vdin_mem_scatter.h"
 
+#include <linux/amlogic/gki_module.h>
+
 #ifdef CONFIG_AMLOGIC_MEDIA_ENHANCEMENT_DOLBYVISION
 #include <linux/amlogic/media/amdolbyvision/dolby_vision.h>
 #endif

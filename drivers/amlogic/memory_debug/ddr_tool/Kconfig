@@ -3,7 +3,6 @@
 config AMLOGIC_DDR_TOOL
 	bool "Meson cpu ddr tool"
 	depends on AMLOGIC_DRIVER
-	depends on AMLOGIC_MEMORY_DEBUG
 	default n
 	help
 		This config add some debug tools for DDR, including test ddr
@@ -15,7 +14,6 @@ config AMLOGIC_DDR_BANDWIDTH
 	bool "Meson ddr bandwidth"
 	default n
 	depends on AMLOGIC_DDR_TOOL
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure.
 		If open it, this driver will export interface
@@ -26,7 +24,6 @@ config AMLOGIC_DDR_BANDWIDTH_GXL
 	bool "Meson ddr bandwidth for GXL"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for GXL.
 		If open it, this driver will export interface
@@ -37,7 +34,6 @@ config AMLOGIC_DDR_BANDWIDTH_GX
 	bool "Meson ddr bandwidth for GX"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for GX.
 		If open it, this driver will export interface
@@ -48,7 +44,6 @@ config AMLOGIC_DDR_BANDWIDTH_G12
 	bool "Meson ddr bandwidth for G12"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for G12.
 		If open it, this driver will export interface
@@ -59,7 +54,6 @@ config AMLOGIC_DDR_BANDWIDTH_T7
 	bool "Meson ddr bandwidth for T7"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for T7.
 		If open it, this driver will export interface
@@ -70,7 +64,6 @@ config AMLOGIC_DDR_BANDWIDTH_A1
 	bool "Meson ddr bandwidth for A1"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for A1.
 		If open it, this driver will export interface
@@ -81,7 +74,6 @@ config AMLOGIC_DDR_BANDWIDTH_T5
 	bool "Meson ddr bandwidth for T5"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for T5.
 		If open it, this driver will export interface
@@ -92,7 +84,6 @@ config AMLOGIC_DDR_BANDWIDTH_S4
 	bool "Meson ddr bandwidth for S4"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for S4.
 		If open it, this driver will export interface
@@ -103,7 +94,6 @@ config AMLOGIC_DDR_BANDWIDTH_S5
 	bool "Meson ddr bandwidth for S5"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for S5.
 		If open it, this driver will export interface
@@ -114,7 +104,6 @@ config AMLOGIC_DDR_BANDWIDTH_C3
 	bool "Meson ddr bandwidth for C3"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for C3.
 		If open it, this driver will export interface
@@ -125,7 +114,6 @@ config AMLOGIC_DDR_BANDWIDTH_T5M
 	bool "Meson ddr bandwidth for T5M"
 	default n
 	depends on AMLOGIC_DDR_BANDWIDTH
-	depends on AMLOGIC_MEMORY_DEBUG
 	help
 		This config enables ddr bandwidth measure for t5m.
 		If open it, this driver will export interface

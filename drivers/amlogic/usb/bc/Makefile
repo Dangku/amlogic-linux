@@ -1,3 +1,3 @@
 # SPDX-License-Identifier: GPL-2.0
 
-obj-$(CONFIG_AMLOGIC_BC) += amlogic-bc.o
+$(MODULE_NAME)-$(CONFIG_AMLOGIC_BC) += bc/amlogic-bc.o

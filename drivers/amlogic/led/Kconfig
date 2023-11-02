@@ -4,7 +4,7 @@
 #
 
 menuconfig AMLOGIC_LED
-	bool "Amlogic LED Support"
+	tristate "Amlogic LED Support"
 	default n
 	help
 	  Say Y here to get to see options for led drivers.

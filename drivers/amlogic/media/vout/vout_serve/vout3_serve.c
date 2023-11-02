@@ -34,6 +34,8 @@
 /* Local Headers */
 #include "vout_func.h"
 
+#include <linux/amlogic/gki_module.h>
+
 #ifdef CONFIG_AMLOGIC_LEGACY_EARLY_SUSPEND
 #include <linux/amlogic/pm.h>
 static struct early_suspend early_suspend;

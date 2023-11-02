@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_hcd_linux.c $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_hcd_linux.c $
  * $Revision: #22 $
  * $Date: 2012/12/21 $
  * $Change: 2131568 $
@@ -52,7 +52,7 @@
 #include <asm/io.h>
 #include <linux/usb.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 35)
-#include <..drivers/usb/core/hcd.h>
+#include <../drivers/usb/core/hcd.h>
 #else
 #include <linux/usb/hcd.h>
 #endif

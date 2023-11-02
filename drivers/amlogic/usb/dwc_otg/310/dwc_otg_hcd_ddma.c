@@ -1,5 +1,5 @@
 /*==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_hcd_ddma.c $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_hcd_ddma.c $
  * $Revision: #10 $
  * $Date: 2011/10/20 $
  * $Change: 1869464 $

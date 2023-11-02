@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_cil.c $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_cil.c $
  * $Revision: #198 $
  * $Date: 2012/12/21 $
  * $Change: 2131568 $

@@ -3,4 +3,5 @@
 
 ccflags-y += -I$(srctree)/drivers/pci/controller/dwc
 
-obj-$(CONFIG_AMLOGIC_PCIE_V2_HOST) += amlogic-pcie-v2-host.o
+obj-$(CONFIG_AMLOGIC_PCIE_V2_HOST) += amlogic_pcie_v2_host.o
+amlogic_pcie_v2_host-y := amlogic-pcie-v2-host.o

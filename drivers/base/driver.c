@@ -149,8 +149,6 @@ int driver_register(struct device_driver *drv)
 	int ret;
 	struct device_driver *other;
 
-	pr_info("BPI: register driver %s on bus %s\n", drv->name, drv->bus->name);
-
 	if (!drv->bus->p) {
 		pr_err("Driver '%s' was unable to register with bus_type '%s' because the bus was not initialized.\n",
 			   drv->name, drv->bus->name);

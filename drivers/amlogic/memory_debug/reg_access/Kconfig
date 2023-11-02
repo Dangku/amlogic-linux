@@ -2,7 +2,6 @@
 
 config AMLOGIC_REG_ACCESS
     bool "Amlogic register access from userspace support"
-    depends on AMLOGIC_MEMORY_DEBUG
     default n
     help
       This is the debug interface for resister and memory access from user space

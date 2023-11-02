@@ -2,7 +2,6 @@
 
 config AMLOGIC_FILE_CACHE
 	bool "Amlogic file cache"
-	depends on AMLOGIC_MEMORY_DEBUG
 	depends on AMLOGIC_MEMORY_EXTEND
 	default n
 	help
@@ -11,7 +10,6 @@ config AMLOGIC_FILE_CACHE
 
 config AMLOGIC_WATCHPOINT
 	bool "Amlogic point driver"
-	depends on AMLOGIC_MEMORY_DEBUG
 	depends on AMLOGIC_MEMORY_EXTEND
 	depends on HAVE_HW_BREAKPOINT
 	default n

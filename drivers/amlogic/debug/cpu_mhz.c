@@ -147,7 +147,7 @@ static const struct kernel_param_ops cpu_mhz_ops = {
 
 module_param_cb(cpu_mhz, &cpu_mhz_ops, NULL, 0644);
 
-static int __init cpu_mhz_init(void)
+int cpu_mhz_init(void)
 {
 	hrtimer_init(&cpu_mhz_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	cpu_mhz_timer.function = test_mhz_hrtimer_func;
@@ -157,8 +157,3 @@ static int __init cpu_mhz_init(void)
 
 	return 0;
 }
-late_initcall(cpu_mhz_init);
-
-MODULE_DESCRIPTION("Amlogic cpu mhz module");
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Jianxiong Pan <jianxiong.pan@amlogic.com>");

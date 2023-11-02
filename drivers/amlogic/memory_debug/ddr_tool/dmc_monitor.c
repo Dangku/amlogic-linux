@@ -30,6 +30,7 @@
 #include <linux/highmem.h>
 #include "dmc_monitor.h"
 #include "ddr_port.h"
+#include <linux/amlogic/gki_module.h>
 #include <trace/hooks/mm.h>
 #include <trace/hooks/fault.h>
 #include <asm/module.h>

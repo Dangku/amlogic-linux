@@ -452,7 +452,7 @@ struct platform_driver meson_spifc_driver = {
 	},
 };
 
-module_platform_driver(meson_spifc_driver);
+//module_platform_driver(meson_spifc_driver);
 
 MODULE_AUTHOR("Beniamino Galvani <b.galvani@gmail.com>");
 MODULE_DESCRIPTION("Amlogic Meson SPIFC driver");

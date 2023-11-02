@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_pcd_if.h $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_pcd_if.h $
  * $Revision: #13 $
  * $Date: 2012/12/12 $
  * $Change: 2125019 $

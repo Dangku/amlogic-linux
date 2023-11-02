@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_attr.h
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_attr.h
  * $Date: 2010/06/21
  * $Change: 1532021
  *

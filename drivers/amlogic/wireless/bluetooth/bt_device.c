@@ -25,13 +25,14 @@
 #ifdef CONFIG_AM_WIFI_SD_MMC
 #include <linux/amlogic/wifi_dt.h>
 #endif
-#include "../../../gpio/gpiolib.h"
+#include <gpiolib.h>
 
 #include <linux/interrupt.h>
 #include <linux/pm_wakeup.h>
 #include <linux/pm_wakeirq.h>
 #include <linux/amlogic/pm.h>
 #include <linux/irq.h>
+#include <linux/amlogic/gki_module.h>
 
 #include <linux/input.h>
 

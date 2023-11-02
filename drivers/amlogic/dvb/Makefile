@@ -1,20 +1,20 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-obj-$(CONFIG_AMLOGIC_AUCPU) += aucpu/
-obj-$(CONFIG_AMLOGIC_DVB_DMX) += demux/
-obj-$(CONFIG_AMLOGIC_DVB_DSM) += dsm/
-obj-$(CONFIG_AMLOGIC_SMARTCARD) += smartcard_sc2/
-obj-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_dvb_extern.o
-aml_dvb_extern-objs := \
-		aml_demod_common.o \
-		aml_tuner.o \
-		aml_atvdemod.o \
-		aml_dtvdemod.o \
-		aml_tuner_ops.o \
-		aml_demod_ops.o \
-		aml_dvb_extern_driver.o
-
 ccflags-y += -I.
 ccflags-y += -I$(srctree)/drivers/media/dvb-core
 ccflags-y += -I$(srctree)/include/media
 
+obj-$(CONFIG_AMLOGIC_DVB_CONFIG) += amlogic-dvb.o
+amlogic-dvb-y = main.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_demod_common.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_tuner.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_atvdemod.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_dtvdemod.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_tuner_ops.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_demod_ops.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_EXTERN) += aml_dvb_extern_driver.o
+amlogic-dvb-$(CONFIG_AMLOGIC_AUCPU) += aucpu/aml_aucpu.o
+amlogic-dvb-$(CONFIG_AMLOGIC_DVB_DSM) += dsm/aml_dsm.o
+amlogic-dvb-$(CONFIG_AMLOGIC_SMARTCARD) += smartcard_sc2/smartcard.o
+
+obj-$(CONFIG_AMLOGIC_DVB_DMX) += demux/

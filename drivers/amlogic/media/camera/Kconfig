@@ -3,7 +3,6 @@ menu "Amlogic Camera Support"
 config AMLOGIC_VIDEO_CAPTURE
 	tristate "Amlogic Platform Capture Driver"
 	depends on !SPARC32 && !SPARC64 &&!AMLOGIC_CAMERA_ENABLE
-	select VIDEOBUF_VMALLOC
 	depends on MEDIA_SUPPORT
 	depends on VIDEO_DEV
 	depends on VIDEO_V4L2

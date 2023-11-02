@@ -2,7 +2,6 @@
 
 config AMLOGIC_RAMDUMP
 	bool "Amlogic full ramdump"
-	depends on AMLOGIC_MEMORY_DEBUG
 	default n
 	help
 		Amlogic ramump implementation. When kernel pain is

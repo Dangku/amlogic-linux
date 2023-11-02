@@ -1,4 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0
 ccflags-y += -I$(srctree)/drivers/usb/host/
 
-obj-$(CONFIG_AMLOGIC_CRG) += crg.o crg_drd.o crg_udc.o crg_usbphy.o
+$(MODULE_NAME)-$(CONFIG_AMLOGIC_CRG) += crg/crg.o
+
+
+$(MODULE_NAME)-$(CONFIG_AMLOGIC_CRG) += crg/crg_drd.o
+
+$(MODULE_NAME)-$(CONFIG_AMLOGIC_CRG) += crg/crg_udc.o
+$(MODULE_NAME)-$(CONFIG_AMLOGIC_CRG) += crg/crg_usbphy.o
+

@@ -3,17 +3,11 @@
 
 obj-$(CONFIG_AMLOGIC_AUDIO_BRIDGE) += amlogic-audiobridge.o
 
-amlogic-audiobridge-y := bridge_audio.o \
-                         bridge_ringbuffer.o \
-                         bridge_pcm_hal.o \
-                         bridge_arm_pcm.o
-
-ifeq ($(CONFIG_AMLOGIC_BRIDGE_UAC),y)
-        amlogic-audiobridge-y += bridge_uac_pcm.o
-endif
-
-ifeq ($(CONFIG_AMLOGIC_BRIDGE_DSP),y)
-        amlogic-audiobridge-y += bridge_dsp_pcm.o \
-                                 dsp_client_api.o \
-                                 bridge_dsp_card.o
-endif
+amlogic-audiobridge-y := bridge_audio.o
+amlogic-audiobridge-y += bridge_ringbuffer.o
+amlogic-audiobridge-y += bridge_pcm_hal.o
+amlogic-audiobridge-y += bridge_arm_pcm.o
+amlogic-audiobridge-$(CONFIG_AMLOGIC_BRIDGE_UAC) += bridge_uac_pcm.o
+amlogic-audiobridge-$(CONFIG_AMLOGIC_BRIDGE_DSP) += bridge_dsp_pcm.o
+amlogic-audiobridge-$(CONFIG_AMLOGIC_BRIDGE_DSP) += dsp_client_api.o
+amlogic-audiobridge-$(CONFIG_AMLOGIC_BRIDGE_DSP) += bridge_dsp_card.o

@@ -31,6 +31,7 @@
 #include <linux/thermal.h>
 #include <linux/arm-smccc.h>
 #include <linux/proc_fs.h>
+#include <linux/amlogic/gki_module.h>
 
 #define CREATE_TRACE_POINTS
 /*whether use different tables or not*/

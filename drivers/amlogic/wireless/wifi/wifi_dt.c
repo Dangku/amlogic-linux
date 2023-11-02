@@ -30,7 +30,7 @@
 #include <linux/pwm.h>
 #include <linux/amlogic/pwm-meson.h>
 #endif
-#include "../../../gpio/gpiolib-of.h"
+#include <gpiolib-of.h>
 #define OWNER_NAME "sdio_wifi"
 
 struct pcie_wifi_chip {

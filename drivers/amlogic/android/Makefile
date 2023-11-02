@@ -1,3 +1,4 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-obj-$(CONFIG_AMLOGIC_ANDROID_LOGGER) += logger.o
+obj-$(CONFIG_AMLOGIC_ANDROID_LOGGER) += amlogic-logger.o
+amlogic-logger-y := logger.o

@@ -3195,7 +3195,7 @@ static struct platform_driver smc_driver = {
 	},
 };
 
-static int __init smc_sc2_mod_init(void)
+int __init smc_sc2_mod_init(void)
 {
 	int ret = -1;
 
@@ -3225,19 +3225,11 @@ error_register_chrdev:
 	mutex_destroy(&smc_lock);
 	return ret;
 }
-module_init(smc_sc2_mod_init);
 
-static void __exit smc_sc2_mod_exit(void)
+void __exit smc_sc2_mod_exit(void)
 {
 	platform_driver_unregister(&smc_driver);
 	class_unregister(&smc_class);
 	unregister_chrdev(smc_major, SMC_DEV_NAME);
 	mutex_destroy(&smc_lock);
 }
-module_exit(smc_sc2_mod_exit);
-
-MODULE_AUTHOR("Tao Guo <tao.guo@amlogic.com>");
-MODULE_DESCRIPTION("Amlogic SmartCard Driver");
-MODULE_LICENSE("GPL");
-
-

@@ -52,6 +52,7 @@
 #include <linux/amlogic/media/osd/osd_logo.h>
 #endif
 #include <linux/amlogic/media/vout/vout_notify.h>
+#include <linux/amlogic/gki_module.h>
 #include <linux/amlogic/aml_free_reserved.h>
 
 #ifdef CONFIG_CMA

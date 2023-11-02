@@ -18,7 +18,7 @@
 #include "dmc_monitor.h"
 #include "ddr_bandwidth.h"
 
-static int __init ddr_tool_init(void)
+int __init ddr_tool_init(void)
 {
 	int ret;
 
@@ -33,12 +33,8 @@ static int __init ddr_tool_init(void)
 	return ret;
 }
 
-static void __exit ddr_tool_exit(void)
+void __exit ddr_tool_exit(void)
 {
 	ddr_bandwidth_exit();
 	dmc_monitor_exit();
 }
-module_init(ddr_tool_init);
-module_exit(ddr_tool_exit);
-
-MODULE_LICENSE("GPL v2");

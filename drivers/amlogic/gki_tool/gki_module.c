@@ -18,6 +18,7 @@
 #include <asm/setup.h>
 #include <linux/kernel_read_file.h>
 #include <linux/vmalloc.h>
+#include <linux/amlogic/gki_module.h>
 #include <linux/kconfig.h>
 #include <linux/security.h>
 #include "gki_tool.h"

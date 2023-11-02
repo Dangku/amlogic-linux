@@ -676,9 +676,3 @@ static int __init kernel_keypad_enable_setup(char *s)
 __setup("kernelkey_enable=", kernel_keypad_enable_setup);
 
 #endif
-
-late_initcall(meson_adc_kp_init);
-module_exit(meson_adc_kp_exit);
-MODULE_AUTHOR("Amlogic");
-MODULE_DESCRIPTION("ADC Keypad Driver");
-MODULE_LICENSE("GPL");

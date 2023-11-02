@@ -95,6 +95,7 @@ void tee_unprotect_mem(u32 handle)
 }
 #endif
 
+#if IS_MODULE(CONFIG_AMLOGIC_MEDIA_MODULE)
 /* aml_media is ko can't use cma_mmu_op() func */
 void (*aml_mte_sync_tags)(pte_t old_pte, pte_t pte);
 
@@ -223,7 +224,7 @@ int cma_mmu_op(struct page *page, int count, bool set)
 	return 0;
 }
 #endif
-
+#endif
 #include <linux/amlogic/cpu_version.h>
 
 #define TVP_POOL_NAME "TVP_POOL"

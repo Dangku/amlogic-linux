@@ -38,6 +38,8 @@
 #include "../lcd_reg.h"
 #include "../lcd_common.h"
 
+#include <linux/amlogic/gki_module.h>
+
 #define BL_CDEV_NAME  "aml_bl"
 struct bl_cdev_s {
 	dev_t           devno;

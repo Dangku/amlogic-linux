@@ -669,15 +669,12 @@ static struct platform_driver sec_pd_driver = {
 	},
 };
 
-static int __init sec_power_domain_init(void)
+int __init sec_power_domain_init(void)
 {
 	return platform_driver_register(&sec_pd_driver);
 }
 
-static void __exit sec_power_domain_exit(void)
+void __exit sec_power_domain_exit(void)
 {
 	platform_driver_unregister(&sec_pd_driver);
 }
-module_init(sec_power_domain_init);
-module_exit(sec_power_domain_exit);
-MODULE_LICENSE("GPL v2");

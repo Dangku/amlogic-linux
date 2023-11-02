@@ -452,7 +452,7 @@ static const struct of_device_id unipolar_ctrl_table[] = {
 
 MODULE_DEVICE_TABLE(of, unipolar_ctrl_table);
 
-static struct platform_driver meson_led_unipolar_ctrl = {
+static struct platform_driver meson_led_unipolar_ctrl_driver = {
 	.probe = unipolar_ctrl_probe,
 	.remove = unipolar_ctrl_remove,
 	.driver = {
@@ -461,15 +461,8 @@ static struct platform_driver meson_led_unipolar_ctrl = {
 	},
 };
 
-int __init led_unipolar_ctrl_init(void)
-{
-	int ret;
+module_platform_driver(meson_led_unipolar_ctrl_driver);
 
-	ret = platform_driver_register(&meson_led_unipolar_ctrl);
-	return ret;
-}
-
-void __exit led_unipolar_ctrl_exit(void)
-{
-	platform_driver_unregister(&meson_led_unipolar_ctrl);
-}
+MODULE_AUTHOR("Bichao Zheng <bichao.zheng@amlogic.com>");
+MODULE_DESCRIPTION("LED upipolar ctrl driver for amlogic");
+MODULE_LICENSE("GPL");

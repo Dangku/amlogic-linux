@@ -496,7 +496,6 @@ static int __of_device_is_compatible(const struct device_node *device,
 		     cp = of_prop_next_string(prop, cp), index++) {
 			if (of_compat_cmp(cp, compat, strlen(compat)) == 0) {
 				score = INT_MAX/2 - (index << 2);
-				pr_info("BPI, found match, %s\n", cp);
 				break;
 			}
 		}

@@ -90,6 +90,8 @@
 #endif
 #define ENABLE_SPIN_LOCK_ALWAYS
 
+#include <linux/amlogic/gki_module.h>
+
 #define DEVICE_NAME		"deinterlace"
 #define CLASS_NAME		"deinterlace"
 

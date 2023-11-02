@@ -110,9 +110,17 @@ static struct platform_driver amlogic_usb2_m31_driver = {
 	},
 };
 
+#ifdef MODULE
+
+int __init amlogic_usb2_m31_drv_init(void)
+{
+	return platform_driver_register(&amlogic_usb2_m31_driver);
+}
+#else
 module_platform_driver(amlogic_usb2_m31_driver);
 
 MODULE_ALIAS("platform: amlogic_usb2_m31");
 MODULE_AUTHOR("Amlogic Inc.");
 MODULE_DESCRIPTION("amlogic USB2 m31 phy driver");
 MODULE_LICENSE("GPL v2");
+#endif

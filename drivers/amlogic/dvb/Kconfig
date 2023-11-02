@@ -12,17 +12,17 @@ menuconfig AMLOGIC_DVB_CONFIG
 if AMLOGIC_DVB_CONFIG
 
 config AMLOGIC_DVB_EXTERN
-	tristate "Amlogic dvb extern drivers"
+	bool "Amlogic dvb extern drivers"
 	help
 		Say Y here if you want to support amlogic dvb extern driver.
 
 config AMLOGIC_DVB_DSM
-	tristate "AMLOGIC DVB DSM"
+	bool "AMLOGIC DVB DSM"
 	help
 		Amlogic DVB Descrambler Session Manager
 
 config AMLOGIC_DVB_COMPAT
-	tristate "AMLOGIC DVB COMPAT"
+	bool "AMLOGIC DVB COMPAT"
 	default n
 	help
 		if define Amlogic define demod or dmx

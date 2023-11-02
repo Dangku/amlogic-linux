@@ -558,6 +558,9 @@ usb_phy_trim_tuning(struct usb_phy *x, int port, int default_val)
 }
 
 void aml_new_usb3_get_phy(struct amlogic_usb_v2 *phy);
+void cr_bus_addr(unsigned int addr);
+int cr_bus_read(unsigned int addr);
+void cr_bus_write(unsigned int addr, unsigned int data);
 
 int aml_new_otg_get_mode(void);
 int aml_new_usb_get_mode(void);

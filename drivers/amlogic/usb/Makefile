@@ -1,12 +1,17 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-obj-$(CONFIG_AMLOGIC_CRG) += crgdrdphy/
-obj-$(CONFIG_AMLOGIC_USB2PHY) += usb2phy/
-obj-$(CONFIG_AMLOGIC_USBPHY) += usb3v2phy/
-#obj-$(CONFIG_AMLOGIC_USBPHYC2) += usbc2phy/
-#obj-$(CONFIG_AMLOGIC_USB3PHY) += usb3v3phy/
-obj-$(CONFIG_AMLOGIC_USB3PHY) += usbotg/
-#obj-$(CONFIG_AMLOGIC_USB3PHY) += cc/
-#obj-$(CONFIG_AMLOGIC_BC) += bc/
-obj-$(CONFIG_AMLOGIC_CRG) += crg/
+MODULE_NAME = amlogic-usb
+obj-$(CONFIG_AMLOGIC_USB_SUPPORT)      += $(MODULE_NAME).o
+$(MODULE_NAME)-y = usb_main.o
+
+include drivers/amlogic/usb/crgdrdphy/Makefile
+include drivers/amlogic/usb/usb2phy/Makefile
+include drivers/amlogic/usb/usb3v2phy/Makefile
+include drivers/amlogic/usb/usbc2phy/Makefile
+#include drivers/amlogic/usb/usb3v3phy/Makefile
+include drivers/amlogic/usb/usbotg/Makefile
+include drivers/amlogic/usb/cc/Makefile
+include drivers/amlogic/usb/bc/Makefile
+include drivers/amlogic/usb/crg/Makefile
+
 obj-$(CONFIG_AMLOGIC_USB_DWC_OTG_HCD) += dwc_otg/310/

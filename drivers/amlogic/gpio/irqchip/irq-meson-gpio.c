@@ -863,8 +863,12 @@ static struct platform_driver meson_gpio_irq_driver = {
 	},
 };
 
-module_platform_driver(meson_gpio_irq_driver);
+int __init meson_gpio_irq_init(void)
+{
+	return platform_driver_register(&meson_gpio_irq_driver);
+}
 
-MODULE_AUTHOR("nengwen.chen <nengwen.chen@amlogic.com>");
-MODULE_DESCRIPTION("amlogic gpio irq driver");
-MODULE_LICENSE("GPL");
+void __exit meson_gpio_irq_exit(void)
+{
+	platform_driver_unregister(&meson_gpio_irq_driver);
+}

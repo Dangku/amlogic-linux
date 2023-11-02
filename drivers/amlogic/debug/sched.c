@@ -557,7 +557,7 @@ static void aml_check_preempt_tick(void *data, struct task_struct *p, unsigned l
 	}
 }
 
-static int __init aml_sched_init(void)
+int aml_sched_init(void)
 {
 	register_trace_android_rvh_select_task_rq_rt(aml_select_rt_nice, NULL);
 	register_trace_android_rvh_check_preempt_wakeup(aml_check_preempt_wakeup, NULL);
@@ -567,14 +567,8 @@ static int __init aml_sched_init(void)
 	return 0;
 }
 #else
-static int __init aml_sched_init(void)
+int aml_sched_init(void)
 {
 	return 0;
 }
 #endif
-
-late_initcall(aml_sched_init);
-
-MODULE_DESCRIPTION("Amlogic debug sched module");
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Jianxiong Pan <jianxiong.pan@amlogic.com>");

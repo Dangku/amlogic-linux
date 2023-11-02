@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_adp.h $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_adp.h $
  * $Revision: #7 $
  * $Date: 2011/10/24 $
  * $Change: 1871159 $

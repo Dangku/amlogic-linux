@@ -1,5 +1,5 @@
 /* ==========================================================================
- * $File: //dwh/usb_iip/dev/software/otg/linuxdrivers/dwc_otg_hcd_queue.c $
+ * $File: //dwh/usb_iip/dev/software/otg/linux/drivers/dwc_otg_hcd_queue.c $
  * $Revision: #44 $
  * $Date: 2011/10/26 $
  * $Change: 1873028 $

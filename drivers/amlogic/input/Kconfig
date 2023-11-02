@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
 menuconfig AMLOGIC_INPUT
-	bool "Amlogic input device support"
+	tristate "Amlogic input devices support"
 	default n
 	help
 	  Say Y here to enable Amlogic input

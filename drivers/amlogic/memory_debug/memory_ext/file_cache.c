@@ -571,7 +571,7 @@ static const struct proc_ops filecache_ops = {
 	.proc_release		= single_release,
 };
 
-static int __init filecache_module_init(void)
+int __init filecache_module_init(void)
 {
 	d_filecache = proc_create("filecache", 0444,
 				  NULL, &filecache_ops);
@@ -583,12 +583,9 @@ static int __init filecache_module_init(void)
 	return 0;
 }
 
-static void __exit filecache_module_exit(void)
+void __exit filecache_module_exit(void)
 {
 	if (d_filecache)
 		proc_remove(d_filecache);
 }
-module_init(filecache_module_init);
-module_exit(filecache_module_exit);
 
-MODULE_LICENSE("GPL v2");

@@ -171,123 +171,6 @@ static int usb2_v2_get_mode(void)
 	}
 }
 
-static void cr_bus_addr(unsigned int addr)
-{
-	union phy3_r4 phy_r4 = {.d32 = 0};
-	union phy3_r5 phy_r5 = {.d32 = 0};
-	unsigned long timeout_jiffies;
-
-	phy_r4.b.phy_cr_data_in = addr;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-
-	phy_r4.b.phy_cr_cap_addr = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	phy_r4.b.phy_cr_cap_addr = 1;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-			msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 0 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	phy_r4.b.phy_cr_cap_addr = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-			msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 1 &&
-		time_is_after_jiffies(timeout_jiffies));
-}
-
-static int cr_bus_read(unsigned int addr)
-{
-	int data;
-	union phy3_r4 phy_r4 = {.d32 = 0};
-	union phy3_r5 phy_r5 = {.d32 = 0};
-	unsigned long timeout_jiffies;
-
-	cr_bus_addr(addr);
-
-	phy_r4.b.phy_cr_read = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	phy_r4.b.phy_cr_read = 1;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-
-	timeout_jiffies = jiffies +
-			msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 0 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	data = phy_r5.b.phy_cr_data_out;
-
-	phy_r4.b.phy_cr_read = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-			msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 1 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	return data;
-}
-
-static void cr_bus_write(unsigned int addr, unsigned int data)
-{
-	union phy3_r4 phy_r4 = {.d32 = 0};
-	union phy3_r5 phy_r5 = {.d32 = 0};
-	unsigned long timeout_jiffies;
-
-	cr_bus_addr(addr);
-
-	phy_r4.b.phy_cr_data_in = data;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-
-	phy_r4.b.phy_cr_cap_data = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	phy_r4.b.phy_cr_cap_data = 1;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-		msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 0 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	phy_r4.b.phy_cr_cap_data = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-		msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 1 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	phy_r4.b.phy_cr_write = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	phy_r4.b.phy_cr_write = 1;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-		msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 0 &&
-		time_is_after_jiffies(timeout_jiffies));
-
-	phy_r4.b.phy_cr_write = 0;
-	writel(phy_r4.d32, g_phy_v2->phy3_cfg_r4);
-	timeout_jiffies = jiffies +
-		msecs_to_jiffies(1000);
-	do {
-		phy_r5.d32 = readl(g_phy_v2->phy3_cfg_r5);
-	} while (phy_r5.b.phy_cr_ack == 1 &&
-		time_is_after_jiffies(timeout_jiffies));
-}
-
 static int amlogic_new_usb3_init(struct usb_phy *x)
 {
 	struct amlogic_usb_v2 *phy = phy_to_amlusb(x);
@@ -891,9 +774,16 @@ static struct platform_driver amlogic_new_usb3_v2_driver = {
 	},
 };
 
+#if 0
 module_platform_driver(amlogic_new_usb3_v2_driver);
 
 MODULE_ALIAS("platform: amlogic_usb3_v2");
 MODULE_AUTHOR("Amlogic Inc.");
 MODULE_DESCRIPTION("amlogic USB3 v2 phy driver");
 MODULE_LICENSE("GPL v2");
+#else
+int __init amlogic_new_usb3_v2_driver_init(void)
+{
+	return platform_driver_register(&amlogic_new_usb3_v2_driver);
+}
+#endif

@@ -1,0 +1,51 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&tdmb>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "tdm_pins";
+                        pinctrl-0 = <&mclk_1_pins
+                                &tdm_b_pins
+                                &tdm_d2_pins
+                                &tdm_d3_pins
+                                &tdmb_clk_pins>;
+
+                        tdmin-src-name = "tdmin_b";
+		};
+	};
+
+	fragment@1 {
+		target = <&i2c5>;
+
+		__overlay__ {
+			status = "okay";
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			pcm5122: pcm5122@4d {
+				compatible = "ti,pcm5122";
+				reg = <0x4d>;
+				#sound-dai-cells = <0>;
+				status = "okay";
+
+				/*
+				AVDD-supply = <&reg_3v3_analog>;
+				DVDD-supply = <&reg_1v8>;
+				CPVDD-supply = <&reg_3v3>;
+				*/
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&tdmbcodec>;
+
+		__overlay__ {
+			sound-dai = <&pcm5122 &dummy_codec>;
+		};
+	};
+};

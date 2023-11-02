@@ -26,6 +26,10 @@
 #include <linux/syscore_ops.h>
 #include <linux/cpu.h>
 
+#if IS_ENABLED(CONFIG_AMLOGIC_DEBUG)
+#include <linux/amlogic/gki_module.h>
+#endif
+
 static void __iomem *reboot_reason_vaddr;
 static u32 psci_function_id_restart;
 static u32 psci_function_id_poweroff;

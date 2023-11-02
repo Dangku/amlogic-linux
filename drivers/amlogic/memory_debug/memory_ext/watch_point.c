@@ -680,7 +680,7 @@ static struct platform_driver aml_watch_point_driver = {
 	.remove = aml_watch_point_drv_remove,
 };
 
-static int __init aml_watch_pint_init(void)
+int __init aml_watch_pint_init(void)
 {
 	struct platform_device *pdev;
 	int ret;
@@ -703,11 +703,7 @@ static int __init aml_watch_pint_init(void)
 	return ret;
 }
 
-static void __exit aml_watch_point_uninit(void)
+void __exit aml_watch_point_uninit(void)
 {
 	platform_driver_unregister(&aml_watch_point_driver);
 }
-module_init(aml_watch_pint_init);
-module_exit(aml_watch_point_uninit);
-
-MODULE_LICENSE("GPL v2");

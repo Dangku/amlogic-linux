@@ -7,6 +7,7 @@
 #include <linux/module.h>
 #include <linux/mm.h>
 #include <linux/string.h>
+#include <linux/amlogic/gki_module.h>
 #include "hdmitx_boot_parameters.h"
 
 static struct hdmitx_boot_param tx_params = {

@@ -42,6 +42,7 @@
 #include <linux/namei.h>
 #include <linux/capability.h>
 #include <asm/cacheflush.h>
+#include <linux/amlogic/gki_module.h>
 
 static unsigned long ramdump_base;
 static unsigned long ramdump_size;
@@ -635,7 +636,7 @@ static struct platform_driver ramdump_driver = {
 	.remove = ramdump_remove,
 };
 
-static int __init ramdump_init(void)
+int __init ramdump_init(void)
 {
 	int ret;
 
@@ -644,11 +645,8 @@ static int __init ramdump_init(void)
 	return ret;
 }
 
-static void __exit ramdump_uninit(void)
+void __exit ramdump_uninit(void)
 {
 	platform_driver_unregister(&ramdump_driver);
 }
-module_init(ramdump_init);
-module_exit(ramdump_uninit);
 
-MODULE_LICENSE("GPL v2");

@@ -6,6 +6,7 @@
 #include "meson_crtc.h"
 #include "meson_vpu_pipeline.h"
 #include <linux/init.h>
+#include <linux/amlogic/gki_module.h>
 
 #include <linux/amlogic/media/vout/vout_notify.h>
 #include <vout/vout_serve/vout_func.h>

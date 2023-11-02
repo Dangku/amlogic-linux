@@ -3,8 +3,8 @@
 # Amlogic AUCPU driver configuration
 #
 config AMLOGIC_AUCPU
-	tristate "Amlogic Aucpu driver"
-	default n
+	bool "Amlogic Aucpu driver"
+	default N
 #	depends on AMLOGIC_MEDIA_CODEC_MM
 	help
 		Amlogic AUCPU Driver module support
