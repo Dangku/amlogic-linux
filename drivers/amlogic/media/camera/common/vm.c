@@ -1970,7 +1970,7 @@ int uninit_vm_device(struct platform_device *plat_dev)
 	kfree(vdevp);
 	return 0;
 }
-
+#if 0
 #ifdef CONFIG_CMA
 struct page *dma_alloc_from_contiguous(struct device *dev, size_t count,
 				       unsigned int align, bool no_warn)
@@ -1986,6 +1986,7 @@ bool dma_release_from_contiguous(struct device *dev, struct page *pages,
 {
 	return cma_release(dev_get_cma_area(dev), pages, count);
 }
+#endif
 #endif
 
 int vm_init_resource(size_t size, struct vm_init_s *info)

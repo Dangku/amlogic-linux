@@ -11,4 +11,4 @@ amlogic-dvb-ci-y := aml_pcmcia.o
 amlogic-dvb-ci-y += aml_ci.o
 amlogic-dvb-ci-y += aml_ci_bus.o
 amlogic-dvb-ci-y += cimcu/dvb_ca_en50221_cimcu.o
-amlogic-dvb-ci-y += cimax/dvb_ringbuffer.o
+#amlogic-dvb-ci-y += cimax/dvb_ringbuffer.o

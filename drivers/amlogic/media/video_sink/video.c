@@ -467,7 +467,7 @@ int tvin_source_type;
 bool dvel_changed;
 u32 dvel_size;
 #endif
-DEFINE_SPINLOCK(lock);
+DEFINE_SPINLOCK(videolock);
 atomic_t cur_over_field_state = ATOMIC_INIT(OVER_FIELD_NORMAL);
 u32 config_vsync_num;
 ulong config_timeinfo;
@@ -884,9 +884,9 @@ static int amvideo_vf_get_states(struct vframe_states *states)
 	int ret;
 	unsigned long flags;
 
-	spin_lock_irqsave(&lock, flags);
+	spin_lock_irqsave(&videolock, flags);
 	ret = vf_get_states_by_name(RECEIVER_NAME, states);
-	spin_unlock_irqrestore(&lock, flags);
+	spin_unlock_irqrestore(&videolock, flags);
 	return ret;
 }
 
@@ -988,7 +988,7 @@ static void video_vf_unreg_provider(void)
 	       sizeof(struct video_frame_detect_s));
 	frame_detect_drop_count = 0;
 	frame_detect_receive_count = 0;
-	spin_lock_irqsave(&lock, flags);
+	spin_lock_irqsave(&videolock, flags);
 	ret = update_video_recycle_buffer(0);
 	if (ret == -EAGAIN) {
 	/* The currently displayed vf is not added to the queue
@@ -1092,7 +1092,7 @@ static void video_vf_unreg_provider(void)
 		pip_frame_count[2] = 0;
 	}
 
-	spin_unlock_irqrestore(&lock, flags);
+	spin_unlock_irqrestore(&videolock, flags);
 
 	if (vd_layer[0].dispbuf_mapping
 		== &cur_dispbuf[0])
@@ -1217,7 +1217,7 @@ static void video_vf_light_unreg_provider(int need_keep_frame)
 	if (cur_dev->pre_vsync_enable)
 		while (atomic_read(&video_prevsync_inirq_flag) > 0)
 			schedule();
-	spin_lock_irqsave(&lock, flags);
+	spin_lock_irqsave(&videolock, flags);
 	ret = update_video_recycle_buffer(0);
 	if (ret == -EAGAIN) {
 	/* The currently displayed vf is not added to the queue
@@ -1270,7 +1270,7 @@ static void video_vf_light_unreg_provider(int need_keep_frame)
 		}
 		cur_dispbuf[0] = &vf_local[0];
 	}
-	spin_unlock_irqrestore(&lock, flags);
+	spin_unlock_irqrestore(&videolock, flags);
 
 	if (need_keep_frame) {
 		/* keep the last toggled frame*/
@@ -8254,7 +8254,7 @@ static ssize_t vframe_states_show(struct class *cla,
 		ret += sprintf(buf + ret, "vframe buf_avail_num=%d\n",
 			states.buf_avail_num);
 
-		spin_lock_irqsave(&lock, flags);
+		spin_lock_irqsave(&videolock, flags);
 
 		vf = amvideo_vf_peek();
 		if (vf) {
@@ -8308,10 +8308,10 @@ static ssize_t vframe_states_show(struct class *cla,
 					"vf_ext=%p\n",
 					vf->vf_ext);
 		}
-		spin_unlock_irqrestore(&lock, flags);
+		spin_unlock_irqrestore(&videolock, flags);
 
 	} else {
-		spin_lock_irqsave(&lock, flags);
+		spin_lock_irqsave(&videolock, flags);
 
 		vf = get_dispbuf(0);
 		if (vf) {
@@ -8369,7 +8369,7 @@ static ssize_t vframe_states_show(struct class *cla,
 		} else {
 			ret += sprintf(buf + ret, "vframe no states\n");
 		}
-		spin_unlock_irqrestore(&lock, flags);
+		spin_unlock_irqrestore(&videolock, flags);
 	}
 	return ret;
 }
@@ -12666,14 +12666,14 @@ int vout_notify_callback(struct notifier_block *block, unsigned long cmd,
 		info = get_current_vinfo();
 		if (!info || info->mode == VMODE_INVALID)
 			return 0;
-		spin_lock_irqsave(&lock, flags);
+		spin_lock_irqsave(&videolock, flags);
 		vinfo = info;
 		/* pre-calculate vsync_pts_inc in 90k unit */
 		vsync_pts_inc = 90000 * vinfo->sync_duration_den /
 				vinfo->sync_duration_num;
 		vsync_pts_inc_scale = vinfo->sync_duration_den;
 		vsync_pts_inc_scale_base = vinfo->sync_duration_num;
-		spin_unlock_irqrestore(&lock, flags);
+		spin_unlock_irqrestore(&videolock, flags);
 		if (vinfo->name)
 			strncpy(new_vmode, vinfo->name, sizeof(new_vmode) - 1);
 #ifdef CONFIG_AMLOGIC_MEDIA_ENHANCEMENT_DOLBYVISION
