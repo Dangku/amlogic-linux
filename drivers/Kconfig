@@ -239,4 +239,5 @@ source "drivers/most/Kconfig"
 
 source "drivers/amlogic/Kconfig"
 
+source "drivers/gpu/arm/Kconfig"
 endmenu
