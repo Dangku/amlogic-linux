@@ -95,10 +95,6 @@ static int pcf85063_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	tm->tm_year = bcd2bin(regs[6]);
 	tm->tm_year += 100;
 
-	dev_info(&pcf85063->rtc->dev, "read_time:%4d-%02d-%02d(%d) %02d:%02d:%02d\n",
-                1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday, tm->tm_wday,
-                tm->tm_hour, tm->tm_min, tm->tm_sec);
-
 	return 0;
 }
 
@@ -107,10 +103,6 @@ static int pcf85063_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	struct pcf85063 *pcf85063 = dev_get_drvdata(dev);
 	int rc;
 	u8 regs[7];
-
-	dev_info(&pcf85063->rtc->dev, "set_time:%4d-%02d-%02d(%d) %02d:%02d:%02d\n",
-                1900 + tm->tm_year, tm->tm_mon + 1, tm->tm_mday, tm->tm_wday,
-                tm->tm_hour, tm->tm_min, tm->tm_sec);
 
 	if ((tm->tm_year < 100) || (tm->tm_year > 199))
 		return -EINVAL;
@@ -181,9 +173,6 @@ static int pcf85063_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 
 	alrm->enabled =  !!(val & PCF85063_CTRL2_AIE);
 	
-	dev_info(&pcf85063->rtc->dev, "read_alarm:%02d %02d:%02d:%02d\n",
-				alrm->time.tm_mday, alrm->time.tm_hour, alrm->time.tm_min, alrm->time.tm_sec);
-
 	return 0;
 }
 
@@ -193,9 +182,6 @@ static int pcf85063_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 	u8 buf[5];
 	int ret;
 	
-	dev_info(&pcf85063->rtc->dev, "set_alarm:%02d %02d:%02d:%02d\n",
-				alrm->time.tm_mday, alrm->time.tm_hour, alrm->time.tm_min, alrm->time.tm_sec);
-
 	buf[0] = bin2bcd(alrm->time.tm_sec);
 	buf[1] = bin2bcd(alrm->time.tm_min);
 	buf[2] = bin2bcd(alrm->time.tm_hour);

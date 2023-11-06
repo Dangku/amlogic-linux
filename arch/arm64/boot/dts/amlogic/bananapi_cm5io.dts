@@ -1537,25 +1537,9 @@
 	pinctrl-0 = <&i2c2_pins2>; /* GPIOT_22->SCL, GPIOT_23->SDA */
 	clock-frequency = <100000>; /* default 100k */
 
-	rtc-pcf85063@51 {
-		compatible = "nxp,pcf85063";
+	hym8563: hym8563@51 {
+		compatible = "haoyu,hym8563";
 		reg = <0x51>;
-		status = "okay";
-	};
-
-	emc2301@2f {
-		compatible = "microchip,emc2301";
-		status = "disabled";
-		reg = <0x2f>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		#cooling-cells = <2>;
-		microchip,cooling-levels = /bits/ 8 <10>;
-
-		channel@0 {
-			reg = <0>;
-			pwm-min = /bits/ 8 <0>;
-		};
 	};
 
 	bq25703@6b {
