@@ -1537,8 +1537,17 @@
 	pinctrl-0 = <&i2c2_pins2>; /* GPIOT_22->SCL, GPIOT_23->SDA */
 	clock-frequency = <100000>; /* default 100k */
 
-	hym8563: hym8563@51 {
+	at24@50 {
+		compatible = "at24,24c02";
+		status = "okay";
+		reg = <0x50>;
+		pagesize = <8>;
+		//read-only;
+	};
+
+	hym8563@51 {
 		compatible = "haoyu,hym8563";
+		status = "okay";
 		reg = <0x51>;
 	};
 
@@ -1570,7 +1579,7 @@
 	pinctrl-0 = <&i2c3_pins2>; /* GPIOH_2->SCL, GPIOH_3->SDA */
 	clock-frequency = <100000>; /* default 100k */
 
-		gt9xx@14 {
+	gt9xx@14 {
 		compatible = "goodix,gt9xx";
 		reg = <0x14>;
 		status = "okay";
