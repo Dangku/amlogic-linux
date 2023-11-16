@@ -340,6 +340,16 @@ static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
 }
 
 #ifdef CONFIG_AMLOGIC_ETH_PRIVE
+static int __init init_wol_state(char *str)
+{
+        support_mac_wol = simple_strtol(str, NULL, 0);
+
+        printk(KERN_INFO "%s, support_mac_wol=%d\n", __func__, support_mac_wol);
+
+        return 0;
+}
+__setup("wol_enable=", init_wol_state);
+
 struct early_suspend dwmac_early_suspend;
 int backup_adv;
 static void dwmac_early_suspend_func(struct early_suspend *h)
@@ -412,10 +422,10 @@ static int aml_custom_setting(struct platform_device *pdev, struct meson8b_dwmac
 			dev_err(&pdev->dev, "Unable to map reset base\n");
 		ee_reset_base = addr;
 	}
-
+/*
 	if (of_property_read_u32(np, "mac_wol", &support_mac_wol) != 0)
 		pr_info("no mac_wol\n");
-
+*/
 	if (of_property_read_u32(np, "keep-alive", &support_nfx_doze) != 0)
 		pr_info("no keep-alive\n");
 	/*nfx doze setting ASAP WOL, if not set, do nothing*/

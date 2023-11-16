@@ -1745,7 +1745,6 @@
 	internal_phy = <2>;
 	mc_val = <0x1621>;
 	cali_val = <0xa0000>;
-	mac_wol = <1>;
 	amlogic,tx-delay-ns = <2>;
 };
 
