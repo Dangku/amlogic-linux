@@ -1,7 +1,7 @@
 dtb-$(CONFIG_ARM64) += bananapi_m2s.dtb
 dtb-$(CONFIG_ARM64) += bananapi_m2s_922x.dtb
 dtb-$(CONFIG_ARM64) += bananapi_cm4io.dtb
-dtb-$(CONFIG_ARM64) += bananapi_rpicm4io.dtb
+dtb-$(CONFIG_ARM64) += raspberrypi_cm4io.dtb
 
 always		:= $(dtb-y)
 subdir-y	:= $(dts-dirs)
