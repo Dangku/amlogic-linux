@@ -31,6 +31,7 @@
 		tsensor1 = &d_tsensor;
 		spi0 = &spicc0;
 		spi1 = &spicc1;
+		ethernet0 = &ethmac;
 	};
 
 	codec_mm {
