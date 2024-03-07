@@ -42,6 +42,7 @@
 		tsensor0 = &p_tsensor;
 		tsensor1 = &d_tsensor;
 		spi0 = &spicc0;
+		ethernet0 = &ethmac;
 	};
 /*
 	memory@00000000 {
